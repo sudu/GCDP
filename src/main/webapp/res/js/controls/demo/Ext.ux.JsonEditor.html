@@ -1,0 +1,39 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>demo-Ext.ux.JsonEditor</title>
+	<link rel="stylesheet" type="text/css" href="../../ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="../../ext2/resources/css/patch.css" />
+	<script type="text/javascript" src="../../ext2/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../../ext2/ext-all-debug.js"></script>	
+	<script type="text/javascript" src="../../ext2/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../../ext_base_extension.js"></script>
+	<script type="text/javascript" src="../../controls/Ext.ux.JsonEditor.js"></script>
+</head>
+<body>	
+<script>
+Ext.onReady(function(){
+	Ext.BLANK_IMAGE_URL = "../../ext2/resources/images/default/s.gif";	
+	
+	new Ext.ux.JsonEditor({
+		renderTo:Ext.getBody(),
+		title:'相关报道',
+		columnConfig:[{
+			field:'docType',
+			title:'报道类型',
+			editor:'Ext.form.ComboBox',
+			editorDS:"[['报道','报道'],['图片','图片'],['视频','视频']]",
+			emptyText :'请选择报道类型'
+		},{
+			field:'link',
+			title:'链接地址',
+			editor:'Ext.form.TextField',
+			emptyText :'请输入链接地址'
+		}]
+		
+	});
+});
+</script>	
+</body>
+</html>

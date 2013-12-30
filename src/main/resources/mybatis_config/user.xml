@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.UserMapper">
+	<select id="get" parameterType="user" resultType="user" >
+		select id,cnname,username,password,email,dept,telphone,sAMAccountName from cmpp_user
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<select id="getById" parameterType="int" resultType="user" >
+		select id,cnname,username,password,email,dept,telphone,sAMAccountName from cmpp_user where id = #{userId}
+
+	</select>
+	
+	<select id="getByUserName" parameterType="java.lang.String" resultType="user" >
+		select id,cnname,username,password,email,dept,telphone,sAMAccountName from cmpp_user where username = #{userName}
+
+	</select>
+	
+	<delete id="delete" parameterType="user">
+		delete from cmpp_user
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="user" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_user 
+		(username,cnname,password,email,dept,telphone,sAMAccountName)values(#{username},#{cnname},#{password},#{email},#{dept},#{telphone},#{sAMAccountName})
+	</insert>
+	
+	<select id="getLastId" resultType="int">
+		SELECT LAST_INSERT_ID()
+	</select>
+	
+	<update id="update" parameterType="user">
+     	update cmpp_user set username=#{username},cnname=#{cnname},password=#{password},email=#{email},dept=#{dept},telphone=#{telphone},sAMAccountName=#{sAMAccountName} where id=#{id}
+    </update>
+	
+	<!--为多对多配置--> 
+    <select id="getByGroupId" parameterType="page" resultType="user"> 
+        select id,username,cnname,password,email,dept,telphone,sAMAccountName from cmpp_user
+        <where>
+			<if test="filterTxt != null">${filterTxt} like CONCAT('%',#{filterValue},'%' ) and</if>
+			 id in (select userId from cmpp_user_group where groupId=#{groupId}) 
+		</where>
+        limit #{from},#{limit}
+    </select>
+    
+     <select id="getJoinUserCount" parameterType="page" resultType="int"> 
+         select count(*) from cmpp_user
+        <where>
+			<if test="filterTxt != null">${filterTxt} like CONCAT('%',#{filterValue},'%' ) and</if>
+			 id in (select userId from cmpp_user_group where groupId=#{groupId}) 
+		</where>
+    </select> 
+    
+    <select id="getNotJoinByGroupId"  parameterType="page" resultType="user"> 
+        select id,username,cnname,password,email,dept,telphone,sAMAccountName from cmpp_user 
+        <where>
+			<if test="filterTxt != null">${filterTxt} like CONCAT('%',#{filterValue},'%' ) and</if>
+			 id not in (select userId from cmpp_user_group where groupId=#{groupId}) 
+		</where>
+        limit #{from},#{limit}
+    </select> 
+  
+	
+	<select id="getUserByPage" parameterType="page" resultType="user"> 
+        select id,username,cnname,password,email,dept,telphone,sAMAccountName from cmpp_user 
+       <where>
+			<if test="filterTxt != null">${filterTxt} like CONCAT('%',#{filterValue},'%' )</if>
+		</where>
+		order by id desc 
+        limit #{from},#{limit} 
+    </select> 
+    
+    <select id="getUserCount" resultType="int"> 
+        select count(*) from cmpp_user
+    </select>
+    
+	<select id="getNotJoinUserCount" parameterType="page" resultType="int"> 
+        select count(*) from cmpp_user
+        <where>
+			<if test="filterTxt != null">${filterTxt} like CONCAT('%',#{filterValue},'%' ) and</if>
+			 id not in (select userId from cmpp_user_group where groupId=#{groupId}) 
+		</where>
+    </select>
+    
+</mapper>

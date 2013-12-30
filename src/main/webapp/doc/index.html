@@ -1,0 +1,688 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>数据接口帮助文档</title>
+	<link rel="stylesheet" type="text/css" href="doc.css" />
+	<script src="../res/js/jquery/jquery.min.js"></script>
+	<script src="../res/js/jquery/jquery.form.min.js"></script>
+	<style>
+	textarea input{font-size:12px;}
+	</style>
+</head>
+
+<body>
+<!-- div id='header'>
+</div -->
+<div id="swagger-ui-container" class="swagger-ui-wrap">
+	<div class="container" id="resources_container">
+	<ul id="resources">
+		<li id="resource_user" class="resource active">
+		<div class="heading">
+		  <h2>表单数据查询接口</h2>
+		</div>
+	<ul class="endpoints" id="user_endpoint_list" style="display: block;">
+	<!-- 接口分界线 -->
+	<li class="endpoint">
+	  <ul class="operations">
+		<li class="get operation" id="user_getUserByName_get_0">
+		  <div class="heading">
+			<h3>
+			  <span class="http_method"><a>get</a></span>
+			  <span class="path">从数据库分页查询</span>
+			</h3>
+			<ul class="options">
+			  <li>
+			  <a href="#!/user/getUserByName_get_0" class="toggleOperation">展开/收起</a>
+			  </li>
+			</ul>
+		  </div>
+		  <div class="content" style="display: none;">
+			  <h4>返回数据格式</h4>
+<p><span class="model-signature">
+			  <div>
+			  <div>
+			<div>
+				<ul class="signature-nav">
+					<li><a class="snippet-link selected" href="#">JSON</a></li>
+				</ul>
+				<div class="signature-container">
+					<div class="snippetjson">
+<pre><code class="json">{
+	"totalCount":<span class="value"><span class="string">"integer"</span>//总数</span>,
+	"data":[{
+	  "<span class="attribute">id</span>": <span class="value"><span class="string">"integer"</span></span>,
+	  "<span class="attribute">fields1</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">fields2</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>
+	},{...},{...}]
+}</code></pre>
+						<small class="notice"></small>
+					</div>
+					<ul class="signature-nav">
+						<li><a class="snippet-link selected" href="#">JSONP</a></li>
+					</ul>
+					<div class="snippetjsonp" style="display:block;">
+<pre><code class="json">callback({
+	"totalCount":<span class="value"><span class="string">"integer"</span></span>,
+	"data":[{
+	  "<span class="attribute">id</span>": <span class="value"><span class="string">"integer"</span></span>,
+	  "<span class="attribute">fields1</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">fields2</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>
+	},{...},{...}]
+},param1,param2,...)</code></pre>
+						<small class="notice"></small>
+					</div>
+					<ul class="signature-nav">
+						<li><a class="snippet-link selected" href="#">异常返回</a></li>
+					</ul>
+					<div class="snippetjsonp" style="display:block;">
+<pre><code class="json">{
+	"success":<span class="value"><span class="string">"boolean"</span></span>,
+	"message":<span class="value"><span class="string">"string"</span>//错误信息</span>
+}</code></pre>
+						<small class="notice"></small>
+					</div>
+				</div>
+
+			</div>
+	</div></div>
+</span></p>
+
+	<br>
+	<div class="response-content-type">
+		<div>
+			<label for="responseContentType">Response Content Type</label>
+			<select name="responseContentType">
+			  <option value="application/json">text/html</option>
+			</select>
+		</div>
+	</div>
+			
+	<form accept-charset="UTF-8" class="sandbox" action="../runtime/dataProvider.jhtml">
+		<div style="margin:0;padding:0;display:inline"></div>
+			<h4>参数列表</h4>
+			<table class="fullwidth">
+				<thead>
+				<tr>
+				<th style="width: 70px; max-width: 70px">参数</th>
+				<th style="width: 280px; max-width: 280px">值</th>
+				<th style="max-width: 350px">描述</th>
+				<th style="width: 80px; max-width:80px">数据类型</th>
+				</tr>
+				</thead>
+	
+				<tbody class="operation-params">
+				<tr>
+					<td class="code required">from</td>
+					<td><input class="parameter options" name="from" type="text" value="db" readOnly></td>
+					<td>
+						<strong>db:从数据库搜索</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">nodeId</td>
+					<td><input class="parameter required" name="nodeId" placeholder="{必填}" type="text" readOnly></td>
+					<td>
+						<strong>CMPP节点ID</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+			   
+				<tr>
+					<td class="code required">formId</td>
+					<td><input class="parameter required" name="formId" placeholder="{必填}" type="text" value=""></td>
+					<td>
+						<strong>表单ID</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+				<tr>
+					<td class="code required">fields</td>
+					<td><input class="parameter required" name="fields" placeholder="(必填)" type="text" value=""></td>
+					<td>
+						<strong>需要返回的字段。例如:id,title,category或*</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">where</td>
+					<td><input class="parameter required" name="where" placeholder="(可选)" type="text" value=""></td>
+					<td>
+						<strong>查询条件。填写sql select语句的where部分.例如:id>100 and name like '%中国%'</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">sorts</td>
+					<td><input class="parameter required" minlength="1" name="sorts" placeholder="{可选}" type="text" value=""></td>
+					<td>
+						<strong>排序。填写sql select语句的order by部分。例如：id desc</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">start</td>
+					<td><input class="parameter required" name="start" placeholder="{可选}" type="number" value=""></td>
+					<td>
+						<strong>start是指记录开始的index</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+				<tr>
+					<td class="code required">limit</td>
+					<td><input class="parameter required" name="limit" placeholder="{可选)" type="number" value=""></td>
+					<td>
+						<strong>limit是指从第start+1条开始,取limit条</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+				<tr>
+					<td class="code required">callback</td>
+					<td><input class="parameter required" name="callback" placeholder="{可选}" type="text" value=""></td>
+					<td>
+						<strong>JSONP回调函数名。使用JSONP方式请求数据时需要填写</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">ext</td>
+					<td><input class="parameter required" name="ext" placeholder="{可选}" type="text" value=""></td>
+					<td>
+						<strong>JSONP回调函数的附加参数。例如：'param1','param2'</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				
+			   
+			   </tbody>
+			   
+			</table>
+  
+			<div style="margin:0;padding:0;display:inline"></div> 
+			<div class="sandbox_header">
+				<input class="submit" name="commit" type="button" value="沙箱测试">
+				<img alt="Throbber" class="response_throbber" src="../res/img/loading10.gif" style="display: none;">
+			</div>  
+		</form>
+		
+		
+			<div class="response" style="">
+			  <h4>请求url</h4>
+			  <div class="block request_url"><pre></pre></div>
+			  <h4>响应内容</h4>
+			  <div class="block response_body json">
+<pre class="json"><textarea style="width:100%;height:130px">
+
+</textarea></pre>
+			  </div>
+			</div>
+		  </div>
+		</li>
+	  </ul>
+	</li>
+	<!-- 接口分界线 -->
+	<li class="endpoint">
+	  <ul class="operations">
+		<li class="get operation" id="user_getUserByName_get_0">
+		  <div class="heading">
+			<h3>
+			  <span class="http_method"><a>get</a></span>
+			  <span class="path">从搜索引擎分页查询</span>
+			</h3>
+			<ul class="options">
+			  <li>
+			  <a href="#!/user/getUserByName_get_0" class="toggleOperation">展开/收起</a>
+			  </li>
+			</ul>
+		  </div>
+		  <div class="content" style="display: none;">
+			  <h4>返回数据格式</h4>
+<p><span class="model-signature">
+			  <div>
+			  <div>
+			<div>
+				<ul class="signature-nav">
+					<li><a class="snippet-link selected" href="#">JSON</a></li>
+				</ul>
+				<div class="signature-container">
+					<div class="snippetjson">
+<pre><code class="json">{
+	"totalCount":<span class="value"><span class="string">"integer"</span>//总数</span>,
+	"data":[{
+	  "<span class="attribute">id</span>": <span class="value"><span class="string">"integer"</span></span>,
+	  "<span class="attribute">fields1</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">fields2</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>
+	},{...},{...}]
+}</code></pre>
+						<small class="notice"></small>
+					</div>
+					<ul class="signature-nav">
+						<li><a class="snippet-link selected" href="#">JSONP</a></li>
+					</ul>
+					<div class="snippetjsonp" style="display:block;">
+<pre><code class="json">callback({
+	"totalCount":<span class="value"><span class="string">"integer"</span></span>,
+	"data":[{
+	  "<span class="attribute">id</span>": <span class="value"><span class="string">"integer"</span></span>,
+	  "<span class="attribute">fields1</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">fields2</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+	  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>
+	},{...},{...}]
+},param1,param2,...)</code></pre>
+						<small class="notice"></small>
+					</div>
+					<ul class="signature-nav">
+						<li><a class="snippet-link selected" href="#">异常返回</a></li>
+					</ul>
+					<div class="snippetjsonp" style="display:block;">
+<pre><code class="json">{
+	"success":<span class="value"><span class="string">"boolean"</span></span>,
+	"message":<span class="value"><span class="string">"string"</span>//错误信息</span>
+}</code></pre>
+						<small class="notice"></small>
+					</div>
+				</div>
+
+			</div>
+	</div></div>
+</span></p>
+
+	<br>
+	<div class="response-content-type">
+		<div>
+			<label for="responseContentType">Response Content Type</label>
+			<select name="responseContentType">
+			  <option value="application/json">text/html</option>
+			</select>
+		</div>
+	</div>
+			
+	<form accept-charset="UTF-8" class="sandbox" action="../runtime/dataProvider.jhtml">
+		<div style="margin:0;padding:0;display:inline"></div>
+			<h4>参数列表</h4>
+			<table class="fullwidth">
+				<thead>
+				<tr>
+				<th style="width: 70px; max-width: 70px">参数</th>
+				<th style="width: 280px; max-width: 280px">值</th>
+				<th style="max-width: 350px">描述</th>
+				<th style="width: 80px; max-width:80px">数据类型</th>
+				</tr>
+				</thead>
+	
+				<tbody class="operation-params">
+				<tr>
+					<td class="code required">from</td>
+					<td><input class="parameter options" name="from" type="text" value="service" readOnly></td>
+					<td>
+						<strong>service:从搜索引擎搜索</strong>
+					</td>
+					<td width="80"><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">nodeId</td>
+					<td><input class="parameter required" name="nodeId" placeholder="{必填}" type="text" readOnly></td>
+					<td>
+						<strong>CMPP节点ID</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+			   
+				<tr>
+					<td class="code required">formId</td>
+					<td><input class="parameter required" name="formId" placeholder="{必填}" type="text" value=""></td>
+					<td>
+						<strong>表单ID</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+				<tr>
+					<td class="code required">fields</td>
+					<td><input class="parameter required" name="fields" placeholder="(必填)" type="text" value=""></td>
+					<td>
+						<strong>需要返回的字段。例如:id,title,category或*.哪些字段可以返回？请查看表单描述</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">q</td>
+					<td><textarea class="parameter required" name="q" placeholder="(可选)" type="text" style="width:300px;height:150px">*:*</textarea></td>
+					<td>
+						<strong>
+遵循solr引擎搜索的规则：
+key:value AND key:value AND time:[2011-11-04T18:36:15Z TO *]
+<ol>
+<li>
+<ul>
+<li>日期格式的几种操作：timestamp:[* TO NOW]</li>
+<li>createdate:[1976-03-06T23:59:59Z TO *]</li>
+<li>createdate:[1995-12-31T23:59:59Z TO 2007-03-06T00:00:00Z]</li>
+<li>pubdate:[NOW-1YEAR/DAY TO NOW/DAY+1DAY]</li>
+<li>createdate:[1976-03-06T23:59:59Z TO 1976-03-06T23:59:59Z+1YEAR]</li>
+<li>createdate:[1976-03-06T23:59:59Z/YEAR TO 1976-03-06T23:59:59Z](返回所有字段：*:*))</li>
+ </ul>
+ </li>
+<li>'['表示包含，'{'表示不包含</li>
+<li>是和非组合查询：source:凤凰 AND -source:凤凰卫视</li>
+<li>或查询用OR:(key:value OR key:value) AND key:value,用()来强调优先查询,若value里包含:，需要对:加转义，比如http\\://ent.ifeng.com/ddd.html</li>
+<li>范围查询1：id:[1 TO 100] 从1 到100</li>
+<li>范围查找2，相当于sql里面的in --source:(凤凰 OR 卫视 OR 娱乐)</li>
+<li>source:((凤凰 OR 卫视 OR 娱乐)+媒体)</li>
+<li>+等同于 AND ;-等同于 NOT ;</li>
+<li>查询空值  NOT fieldName:['' TO *] 或则-fieldName:['' TO *]</li>
+<li>查询非空值fieldName:['' TO *]</li>
+<li>非查询 name不等于张山 例子:-name:张三</li>
+<li>中文分词的强制搜索：如姓名搜索--name:李四,</li>
+</ol>
+						</strong>
+					</td>
+					<td width="80"><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">sorts</td>
+					<td><input class="parameter required" minlength="1" name="sorts" placeholder="{可选}" type="text" value=""></td>
+					<td>
+						<strong>排序。例如：id desc,time asc</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">start</td>
+					<td><input class="parameter required" name="start" placeholder="{可选}" type="number" value=""></td>
+					<td>
+						<strong>start是指记录开始的index</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+				<tr>
+					<td class="code required">limit</td>
+					<td><input class="parameter required" name="limit" placeholder="{必填)" type="number" value=""></td>
+					<td>
+						<strong>limit是指从第start+1条开始,取limit条</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+				<tr>
+					<td class="code required">callback</td>
+					<td><input class="parameter required" name="callback" placeholder="{可选}" type="text" value=""></td>
+					<td>
+						<strong>JSONP回调函数名。使用JSONP方式请求数据时需要填写</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">ext</td>
+					<td><input class="parameter required" name="ext" placeholder="{可选}" type="text" value=""></td>
+					<td>
+						<strong>JSONP回调函数的附加参数。例如：'param1','param2'</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				
+			   
+			   </tbody>
+			   
+			</table>
+  
+			<div style="margin:0;padding:0;display:inline"></div> 
+			<div class="sandbox_header">
+				<input class="submit" name="commit" type="button" value="沙箱测试">
+				<img alt="Throbber" class="response_throbber" src="../res/img/loading10.gif" style="display: none;">
+			</div>  
+		</form>
+		
+		
+			<div class="response" style="">
+			  <h4>请求url</h4>
+			  <div class="block request_url"><pre></pre></div>
+			  <h4>响应内容</h4>
+			  <div class="block response_body json">
+<pre class="json"><textarea style="width:100%;height:130px">
+
+</textarea></pre>
+			  </div>
+			</div>
+		  </div>
+		</li>
+	  </ul>
+	</li>
+	<!-- 接口分界线 -->
+	<li class="endpoint">
+	  <ul class="operations">
+		<li class="get operation" id="user_getUserByName_get_0">
+		  <div class="heading">
+			<h3>
+			  <span class="http_method"><a>get</a></span>
+			  <span class="path">根据数据ID查询完整数据</span>
+			</h3>
+			<ul class="options">
+			  <li>
+			  <a href="#!/user/getUserByName_get_0" class="toggleOperation">展开/收起</a>
+			  </li>
+			</ul>
+		  </div>
+		  <div class="content" style="display: none;">
+			  <h4>返回数据格式</h4>
+<p><span class="model-signature">
+			  <div>
+			  <div>
+			<div>
+				<ul class="signature-nav">
+					<li><a class="snippet-link selected" href="#">JSON</a></li>
+				</ul>
+				<div class="signature-container">
+					<div class="snippetjson">
+<pre><code class="json">{
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"integer"</span></span>,
+  "<span class="attribute">fields1</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+  "<span class="attribute">fields2</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>
+}</code></pre>
+						<small class="notice"></small>
+					</div>
+					<ul class="signature-nav">
+						<li><a class="snippet-link selected" href="#">JSONP</a></li>
+					</ul>
+					<div class="snippetjsonp" style="display:block;">
+<pre><code class="json">callback({
+  "<span class="attribute">id</span>": <span class="value"><span class="string">"integer"</span></span>,
+  "<span class="attribute">fields1</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+  "<span class="attribute">fields2</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>,
+  "<span class="attribute">...</span>": <span class="value"><span class="string">"string"|"integer"</span></span>
+},param1,param2,...)</code></pre>
+						<small class="notice"></small>
+					</div>
+					<ul class="signature-nav">
+						<li><a class="snippet-link selected" href="#">异常返回</a></li>
+					</ul>
+					<div class="snippetjsonp" style="display:block;">
+<pre><code class="json">{
+	"success":<span class="value"><span class="string">"boolean"</span></span>,
+	"message":<span class="value"><span class="string">"string"</span>//错误信息</span>
+}</code></pre>
+						<small class="notice"></small>
+					</div>
+				</div>
+
+			</div>
+	</div></div>
+</span></p>
+
+	<br>
+	<div class="response-content-type">
+		<div>
+			<label for="responseContentType">Response Content Type</label>
+			<select name="responseContentType">
+			  <option value="application/json">text/html</option>
+			</select>
+		</div>
+	</div>
+			
+	<form accept-charset="UTF-8" class="sandbox" action="../runtime/dataProvider!getDataById.jhtml">
+		<div style="margin:0;padding:0;display:inline"></div>
+			<h4>参数列表</h4>
+			<table class="fullwidth">
+				<thead>
+				<tr>
+				<th style="width: 70px; max-width: 70px">参数</th>
+				<th style="width: 280px; max-width: 280px">值</th>
+				<th style="max-width: 350px">描述</th>
+				<th style="width: 80px; max-width:80px">数据类型</th>
+				</tr>
+				</thead>
+	
+				<tbody class="operation-params">
+				<tr>
+					<td class="code required">nodeId</td>
+					<td><input class="parameter required" name="nodeId" placeholder="{必填}" type="text" readOnly></td>
+					<td>
+						<strong>CMPP节点ID</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+			   
+				<tr>
+					<td class="code required">formId</td>
+					<td><input class="parameter required" name="formId" placeholder="{必填}" type="text" value=""></td>
+					<td>
+						<strong>表单ID</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+				<tr>
+					<td class="code required">dataId</td>
+					<td><input class="parameter required" name="dataId" placeholder="{必填)" type="number" value=""></td>
+					<td>
+						<strong>数据ID</strong>
+					</td>
+					<td><span class="model-signature">integer</span></td>
+				</tr>
+				<tr>
+					<td class="code required">callback</td>
+					<td><input class="parameter required" name="callback" placeholder="{可选}" type="text" value=""></td>
+					<td>
+						<strong>JSONP回调函数名。使用JSONP方式请求数据时需要填写</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				<tr>
+					<td class="code required">ext</td>
+					<td><input class="parameter required" name="ext" placeholder="{可选}" type="text" value=""></td>
+					<td>
+						<strong>JSONP回调函数的附加参数。例如：'param1','param2'</strong>
+					</td>
+					<td><span class="model-signature">string</span></td>
+				</tr>
+				
+			   
+			   </tbody>
+			   
+			</table>
+  
+			<div style="margin:0;padding:0;display:inline"></div> 
+			<div class="sandbox_header">
+				<input class="submit" name="commit" type="button" value="沙箱测试">
+				<img alt="Throbber" class="response_throbber" src="../res/img/loading10.gif" style="display: none;">
+			</div>  
+		</form>
+		
+		
+			<div class="response" style="">
+			  <h4>请求url</h4>
+			  <div class="block request_url"><pre></pre></div>
+			  <h4>响应内容</h4>
+			  <div class="block response_body json">
+<pre class="json"><textarea style="width:100%;height:130px">
+
+</textarea></pre>
+			  </div>
+			</div>
+		  </div>
+		</li>
+	  </ul>
+	</li>
+	<!-- 接口分界线 -->
+	
+	</ul>
+	</li>
+
+	</ul>
+
+		<div class="footer">
+			
+		</div>
+	</div>
+
+</div>
+<script>
+function getUrlParam(name){
+	var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)"); //构造一个含有目标参数的正则表达式对象
+	var r = window.location.search.substr(1).match(reg);  //匹配目标参数
+	if (r!=null) return unescape(r[2]); return null; //返回参数值
+}
+$(document).ready(function(){
+	var init = function(){
+		$("input[name='nodeId']").val(getUrlParam("nodeId"));
+	
+		var ul = $('#user_endpoint_list');
+		ul.children('li.endpoint').each(function(){
+			var li = $(this);
+			li.find("img.response_throbber").ajaxStart(function(){
+			  $(this).show();
+			}).ajaxStop(function(){
+			  $(this).hide();
+			});
+			li.find('input.submit').click(function(){
+				var form = $(this).parents('form.sandbox');
+				var queryArr = form.formToArray();
+				var queryData={};
+				var queryString="";
+				for(var i = 0;i<queryArr.length;i++){
+					var item = queryArr[i];
+					if(item.value.trim()!==''){
+						if(queryString!=='') queryString += "&";
+						queryString+=item.name+"=" + item.value;
+						queryData[item.name] = item.value;
+					}
+				}
+				var li = $(this).parents('li.endpoint');
+				var interfaceUrl = form.prop("action");
+				var requestUrl = interfaceUrl +  "?"  + queryString;
+				li.find('div.request_url').children().html(requestUrl);
+				$.post(interfaceUrl,queryData,function(ret){
+					li.find('div.response_body > pre').children().html(ret);
+				});
+				
+			});
+		});
+		
+		ul.find('.toggleOperation').toggle(function(){
+			$(this).parents('li.endpoint').find('div.content').show();
+		},function(){
+			$(this).parents('li.endpoint').find('div.content').hide();
+		});
+
+	}
+	
+	
+	init();
+
+
+});
+</script>
+
+
+</body>
+
+</html>

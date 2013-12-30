@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.TagParserMapper">
+	<select id="getById" parameterType="int" resultType="TagParserModel" >
+		select id,`key`,script from cmpp_tagParser
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<select id="getByKey" parameterType="String" resultType="TagParserModel" >
+		select id,`key`,script from cmpp_tagParser where `key` = #{value}
+
+	</select>
+	
+	<delete id="delete" parameterType="TagParserModel">
+		delete from cmpp_tagParser
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="TagParserModel" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_tagParser 
+		(`key`,script)values(#{key},#{script})
+	</insert>
+	
+	
+	<update id="update" parameterType="TagParserModel">
+     	update cmpp_tagParser set `key`=#{key},script=#{script} where id=#{id}
+    </update>
+	
+    
+</mapper>

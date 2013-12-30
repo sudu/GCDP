@@ -1,0 +1,19 @@
+[
+ {
+	 formId:1,
+	 formName:"动态前端页面",
+	 tableName:"cmpp_dynamicPage",
+	 insertField:"name,url,nodeId,description,params,createDateTime,modifyDateTime,author",
+	 updateField:"name,url,nodeId,description,params,modifyDateTime",
+	 returnField:"name,url,nodeId,description,params,createDateTime,modifyDateTime,author",
+	 setTime:"createDateTime,modifyDateTime",
+	 setUser:"author" 
+ },
+ {
+	 formId:2,
+	 formName:"动态前端配置管理",
+	 tableName:"cmpp_dynamicConfig",
+	 insertField:"name,nodeId,svrIp,svrPath,dbUrl,dbUser,dbPwd,status,ext,cache,searchReaderIp,searchWriterIp,searchServerName",
+	 updateField:"name,nodeId,svrIp,svrPath,dbUrl,dbUser,dbPwd,status,ext,cache,searchReaderIp,searchWriterIp,searchServerName"
+ }
+]

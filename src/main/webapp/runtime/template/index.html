@@ -1,0 +1,142 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>模板管理</title>
+	<link rel="stylesheet" type="text/css" href="./../../res/js/ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="./../../res/js/ext2/resources/css/patch.css" />
+ 	<script type="text/javascript" src="./../../res/js/ext2/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="./../../res/js/ext2/ext-all-debug.js"></script>	
+	<script type="text/javascript" src="./../../res/js/ext2/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="./../../res/js/ext_base_extension.js"></script>
+	<style>
+		html{height:100%;}
+		body {font-size:12px;height:100%;}
+		#placeholder{width:100%;height:100%;}
+	</style>	
+</head>
+<body>
+	
+<script type="text/javascript">
+Ext.onReady(function(){
+	Ext.BLANK_IMAGE_URL = "../../res/js/ext2/resources/images/default/s.gif";
+	Ext.lOADING_IMAGE_URL= "../../res/js/ext2/resources/images/default/grid/wait.gif"; //resources\images\default\grid
+	Ext.QuickTips.init();
+	Ext.form.Field.prototype.msgTarget = 'side';
+	var _params = Ext.parseQuery();
+	var _paramsStr = 'id='+ _params.id +'&dataFormId='+ _params.dataFormId +'&dataId='+ _params.dataId + '&nodeId=' + _params.nodeId;
+	var _activeTabIndex = 0;
+	if(_params.tab) _activeTabIndex = _params.tab;
+	
+	//var loadingPanel = new Ext.Panel
+	new Ext.Viewport({
+		margins:'5',
+		layout: 'border',
+		items:[{
+			xtype:'panel',
+			region:'center',
+			layout:'fit',
+			items:[{
+				xtype:'tabpanel',
+				enableTabScroll :true,
+				autoScroll:true, 
+				layoutOnTabChange:true,
+				resizeTabs:true,
+				activeTab:_activeTabIndex,
+				frame:true,
+				border:true,
+				listeners:{
+					'beforetabchange':function(obj,newTab,curTab){ 
+						var tabPanel = obj;
+						var newTab = newTab;
+						var curTab = curTab;
+						if(this.activeTab!=null){
+							var iframe = Ext.get('fr_'+ curTab.id);
+							if(iframe) {
+								iframe = iframe.dom.contentWindow;
+								var isDirty = false;
+								var saveHandler = null;
+								if((iframe.formPanel__ && iframe.formPanel__.getForm().isDirty())){
+									isDirty = true;
+									saveHandler = iframe.formPanel__.buttons[0].initialConfig.handler;
+								}
+								if(iframe.TPE && iframe.TPE.preEdit.outputCommand().length>0){
+									isDirty = true;
+									saveHandler = iframe.TPE.preEdit.submitHandler;
+								}
+								if(isDirty){
+									Ext.MessageBox.show({
+										title: "提醒你需要保存",
+										msg: "表单内容有改动,建议您先保存或提交.",
+										buttons: {
+											yes:'好的,现在就保存！',
+											no:'算了,不保存了！',
+											cancel:'取消'
+										},
+										width: 300,
+										hight: 250,
+										closable: false,
+										fn: function(e,text) { 
+											if(e == 'no'){
+												curTab.body.update('');
+												tabPanel.setActiveTab(newTab);
+											}else if(e == 'yes'){
+												if(saveHandler) saveHandler();
+											}
+										},
+										icon: Ext.MessageBox.QUESTION,
+										prompt:false
+									});
+									return false;
+								}
+								
+							}
+						}
+					} 
+				},
+				items:[{
+					title:'<img src="' +  Ext.BLANK_IMAGE_URL + '" width="16" height="16" />模板源代码',
+					//height:offsetHeight__,
+					listeners:{
+						'activate':function(obj){
+							loadFrame(obj,'../tplform!editor.jhtml?'+ _paramsStr,'模板源代码');
+						},
+						'deactivate':function(obj){
+							this.ownerCt.setActiveTab(0);
+						}
+					}
+				},{
+					title:'<img src="' +  Ext.BLANK_IMAGE_URL + '" width="16" height="16" />模板可视化编辑',
+					//height:offsetHeight__,
+					listeners:{
+						'activate':function(obj){
+							loadFrame(obj,'../template!design.jhtml?'+ _paramsStr,'模板可视化编辑');
+						}
+					}
+				},{
+					title:'<img src="' +  Ext.BLANK_IMAGE_URL + '" width="16" height="16" />碎片可视化编辑',
+					//height:offsetHeight__,
+					listeners:{
+						'activate':function(obj){
+							loadFrame(obj,'../template!idxEditor.jhtml?'+ _paramsStr,'碎片可视化编辑');
+						}
+					}
+				}]
+			}]
+		}]
+	});
+
+	function loadFrame(tab,url,tabTitle){
+		var title = tabTitle;
+		tab.setTitle('<img style="" src="' +  Ext.lOADING_IMAGE_URL + '" width="16" height="16" title="正在加载中..."/>' + title);
+		tab.body.update('<iframe id="fr_'+ tab.id +'"  scrolling="auto" frameborder="0" width="100%" height="100%"></iframe>' );
+		var iframe = document.getElementById('fr_'+ tab.id);
+		iframe.onload = function(){
+			tab.setTitle('<img src="' +  Ext.BLANK_IMAGE_URL + '" width="16" height="16" />' + title);
+		};
+		iframe.src = url + '&_t='+ (new Date()).valueOf();
+	}
+});
+</script>
+</body>
+</html>

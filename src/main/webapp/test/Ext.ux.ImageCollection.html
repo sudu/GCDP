@@ -1,0 +1,50 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Ext.ux.ImageCollection Demo</title>
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/patch.css" />
+	<link rel="stylesheet" type="text/css" href="../res/css/runTime.css" />
+	<link rel="stylesheet" type="text/css" href="../res/css/portal.css" />
+ 	<script type="text/javascript" src="../res/js/ext2/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="../res/js/ext2/ext-all-debug.js"></script>	
+	<script type="text/javascript" src="../res/js/ext2/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../res/js/ext_base_extension.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.Portal.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.ImageCollection.js"></script>
+</head>
+<body>
+<script>
+Ext.onReady(function(){
+	Ext.BLANK_IMAGE_URL = "../res/js/ext2/resources/images/default/s.gif";
+	Ext.lOADING_IMAGE_URL= "../res/js/ext2/resources/images/default/grid/wait.gif"; //resources\images\default\grid
+	Ext.QuickTips.init();
+	Ext.form.Field.prototype.msgTarget = 'qtip';
+	
+	
+	new Ext.Viewport({
+		layout:"fit",
+		items:[{
+			xtype:"form",
+			layout:"xform",
+			autoHeight:true,
+			items:[{
+				xtype:'ImageCollection',
+				name:'myImageCollection',
+				fieldLabel:'幻灯片',
+				id:"ImageCollection_1",
+				//height:250,
+				//width:500,
+				border:false,
+				//layout:"form",
+				buttonText:"编辑",
+				value:'{"description":["泰国情欲大作《晚娘上部：恋欲》12日主要演员马力欧、西野翔、NEW来台宣传电影，而这部片也因有AV女优西野翔的加持格外备受关注，她昨在记者会上开口用十分标准的中文向大家问好，事后透露\u201c全是小空(苍井空)教的！\u201d对于片中不少的性爱床戏，西野翔也很大方，直言\u201c其实裸露就是我的专业。\u201d","日本知名AV女优西野翔这回加入《晚娘上部：恋欲》演出，她为戏苦学泰文，被外界关注有望追寻前辈苍井空的脚步转型成演员。片中她有不少令人脸红心跳的激情性爱场景，西野翔昨透露进剧组的第一场戏就是SM的场面，她直言\u201c接这部片的时候其实就有(拍性爱戏)觉悟，且裸露本来就是我的专业，所以拍摄时就是要丢弃所谓的害羞。\u201d","只是接拍大银幕电影，是否有意追随苍井空脚步淡出AV界？西野翔笑称\u201c其实这次来台湾前，就是同公司的小空(苍井空)教了我很多中文。\u201d不过她认为若能向苍井空这样当然很好，但也强调\u201c若有工作需要我露，我还是会做。","泰国帅哥偶像马力欧因主演《爱在暹罗》深受台湾粉丝喜爱，外型俊俏的他，表示是以专业态度演出片中床戏，不会有尴尬的生理反应。","西野翔cos play图。","西野翔生活照。","西野翔清纯照。","西野翔cos play照。","西野翔可爱生活照。","西野翔可爱生活照。","西野翔。","","","","",""],"path":["http://s4.mimg.ifeng.com/upload/day_121114/201211141104402961.jpg","http://s2.mimg.ifeng.com/upload/day_121114/201211141104401974.jpg","http://s0.mimg.ifeng.com/upload/day_121114/201211141104417782.jpg","http://s1.mimg.ifeng.com/upload/day_121114/201211141104417087.jpg","http://s1.mimg.ifeng.com/upload/day_121114/201211141104405238.jpg","http://s2.mimg.ifeng.com/upload/day_121114/201211141104411878.jpg","http://s4.mimg.ifeng.com/upload/day_121114/201211141104418542.jpg","http://s2.mimg.ifeng.com/upload/day_121114/201211141104429339.jpg","http://s2.mimg.ifeng.com/upload/day_121114/201211141104424793.jpg","http://s3.mimg.ifeng.com/upload/day_121114/201211141104426322.jpg","http://s0.mimg.ifeng.com/upload/day_121114/201211141104414019.jpg","http://s2.mimg.ifeng.com/upload/day_121114/201211141104428027.jpg","http://s0.mimg.ifeng.com/upload/day_121114/201211141104437394.jpg","http://s0.mimg.ifeng.com/upload/day_121114/201211141104439288.jpg","http://s2.mimg.ifeng.com/upload/day_121114/201211141104438762.jpg","http://s0.mimg.ifeng.com/upload/day_121114/201211141104435014.jpg"]}'
+			}]
+		}]
+	});
+});
+	
+</script>
+</body>
+</html>

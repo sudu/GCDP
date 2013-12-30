@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.ScriptMapper">
+	
+	<select id="get" parameterType="script" resultType="script" >
+		select * from cmpp_script
+		<where>
+			<if test="id != null">id = #{id}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+			<if test="name != null">AND name like '%${name}%'</if>
+			<if test="name2 != null">AND name = #{name2}</if>
+		</where>
+		order by id
+	</select>
+	
+	<delete id="delete" parameterType="script">
+		delete from cmpp_script
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="script" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_script
+		(name,nodeid,creator,createdate,intro)
+		values
+		(#{name},#{nodeid},#{creator},#{createDate},#{intro})
+	</insert>
+	
+	<update id="update" parameterType="script">
+		update cmpp_script 
+		<set>
+			<if test="intro != null">intro = #{intro}</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+</mapper>

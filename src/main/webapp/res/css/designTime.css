@@ -1,0 +1,564 @@
+html, body {
+        font:normal 12px verdana;
+        margin:0;
+        padding:0;
+        border:0 none;
+        overflow:hidden;
+        height:100%;
+    }
+
+	.block {
+	   clear:left; 
+	   margin-top:50px; 
+	   border: solid 1px #000;
+	   height:160px; 
+	   padding:20px 0 0 20px; 
+	}
+	.item {            
+	   border: 1px #000 solid;                        
+	   margin-right:10px;                                               
+	   width: 50px;            
+	   height: 20px;             
+	   text-align:center;            
+	   padding-top:10px; 
+	   float:left;            
+	   cursor:pointer;
+	   font-size:12px;
+	   color:Black
+	}                
+	.BorderOver{
+	   border:dashed 2px #00f;
+	}
+
+	.disable-button button{color:gray}
+	/*只读文本框的样式*/
+	input[readonly=""]{background:white;}
+	input[readonly="readonly"]{background:white;}
+	textarea[readonly=""]{background:white;}
+	textarea[readonly="readonly"]{background:white;}	
+	
+	/*列表页属性编辑器样式*/
+	.listItem{background:silver;padding:2px 0 2px 0;text-align:center;cursor:pointer;height:15px;
+		border-top: 1px solid #FFFFFF;
+		border-left: 1px solid #FFFFFF;
+		border-bottom: 1px solid #717171;
+		border-right: 1px solid #717171;
+	}
+	.selectlistItem{
+		border-top: 1px solid #717171;
+		border-left: 1px solid #717171;
+		border-bottom: 1px solid #FFFFFF;
+		border-right: 1px solid #FFFFFF;
+	}
+	
+#FormPanel_1 form{min-height:2000px;}/*设计时画布默认高度*/
+
+.NewsPublisher{ width:595px;height:112px;background:url(../../res/img/designTime/NewsPublisher.jpg) no-repeat;}
+.rightMark{height:20px;background:url(../../res/js/ext2/resources/images/default/tree/drop-yes.gif) no-repeat center;cursor:pointer;}
+.faultMark{height:20px;background:url(../../res/js/ext2/resources/images/default/layout/panel-close.gif) no-repeat center;cursor:pointer;}
+.x-form-element>*{display:inline-block;}
+/*checkboxGroup,radioGroup*/
+.inputUnit{
+display:inline-block;
+margin-right:1em;
+}
+.group{padding-top:5px;}
+.inputUnit *{vertical-align:middle;}
+/*general*/
+	
+.x-form-item-note{padding:3px;padding-right:0;clear:right;z-index:2;position:relative;}
+.x-hide-note>.x-form-item-note{display:none;}
+.x-hide-note>.x-form-element {
+    padding-right: 0 !important;
+}
+.x-hide-label label.x-form-item-label{display:block;}
+.x-hide-label>label.x-form-item-label{display:none;}
+.x-hide-label .x-form-element {
+    padding-left:auto;
+}.x-hide-label>.x-form-element {
+    padding-left: 0 !important;
+}
+	/*collapsiblePanel*/
+.collapsiblePanel
+{
+    margin-bottom:0;
+    display:block;
+}
+.collapsiblePanel legend
+{
+    z-index:10;
+    position:relative;
+}
+
+.x-tool-collapse-east/* .x-tool-maximize*/{position:absolute;right:2px;top:5px;z-index:9;}
+/*.x-form-element{padding:3px 3px 3px 0}*/
+/*form Editor*/
+	html, body {
+        font:normal 12px verdana;
+        margin:0;
+        padding:0;
+        border:0 none;
+        overflow:hidden;
+        height:inherit;
+    }
+    
+.selecteditem{
+   border:1px solid blue;background:#c7d3ed;
+}
+	.closer
+	{
+	    background:url(../js/ext2/resources/images/default/layout/tab-close-on.gif);
+	    width:11px;
+	    height:11px;
+	    right:0;
+	    top:0;
+	    position:absolute;
+	    cursor:pointer;
+	    display:none;
+	    z-index:999;
+	} 
+	.selecteditem>.closer{display:block;}
+	
+	
+	.controlItem {width:100%;height:20px;cursor:move;font-size:13px;font-weight:bold;margin:2px 0 2px 5px;}
+	.controlItem *{vertical-align:middle;}
+	.controlItem img{margin-right:5px; cursor: pointer;}
+	.current {background:#0E76CD;color:white;}	
+	.block {
+	   clear:left; 
+	   margin-top:50px; 
+	   border: solid 1px #000;
+	   height:160px; 
+	   padding:20px 0 0 20px; 
+	}
+	.item {            
+	   border: 1px #000 solid;                        
+	   margin-right:10px;                                               
+	   width: 50px;            
+	   height: 20px;             
+	   text-align:center;            
+	   padding-top:10px; 
+	   float:left;            
+	   cursor:pointer;
+	   font-size:12px;
+	   color:Black
+	}                
+	.BorderOver{
+	   border:dashed 2px #00f;
+	}
+
+	.disable-button button{color:gray}
+	
+	.readonlyText{border:0;background:transparent;}
+	
+	/*鍒楄〃椤靛睘鎬х紪杈戝櫒鏍峰紡*/
+	.listItem{background:silver;padding:2px 0 2px 0;text-align:center;cursor:pointer;height:15px;
+		border-top: 1px solid #FFFFFF;
+		border-left: 1px solid #FFFFFF;
+		border-bottom: 1px solid #717171;
+		border-right: 1px solid #717171;
+	}
+	.selectlistItem{
+		border-top: 1px solid #717171;
+		border-left: 1px solid #717171;
+		border-bottom: 1px solid #FFFFFF;
+		border-right: 1px solid #FFFFFF;
+	}
+	
+.hiddenBox{height:20px;border:2px dashed #999999;text-indent:2em;display:block;}
+
+.uploader_bg
+{
+	   width:100%;
+	   height:100%;
+	}
+	
+/*ruledTextbox*/
+.counter
+{
+    width:100px;
+    position:relative;
+    margin-left:1em;
+    display:inline-block;
+}
+.counter span
+{
+    color:Green;
+}
+.counterOverpass span
+{
+    color:Red;
+}
+.rulerInput
+{
+	z-index:999;
+	background:transparent;
+	position:relative;
+	margin:0;
+	padding:0;
+}
+.ruler
+{
+	position:absolute;
+	top:0;
+	width:inherit;
+	height:inherit;
+	z-index:1;	
+	overflow:hidden;
+}
+
+.ruler span
+{
+	position:relative;
+	display:inline-block;
+	height:inherit;
+	width:0.5em;
+}
+
+.ruler span div
+{
+	position:absolute;
+	bottom:0;
+	z-index:1;
+	width:0px;
+	border-left:1px red solid;
+	right:0px;
+	line-height:0.8em;
+	font-size:0.8em;
+}
+
+.ruler .halfBdr div
+{
+	height:15%;
+}
+.ruler .fullBdr div
+{
+	height:25%;
+}
+.ruler .tenth div
+{
+	height:50%;
+}
+
+.ruler .emphasized div
+{
+	height:inherit;	
+	border-left:1px green solid;
+	color:green;
+}
+
+
+
+/*htmlEditor*/
+	.htmlEditorCtnr,.ImgUploader2
+	{
+		position:relative;
+		background:white;
+	}
+	.htmlEditorCtnr *,.ImgUploader2 *
+	{
+		position:absolute;		
+		width:inherit;	
+		height:inherit;
+	}
+	.htmlEditorCtnr .tp
+	{
+		height:39px;
+		z-index:1;
+		top:0;
+		background:url(../img/designTime/HtmlEditor_05.gif) repeat-x;
+	}
+	.htmlEditorCtnr .btm
+	{
+		height:29px;
+		z-index:1;
+			bottom:0;
+		background:url(../img/designTime/HtmlEditor_18.gif) repeat-x;
+	}
+	.htmlEditorCtnr .lft
+	{
+		width:10px;
+		z-index:1;
+		left:0;
+		background:url(../img/designTime/HtmlEditor_12.gif) repeat-y;
+	}
+
+	.htmlEditorCtnr .rgt
+	{
+		width:10px;
+		z-index:1;
+		right:0;
+		background:url(../img/designTime/HtmlEditor_15.gif) repeat-y;
+	}
+		.htmlEditorCtnr .lftTp
+	{
+		width:180px;
+		height:39px;
+		z-index:10;
+		left:0;
+		top:0;
+		background:url(../img/designTime/HtmlEditor_03.gif);
+	}
+		.htmlEditorCtnr .rgtTp
+	{
+		width:10px;
+		height:39px;
+		z-index:10;
+		right:0;
+		top:0;
+		background:url(../img/designTime/HtmlEditor_07.gif);
+	}
+
+		.htmlEditorCtnr .rgtBtm
+	{
+		width:10px;
+		height:29px;
+		z-index:10;
+		bottom:0;
+		right:0;
+		background:url(../img/designTime/HtmlEditor_19.gif);
+	}
+
+		.htmlEditorCtnr .lftBtm
+	{
+		width:10px;
+		height:29px;
+		z-index:10;
+		background:url(../img/designTime/HtmlEditor_17.gif);
+		bottom:0;
+		left:0;
+	}
+	
+/*ImgUploader2*/
+	.ImgUploader2 .ctr
+	{
+		background:url(../img/designTime/uploader2_13.jpg) 20% center no-repeat;
+	}
+
+	.ImgUploader2 .tp
+	{
+		height:10px;
+		z-index:1;
+		top:0;
+		background:url(../img/designTime/uploader2_04.jpg) repeat-x;
+	}
+	.ImgUploader2 .btm
+	{
+		height:10px;
+		z-index:1;
+			bottom:0;
+		background:url(../img/designTime/uploader2_15.jpg) repeat-x;
+	}
+	.ImgUploader2 .lft
+	{
+		width:10px;
+		z-index:1;
+		left:0;
+		background:url(../img/designTime/uploader2_11.jpg) repeat-y;
+	}
+
+	.ImgUploader2 .rgt
+	{
+		width:10px;
+		z-index:1;
+		right:0;
+		background:url(../img/designTime/uploader2_09.jpg) repeat-y;
+	}
+		.ImgUploader2 .lftTp
+	{
+		width:10px;
+		height:10px;
+		z-index:10;
+		left:0;
+		top:0;
+		background:url(../img/designTime/uploader2_03.jpg);
+	}
+		.ImgUploader2 .rgtTp
+	{
+		width:10px;
+		height:10px;
+		z-index:10;
+		right:0;
+		top:0;
+		background:url(../img/designTime/uploader2_06.jpg);
+	}
+
+		.ImgUploader2 .rgtBtm
+	{
+		width:10px;
+		height:10px;
+		z-index:10;
+		bottom:0;
+		right:0;
+		background:url(../img/designTime/uploader2_16.jpg);
+	}
+
+		.ImgUploader2 .lftBtm
+	{
+		width:10px;
+		height:10px;
+		z-index:10;
+		background:url(../img/designTime/uploader2_14.jpg);
+		bottom:0;
+		left:0;
+	}
+
+
+
+
+
+
+.collapsiblePanel_topTrigger,.collapsiblePanel_btmTrigger
+{
+    position:absolute;
+    left:0;
+    width:100%;
+}
+.collapsiblePanel_topTrigger
+{
+    top:0;
+    height:20px;
+    z-index:5;
+}
+.collapsiblePanel_btmTrigger
+{
+    bottom:0;
+    height:10px;
+}
+	/*jsDebugger*/
+.helpItem{inherit;margin:0.5em 0;text-indent:0;}
+.helpItem a{display:inline-block;width:100%;height:2em;line-height:2em;text-indent:1em;}
+.helpItem a:hover{background:#DEECFD}
+.helpContainer{padding:1em;line-height:2em;}
+.h_body{padding-left:2em;}
+.paramList{list-style:disc outside none;padding-left:4em;}
+.clsTitle{text-decoration:underline;font-size:16px;margin-bottom:1em;}
+.methods{margin-top:3em;}
+.methodItem{padding:2em 0;border-bottom:1px dashed #CCCCCC;}
+.methods .head{font-size:14px;text-decoration:underline;}
+.methodTitle{font-weight:700;font-size:14px;margin-bottom:1em;}
+.methodDoc{text-indent:2em;}
+.x-tool-collapse-south{position:absolute;right:2px;top:5px;z-index:9;}
+.southToolBtnBox{position:absolute;right:20px;top:5px;z-index:9;}
+.southToolBtnBox span{cursor:pointer;font-size:12px;display:inline-block;margin:0 7px;text-decoration:underline;}
+.southToolBtnBox .disabled{text-decoration:line-through;}
+#timeoutBox{width:40px;height:14px;line-height:14px;border:1px #999999 solid;text-decoration:none;-moz-user-select:text;-webkit-user-select:text;}
+#timeoutBoxCtnr{margin-right:40px;}
+#timeoutLabel{text-decoration:none;margin-right:0px;cursor:default;}
+
+
+/*******************************************/
+/******** css for Ext.ux.uploadDev *********/
+/********* by zhanglin 2012-03-28 **********/
+/*******************************************/
+
+.x_UploadDevPanel .tableStyle { width: 100%; }
+	.x_UploadDevPanel .tableStyle th { text-align: left; border-right: 1px solid #aaccf6; border-bottom: 1px solid #aaccf6; padding: 5px 4px 4px 4px; background: url(../img/uploadDev/uploadDevTh_bg.png) repeat-x; font-size: 12px; white-space:nowrap; }
+	.x_UploadDevPanel .tableStyle th:last-child { border-right: 0; }
+	.x_UploadDevPanel .tableStyle td { text-align: left; border-right: 1px solid #aaccf6; border-bottom: 1px solid #aaccf6; padding: 5px;  font-size: 12px; white-space:nowrap; }
+	.x_UploadDevPanel .tableStyle td:last-child { border-right: 0; }
+	.x_UploadDevPanel .tableStyle .x_upload_tr_Success td { background-color: #ddffdd; }
+	.x_UploadDevPanel .tableStyle .x_upload_tr_Error td { background-color: #ffdddd; }
+	.x_UploadDevPanel .tableStyle .x_upload_tr_Abort td { background-color: #f6f6f6; }
+	.x_UploadDevPanel .tableStyle .x_upload_tr_Uploading td { background-color: #ffffdd; }
+	.x_UploadDevPanel .tableStyle .x-view-over td { background-color: #f1f1f1;}
+	.x_UploadDevPanel .progress_bar { background-color: #FFE; border:1px solid #CCC; height: 13px; position: relative; text-align: center;}
+		.x_UploadDevPanel .progress_bar .progress_span { display: inline-block; height: 13px; background: url(../img/uploadDev/uploadDevProgress.gif) no-repeat; position: absolute; top: 0; left: 0;}
+		.x_UploadDevPanel .progress_bar .progress_count { position: absolute; }
+		.x_UploadDevPanel .progress_ready { background: url(../img/uploadDev/uploadDevProgress_state.png) no-repeat 0px -80px; display: inline-block; padding-left: 20px; height:14px; padding-top: 2px; }
+		.x_UploadDevPanel .progress_success { background: url(../img/uploadDev/uploadDevProgress_state.png) no-repeat 0px 0px; display: inline-block; padding-left: 20px; height:15px; padding-top: 1px; }
+		.x_UploadDevPanel .progress_error { background: url(../img/uploadDev/uploadDevProgress_state.png) no-repeat 0px -60px; display: inline-block; padding-left: 20px; height:15px; padding-top: 1px; color: #F00; }
+		.x_UploadDevPanel .progress_abort { background: url(../img/uploadDev/uploadDevProgress_state.png) no-repeat 0px -40px; display: inline-block; padding-left: 20px; height:14px; padding-top: 2px; color: #AAA; }
+.x_UploadDevPanel .uploadContinue { text-align: center; padding: 5px 5px 7px 5px; }
+	.x_UploadDevPanel .uploadContinue span { padding-left: 12px; padding-right: 12px; background: url(../img/uploadDev/uploadDevUpload.png) no-repeat right 1px; font-size: 12px; color: #900; }
+.x_UploadDevPanel .x-btn .file { background: url(../img/uploadDev/uploadDevFile.png) no-repeat 5px 4px !important; }
+.x_UploadDevPanel .x-btn .catalog { background: url(../img/uploadDev/uploadDevCatalog.png) no-repeat 2px 4px !important; }
+.x_UploadDevPanel .x-btn .upload { background: url(../img/uploadDev/uploadDevUpload.png) no-repeat 6px 5px !important; }
+
+.x_UploadDevPanel .x_UploadDev_UploadFileWrap { width: 0px; overflow: hidden; }
+.x_UploadDevPanel .x_UploadDev_UploadPathWrap { padding-top: 2px; padding-right: 5px; }
+.x_UploadDevPanel .xUploadDev_count { padding-left: 3px; }
+.x_UploadDevPanel .useWebkitdirectory { background: url(../img/uploadDev/uploadDevCheck.png) no-repeat 0px 0px; padding-left: 16px; display: inline-block; padding-bottom: 1px; cursor: pointer;}
+.x_UploadDevPanel .useWebkitdirectory_true {background-position: 0px -50px;}
+	.x_UploadDevPanel .useWebkitdirectory_true:hover  { background-position: 0px -150px; }
+.x_UploadDevPanel .useWebkitdirectory_false {background-position: 0px 0px;}
+	.x_UploadDevPanel .useWebkitdirectory_false:hover { background-position: 0px -100px; }
+
+.x_UploadDevPanel .x_upload_bt { margin-right: 2px; margin-left: 2px; display: inline-block; width: 16px; height: 17px; background:  url(../img/uploadDev/uploadDevHandle.png) no-repeat center -200px; }
+.x_UploadDevPanel .x_upload_bt_del_gray { background-position: center -160px; }
+.x_UploadDevPanel .x_upload_bt_copy_gray { background-position: center -200px;  }
+.x_UploadDevPanel .x_upload_bt_change_state_ready_gray { background-position: center -240px;  }
+.x_UploadDevPanel .x_upload_bt_info_gray { background-position: center -280px;  }
+
+.x_UploadDevPanel .x_upload_bt_del { cursor: pointer; background-position: center 0px; padding-right: 3px; }
+.x_UploadDevPanel .x_upload_bt_del:hover { background-position: center -20px;  }
+
+.x_UploadDevPanel .x_upload_bt_copy { cursor: pointer; background-position: center -40px; }
+.x_UploadDevPanel .x_upload_bt_copy:hover { background-position: center -60px;  }
+
+.x_UploadDevPanel .x_upload_bt_change_state_ready { cursor: pointer; background-position: center -80px; }
+.x_UploadDevPanel .x_upload_bt_change_state_ready:hover {  background-position: center -100px; }
+
+.x_UploadDevPanel .x_upload_bt_change_state_ready { cursor: pointer; background-position: center -80px; }
+.x_UploadDevPanel .x_upload_bt_change_state_ready:hover {  background-position: center -100px; }
+
+.x_UploadDevPanel .x_upload_bt_info { cursor: pointer; background-position: center -120px; }
+.x_UploadDevPanel .x_upload_bt_info:hover {  background-position: center -140px; }
+
+.x_UploadDevPanel .x_upload_tr_Success .x_upload_bt_info { cursor: pointer; background-position: center -320px; }
+.x_UploadDevPanel .x_upload_tr_Success .x_upload_bt_info:hover {  background-position: center -340px; }
+
+.x_UploadDevPanel .xUploadDev_state { padding-right: 5px; }
+
+.x_UploadDevPanel .x_UploadDev_errorView { color: #F00; }
+.x_UploadDevPanel .x_UploadDev_successView { color: #008080; }
+.x_UploadDevPanel .x_uploadEmpty_box { margin: 5px; padding: 25px; text-align: center; color: #999; border: 5px dotted #CCC; }
+.x_UploadDevPanel .x_upload_path_intro { display: inline-block; padding-top: 1px; padding-left: 3px; padding-right: 3px; }
+
+/*******************************************/
+/******** css for Ext.ux.TopNewEdit *********/
+/********* by zhanglin 2012-05-29 **********/
+/*******************************************/
+.x_topnewedit .js_row_action, .x_topnewedit .js_group_action { cursor: pointer; height: 16px; width: 16px; display: inline-block; margin-right: 3px; }
+.x_topnewedit .js_row_action:hover, .x_topnewedit .js_group_action:hover { color: #F00; }
+.x_topnewedit .x-grid-group-hd-top-new { padding-top: 6px; background: url(../img/topnewedit/title_bg1.png) no-repeat right bottom; padding-right: 4px; }
+.x_topnewedit .x-grid-group-hd-top-new div { padding-left: 16px; padding-bottom: 10px; padding-top: 5px; background: url(../img/topnewedit/title_icon.png) no-repeat left 4px;  }
+.x_topnewedit .js_bold_row, .x_topnewedit .js_break_row { display: inline-block; height: 13px; width: 13px; background: url(../img/topnewedit/check.png) no-repeat 0 0; cursor: pointer;}
+.x_topnewedit .js_bold_row:hover, .x_topnewedit .js_break_row:hover { background-position: 0px -100px; }
+.x_topnewedit .bolded, .x_topnewedit .breaked { background-position: 0px -50px; }
+.x_topnewedit .bolded:hover, .x_topnewedit .breaked:hover { background-position: 0px -150px; }
+.x_topnewedit .highLight td { background: #ffffaa!important; }
+.x_topnewedit .highLight_group td { background: #ffffaa!important; }
+.x_topnewedit .js_group_action_box { float: right; padding-right: 6px;}
+.x_topnewedit .js_add_new_to_group { background: url(../img/topnewedit/icon_add.png) no-repeat; }
+.x_topnewedit .js_add_new_to_group:hover { background-position: 0px -20px; }
+.x_topnewedit .js_grid_row_box { position: relative; padding-top: 2px; padding-bottom: 2px; }
+.x_topnewedit .js_del_row {  background: url(../img/topnewedit/icon_del.png) no-repeat; }
+.x_topnewedit .js_del_row:hover { background-position: 0px -20px; }
+.x_topnewedit .x-grid-group { position: relative; }
+.x_topnewedit .js_remove_group{ background: url(../img/topnewedit/cancel.png) no-repeat; margin-right: 5px;  }
+.x_topnewedit .js_remove_group:hover { background-position: 0px -20px; }
+.x_topnewedit .js_down_row { background: url(../img/topnewedit/arrow.png) no-repeat 0px 3px; }
+.x_topnewedit .js_down_row:hover { background-position: 0px -17px; }
+.x_topnewedit .js_up_row { background: url(../img/topnewedit/arrow.png) no-repeat 0px -57px; }
+.x_topnewedit .js_up_row:hover { background-position: 0px -77px; }
+.x_topnewedit .js_move_down { background: url(../img/topnewedit/arrow.png) no-repeat 0px -117px; }
+.x_topnewedit .js_move_down:hover { background-position: 0px -137px; }
+.x_topnewedit .js_move_up { background: url(../img/topnewedit/arrow.png) no-repeat 0px -177px; }
+.x_topnewedit .js_move_up:hover { background-position: 0px -197px; }
+.x_topnewedit .js_move_up_disable, .x_topnewedit .js_up_row_disable  { background: url(../img/topnewedit/arrow.png) no-repeat 0px -97px; height: 16px; width: 16px; display: inline-block;  margin-right: 3px; }
+.x_topnewedit .js_move_down_disable, .x_topnewedit .js_down_row_disable { background: url(../img/topnewedit/arrow.png) no-repeat 0px -37px; height: 16px; width: 16px; display: inline-block;  margin-right: 3px; }
+.x_topnewedit .js_edit_row { background: url(../img/topnewedit/edit_icon.png) no-repeat; margin-right: 5px; }
+.x_topnewedit .js_edit_row:hover { background-position: 0px -20px; }
+.x_topnewedit .js_grid_row_bold td div { font-weight: bold; }
+.x_topnewedit .blodStyle { font-weight: bold; }
+
+.x_topnewedit .x-toolbar .addBlock .x-btn-menu-arrow-wrap .x-btn-center button { background-position: 0 -47px;}
+.x_topnewedit .x-toolbar .addBlock .x-btn-left { background: url(../img/topnewedit/tb-btn-sprite.gif) no-repeat 0 0;}
+.x_topnewedit .x-toolbar .addBlock .x-btn-right { background: url(../img/topnewedit/tb-btn-sprite.gif) no-repeat 0 -21px;}
+.x_topnewedit .x-toolbar .addBlock .x-btn-center { background: url(../img/topnewedit/tb-btn-sprite.gif) repeat-x 0 -42px;}
+
+.x_topnewedit .addBlockIcon { background: url(../img/topnewedit/icon_add.png) no-repeat; padding-left: 18px; }
+.x_topnewedit .addBlockIcon:hover { color: #900; background-position: 0px -20px; }
+
+.x_topnewedit .js_add_new_to_group { position: absolute; bottom: 5px; right: 3px; }

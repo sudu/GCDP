@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.workflow.mapper.ProcessInstanceMapper">
+	<select id="getProcessInstance" parameterType="int" resultType="com.me.GCDP.workflow.model.ProcessInstanceInfo">
+		select t1.id, t1.nodeid,t1.formId,t1.articleId,t1.instanceDesc,(select name from cmpp_formConfig where formId= t1.formId) formName,t1.processDefinitionName as "processDefinitionId",t1.processStartDate,t1.state from cmpp_wf_process_context t1, cmpp_wf_process_def t2
+where t1.processDefinitionName = t2.id and t1.processDefinitionName = #{processId} and t1.definitionVersion = t2.recentModifyTime order by t1.id desc;
+	</select>
+	
+	<select id="getInstanceCount" parameterType="int" resultType="int">
+		select count(t.id) from (select t1.id from cmpp_wf_process_context t1, cmpp_wf_process_def t2
+where t1.processDefinitionName = t2.id and t1.processDefinitionName = #{processId} and t1.definitionVersion = t2.recentModifyTime) t
+	</select>
+	
+	<!-- <select id="getProcessInstanceLimit" parameterType="int" resultType="com.me.GCDP.workflow.model.ProcessInstanceInfo">
+		select t1.id, t1.nodeid,t1.formId,t1.articleId,t1.instanceDesc,
+		(select name from cmpp_formConfig where formId= t1.formId) formName,
+		t1.processDefinitionName as "processDefinitionId",t1.processStartDate,t1.state 
+		from cmpp_wf_process_context t1, cmpp_wf_process_def t2 
+		where t1.processDefinitionName = t2.id and t1.processDefinitionName = #{processId} 
+		and t1.definitionVersion = t2.recentModifyTime order by t1.id desc 
+		limit #{startPos}, #{recordNum}
+	</select> -->
+	
+	<select id="getProcessInstanceLimit" parameterType="int" resultType="com.me.GCDP.workflow.model.ProcessInstanceInfo">
+	select t1.id, t1.nodeid,t1.formId,t1.articleId,t1.instanceDesc,
+		(select name from cmpp_formConfig where formId= t1.formId) formName,
+		t1.processDefinitionName as "processDefinitionId",t1.processStartDate,t1.state 
+		from cmpp_wf_process_context t1
+		where t1.processDefinitionName = #{processId} order by t1.id desc 
+		limit #{startPos}, #{recordNum}
+	</select>
+	
+	<select id="getProcessInstance0" parameterType="int" resultType="com.me.GCDP.workflow.model.ProcessInstanceInfo">
+		select t1.id, t1.nodeid,t1.formId,t1.articleId,t1.instanceDesc,(select name from cmpp_formConfig where formId= t1.formId) formName,t1.processDefinitionName as "processDefinitionId",t1.processStartDate,t1.state from cmpp_wf_process_context t1, cmpp_wf_process_def t2
+where t1.processDefinitionName = t2.id and t1.nodeid = #{nodeId} and t1.formId = #{formId} and t1.articleId = #{articleId} and t1.definitionVersion = t2.recentModifyTime order by t1.id desc limit 1;
+	</select>
+	
+	<select id="getLegacyInstanceRange" parameterType="int" resultType="com.me.GCDP.workflow.model.IndexRange">
+		<![CDATA[
+		select ifnull(min(id),0) as `lowIndex`,ifnull(max(id),0) as `highIndex`, count(id) as `count` 
+from cmpp_wf_process_context t where t.stateStartDate < DATE_SUB(CURDATE(),INTERVAL #{interval} DAY) order by t.id asc
+		]]>
+	</select>
+	
+	<delete id="deleteProcessInstanceByIdRange" parameterType="com.me.GCDP.workflow.model.IndexRange">
+		<![CDATA[
+		delete from cmpp_wf_process_context where id <= #{highIndex}	
+		]]>
+	</delete>
+</mapper>

@@ -1,0 +1,37 @@
+/*** Ext.ux.TextAreaPrettyµÄÑùÊ½ **/
+.prettyprint ol{list-style: decimal outside none;}
+.x-form-codeeditor-controls {margin-left: 40px;}
+.x-form-codeeditor-editor{position:relative;z-index:0}
+.x-form-codeeditor-controls .prettytextarea{
+	border-radius: 3px 3px 3px 3px;
+	background-color: transparent;
+    border: 1px solid #E1E1E8;
+    color: rgba(0, 0, 0, 0.2);
+	overflow-y: scroll;
+	font-family: Monaco,'Ubuntu Mono',Consolas,'Courier New','Microsoft YaHei';
+    font-size: 12px;
+	word-break: break-all;
+    word-wrap: break-word;
+	line-height:18px;
+	resize:none;
+}
+
+pre.prettyprint {
+    background-color: transparent;
+    font-family: Monaco,'Ubuntu Mono',Consolas,'Courier New','Microsoft YaHei';
+    font-size: 12px;
+    left: -41px;
+    top: -2px;
+    overflow-y: scroll;
+    position: absolute;
+	display: block;
+	white-space: pre-wrap;
+	border: 0px solid rgba(0, 0, 0, 0.15);
+    border-radius: 4px 4px 4px 4px;
+    word-break: break-all;
+    word-wrap: break-word;
+    z-index: -1;
+	line-height:18px;
+	padding:3px;
+	margin-top: 2px;
+}

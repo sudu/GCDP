@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.InterfaceMapper">
+	<select id="get" parameterType="interface" resultType="interface" >
+		select id,name,creator,createdate,params,description,nodeid,reqlogin from cmpp_interface
+		<where>
+			<if test="id != null">id = #{id}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<delete id="delete" parameterType="interface">
+		delete from cmpp_interface
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="interface" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_interface 
+		(name,creator,createdate,params,description,nodeid,reqlogin)
+		values(#{name},#{creator},#{createdate},#{params},#{description},#{nodeid},#{reqlogin})
+	</insert>
+	
+	<update id="update" parameterType="interface">
+		update cmpp_interface
+		<set>
+			<if test="name != null">name = #{name},</if>
+			<if test="params != null">params = #{params},</if>
+			<if test="reqlogin != null">reqlogin = #{reqlogin},</if>
+			<if test="description != null">description = #{description}</if>
+		</set> 
+		where id=#{id}
+	</update>
+	
+</mapper>

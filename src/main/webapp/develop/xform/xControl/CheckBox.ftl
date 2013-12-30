@@ -1,0 +1,1 @@
+<input id="xform.${id}" name="xform.${id}"  type="checkbox" value="1" <#if value!false>Checked="True"</#if>>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.NodeMapper">
+
+	<select id="get" parameterType="node" resultType="node" >
+		select id,name,remote remoteHostJson,masterdb masterDBJson,
+			slavedb slaveDBJson, publicsearch publicSearchHostsJson,
+			privatesearch privateSearchHostsJson, nosql nosqlHostJson, env envMapJson
+		from cmpp_node
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<delete id="delete" parameterType="node">
+		delete from cmpp_node
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="node" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_node
+		(name,remote,masterdb,slavedb,publicsearch,privatesearch,nosql,env)
+		values
+		(#{name},#{remoteHostJson},#{masterDBJson},#{slaveDBJson},#{publicSearchHostsJson},
+		#{privateSearchHostsJson},#{nosqlHostJson},#{envMapJson})
+	</insert>
+	
+	<update id="update" parameterType="node">
+		update cmpp_node 
+		<set>
+			<if test="name != null">name = #{name},</if>
+			<if test="remoteHostJson != null">remote = #{remoteHostJson},</if>
+			<if test="masterDBJson != null">masterdb = #{masterDBJson},</if>
+			<if test="slaveDBJson != null">slavedb = #{slaveDBJson},</if>
+			<if test="publicSearchHostsJson != null">publicsearch = #{publicSearchHostsJson},</if>
+			<if test="privateSearchHostsJson != null">privatesearch = #{privateSearchHostsJson},</if>
+			<if test="nosqlHostJson != null">nosql = #{nosqlHostJson},</if>
+			<if test="envMapJson != null">env = #{envMapJson},</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+</mapper>

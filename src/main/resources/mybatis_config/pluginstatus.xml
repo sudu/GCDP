@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.workflow.mapper.PluginStatusMapper">
+	<!-- <select id="getPluginStatus" parameterType="int" resultType="com.me.GCDP.workflow.model.PluginStatusInfo">
+		select t1.pluginStartTime as "pluginStartDate",t1.pluginEndTime as "pluginEndDate",t1.`status`,t2.cfgCode as "cfgCode" 
+from cmpp_wf_plugin_status t1 left join cmpp_wf_plugin_def t2 on (t1.cmppplugindefid = t2.id) 
+where t1.processcontextid = #{instanceId} group by t2.cfgCode
+	</select> -->
+	<select id="getPluginStatus" parameterType="int" resultType="com.me.GCDP.workflow.model.PluginStatusInfo">
+	select tmp.* from (select t1.pluginStartTime as "pluginStartDate",t1.pluginEndTime as "pluginEndDate",t1.`status`,t2.cfgCode 
+from cmpp_wf_plugin_status t1 left join cmpp_wf_plugin_def t2 on (t1.cmppplugindefid = t2.id) 
+where t1.processcontextid = #{instanceId} order by t1.pluginStartTime desc) tmp group by tmp.cfgCode ORDER BY tmp.pluginStartDate desc
+	</select>
+	
+	<delete id="deleteByPCIdRange" parameterType="com.me.GCDP.workflow.model.IndexRange">
+		<![CDATA[
+		delete from cmpp_wf_plugin_status where processcontextid <= #{highIndex}
+		]]>
+	</delete>
+</mapper>

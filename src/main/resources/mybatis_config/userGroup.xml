@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.UserGroupMapper">
+	<select id="get" parameterType="userGroup" resultType="userGroup" >
+		select userId,groupId from cmpp_user_group
+		where userId=#{userId} and groupId=#{groupId}
+		order by id desc
+	</select>
+	
+	<delete id="delete" parameterType="userGroup">
+		delete from cmpp_user_group
+		where userId=#{userId} and groupId=#{groupId}
+	</delete>
+	
+	<insert id="insert" parameterType="userGroup" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_user_group 
+		(userId,groupId)values(#{userId},#{groupId})
+	</insert>
+	
+	<select id="getLastId" resultType="int">
+		SELECT LAST_INSERT_ID()
+	</select>
+</mapper>

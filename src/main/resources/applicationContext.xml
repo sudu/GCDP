@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+	
+	<!-- 启动注解 --> 
+	<context:annotation-config/>
+	    
+	<context:property-placeholder 
+		location="classpath:/conf/redis.properties,
+				  classpath:/conf/workflow.properties,
+		          classpath:/conf/script.properties,
+		          classpath:/conf/jdbc.properties,
+		          classpath:/conf/cmpp.properties,
+		          classpath:/conf/search.properties,
+		          classpath:/conf/image.properties,
+		          classpath:/conf/queue.properties" />
+	
+
+	<!-- 数据源连接池 -->
+	<bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close">
+		<property name="driverClass" value="${jdbc.driver}"/>
+		<property name="jdbcUrl" value="${jdbc.url}"/>
+		<property name="user" value="${jdbc.username}"/>
+		<property name="password" value="${jdbc.password}"/>
+		<property name="minPoolSize" value="${jdbc.minPoolSize}"/>
+		<property name="maxPoolSize" value="${jdbc.maxPoolSize}"/>
+		<property name="maxIdleTime" value="${jdbc.maxIdleTime}"/>
+		<property name="idleConnectionTestPeriod" value="${jdbc.idleConnectionTestPeriod}"/>
+	</bean>
+	
+	<!--redis连接池-->
+	<bean id="jedisPool" class="redis.clients.jedis.JedisPool">
+		<constructor-arg index="0">
+			<bean class="redis.clients.jedis.JedisPoolConfig">
+				<property name="maxActive" value="${redis.maxActive}"/>
+				<property name="maxIdle" value="${redis.maxIdle}"/>
+			</bean>
+		</constructor-arg>
+		<constructor-arg index="1">
+			<value>${redis.ip}</value>
+		</constructor-arg>
+		<constructor-arg index="2">
+			<value>${redis.port}</value>
+		</constructor-arg>
+	</bean>
+	
+	<!-- 事务管理 -->
+	<bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	
+    <bean id="baseTransactionProxy" class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean" abstract="true">
+        <property name="transactionManager"><ref bean="transactionManager"/></property>
+        <property name="transactionAttributes">
+            <props>
+                <prop key="insert*">PROPAGATION_REQUIRED</prop>
+                <prop key="update*">PROPAGATION_REQUIRED</prop>
+                <prop key="delete*">PROPAGATION_REQUIRED</prop>
+                <prop key="*">PROPAGATION_REQUIRED</prop>
+            </props>
+        </property>
+    </bean>
+    
+    <!-- mybatis工厂 -->
+    <bean id="sqlSessionFactory" class="org.mybatis.spring.SqlSessionFactoryBean"> 
+		<property name="dataSource" ref="dataSource" /> 
+		<property name="configLocation" value="classpath:/mybatis_config/SqlMapConfig.xml"/>
+	</bean>
+	
+	
+	<!-- 脚本工厂 -->
+	<bean id="contextFactory" class="com.me.GCDP.script.factory.CmppContextFactory" init-method="init">
+		<property name="insThreshold" value="${script.InstructionObserverThreshold}"/>
+		<property name="defaultTimeout" value="${script.Timeout}"/>
+	</bean>
+	
+	<!-- 脚本调试服务 -->
+	<bean id="myDebugService" class="com.me.GCDP.script.debugger.MyDebugService">
+		<property name="contextFactory" ref="contextFactory"/>
+		<property name="pluginFactory" ref="pluginFactory"/>
+		<property name="timeout" value="${script.Timeout.debug}"/>
+	</bean>
+	
+	<!-- 脚本服务 -->
+	<bean id="scriptService" class="com.me.GCDP.script.ScriptServiceWithCompile">
+		<property name="script_dir" value="${script.Dir}"/>
+		<property name="contextFactory" ref="contextFactory"/>
+		<property name="pluginFactory" ref="pluginFactory"/>
+	</bean>
+
+	<!-- 搜索服务 -->
+	<bean id="searchService" class="com.me.GCDP.search.SearchService_V2">
+		<property name="readip" value="${search.reader.ip}"/>
+		<property name="readport" value="${search.reader.port}"/>
+		<property name="writeip" value="${search.writer.ip}"/>
+		<property name="writeport" value="${search.writer.port}"/>
+		<property name="serverName" value="${search.serverName}"/>
+	</bean>
+	
+	<!-- CmppDB Service(nosql) -->
+	<!-- <bean id="cmppDBService" class="com.me.GCDP.nosql.client.CmppDBClientService" init-method="init">
+		<property name="ip" value="${cmpp.nosql.ip}"/>
+		<property name="port" value="${cmpp.nosql.port}"/>
+		<property name="prefix" value="${cmpp.nosql.prefix}"/>
+	</bean> -->
+	
+	<!-- 定阅/推送服务 -->
+	<bean id="subscribeService" class="com.me.GCDP.source.SubscribeService">
+		<property name="scriptService" ref="scriptService"></property>
+		<property name="sourceMapper" ref="sourceMapper"></property>
+		<property name="oscache_sta" ref="oscache_sta"></property>
+	</bean>
+	
+	<!-- 表单服务 -->
+	<bean id="formService" class="com.me.GCDP.xform.FormService">
+		<property name="searchService" ref="searchService"/>
+		<property name="scriptService" ref="scriptService"/>
+		<property name="subscribeService" ref="subscribeService"/>
+		<property name="templateMapper" ref="templateMapper" />
+		<property name="pluginFactory" ref="pluginFactory" />
+	</bean>
+	
+	<bean id="securityManager" class="com.me.GCDP.security.SecurityManager">
+		<property name="authorityMapper" ref="authorityMapper"></property>
+	</bean>
+	
+	<!-- spring获取Bean工具 -->
+	<bean id="SpringContextUtil" class="com.me.GCDP.util.SpringContextUtil"/>
+	
+	<!-- hibernate session工作 for 工作流 -->
+	<bean id="sessionFactory"
+        class="org.springframework.orm.hibernate3.LocalSessionFactoryBean">
+        <property name="dataSource">
+            <ref bean="dataSource" />
+        </property>
+        <property name="hibernateProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.generate_statistics">true</prop>
+                <prop key="hibernate.connection.release_mode">auto</prop>
+                <prop key="hibernate.autoReconnect">true</prop>
+                <prop key="hibernate.hbm2ddl.auto">none</prop> 
+                <prop key="hibernate.max_fetch_depth">0</prop>
+            </props>
+        </property>
+        <property name="mappingResources">
+            <list>
+                <value>com/me/GCDP/workflow/workflow.hbm.xml</value>
+                <value>com/me/GCDP/workflow/model/PluginStatus.hbm.xml</value>
+                <value>com/me/GCDP/workflow/model/CmppProcessDef.hbm.xml</value>
+                <value>com/me/GCDP/workflow/model/CmppActivityDef.hbm.xml</value>
+                <value>com/me/GCDP/workflow/model/CmppPluginDef.hbm.xml</value>
+            </list>
+        </property>
+    </bean>
+    
+	<!-- 工作流Service -->
+	<bean id="workflowService" class="com.me.GCDP.workflow.WorkflowService"
+    	  init-method="init" >
+   		<property name="flowDefFileDir" value="${workflow.workflowfile.dir}"></property>
+   		<property name="flowDefFilename" value="${workflow.workflowfile.filename}"></property>
+    </bean>
+	
+	<!-- 流程管理 Service-->
+	<bean id="workflowMgrService" class="com.me.GCDP.workflow.service.WorkflowMgrService" >
+		<constructor-arg index="0" ref="sessionFactory" />
+	</bean>
+	
+	<!-- 流程运行状态Service -->
+	<bean id="workflowStatusService" class="com.me.GCDP.workflow.service.WorkflowStatusService">
+		
+	</bean>
+	
+	<!-- 任务工具 -->
+	<bean id="taskUtil" class="com.me.GCDP.task.TaskServer" init-method="init">
+		<!-- <property name="oscache_sta" ref="oscache_sta"></property> -->
+		<property name="scriptService" ref="scriptService"></property>
+		<property name="taskMapper" ref="taskMapper"></property>
+	</bean>
+	
+	<!-- 任务JOB -->
+	<bean id="quartzJob" class="com.me.GCDP.task.QuartzJob"/>
+	
+	<!-- 断点续传（pause and resume upload）  -->
+	<bean name="redisCache" class="com.me.GCDP.util.RedisCache">
+		<property name="jedisPool" ref="jedisPool" />		
+	</bean>
+	<bean name="uploadUtil" class="com.me.GCDP.action.upload.util.UploadUtil" />
+	<bean name="fileOperator" class="com.me.GCDP.action.upload.util.FileOperator" >
+		<property name="scriptPrivateDir" value="${script.Public.Dir}"/>
+		<property name="savedFolder" value="${cmpp.upload.ddxc.savedFolder}" />
+		<property name="redisCache" ref="redisCache" />
+		<property name="timeout" 	value="${cmpp.upload.ddxc.timeout}" />
+		<property name="uploadUtil" ref="uploadUtil" />
+	</bean>
+	
+	<!-- 资源管理 -->
+	<bean name="resourceBizService" class="com.me.GCDP.action.resource.service.ResourceBizService">
+		<property name="folderMapper" ref="folderMapper" />
+		<property name="fileMapper"   ref="fileMapper" />
+		<property name="pluginFactory" ref="pluginFactory" />
+		<property name="emptyTmpFileDir" value="${cmpp.resource.tmp}" />
+	</bean>
+	
+	<!-- 初始化服务，用于初始化/重置节点系统表单 -->
+	<bean name="sysInitializationService" class="com.me.GCDP.xform.SysInitializationService" />
+
+	<bean name="adapterService" class="com.me.GCDP.adapter.AdapterService" />
+	
+</beans>
+

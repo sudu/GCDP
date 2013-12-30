@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.me.GCDP.workflow.model" default-lazy="false" >
+
+	<class name="CmppProcessDef" table="cmpp_wf_process_def" 
+			dynamic-update="true" dynamic-insert="true">
+		<id name="processId" column="id" type="int" >
+			<generator class="identity" />
+		</id>
+		<property name="processName" type="string"/>
+		<property name="processTitle" type="string"/>
+		<property name="processDesc" type="string"/>
+		<property name="creator" type="string"/>
+		<property name="createTime" type="timestamp"/>
+		<property name="authPath" type="string"/>
+		<property name="processDefInfo" type="text">
+		</property>
+		<property name="recentModifyTime" type="timestamp"></property>
+		
+		<!-- <set name="activities" inverse="true" cascade="delete">
+			<key column="processdefid"/>
+			<one-to-many class="com.me.GCDP.workflow.CmppActivityDef"/>
+		</set> -->
+		<property name="nodeId" type="int"></property>
+		<property name="status" type="byte" not-null="true"></property>
+	</class>
+</hibernate-mapping>

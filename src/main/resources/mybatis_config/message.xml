@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.MessageMapper">
+	<select id="get" parameterType="message" resultType="message" >
+		select * from cmpp_message
+		<where>
+			<if test="id != null">id = #{id}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by id desc limit #{num}
+	</select>
+	
+	<delete id="delete" parameterType="message">
+		delete from cmpp_message
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="message" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_message
+		(title,nodeid,creator,createdate,enddate,content)
+		values
+		(#{title},#{nodeid},#{creator},#{createDate},#{endDate},#{content})
+	</insert>
+	
+	<update id="update" parameterType="message">
+		update cmpp_message 
+		<set>
+			<if test="title != null">title = #{title}</if>
+			<if test="nodeid != null">,nodeid = #{nodeid}</if>
+			<if test="creator != null">,creator = #{creator}</if>
+			<if test="createdate != null">,createdate = #{createDate}</if>
+			<if test="enddate != null">,enddate = #{endDate}</if>
+			<if test="content != null">,content = #{content}</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+</mapper>

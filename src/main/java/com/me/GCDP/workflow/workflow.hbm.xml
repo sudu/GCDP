@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.me.GCDP.workflow" default-lazy="false" >
+
+	<class name="CmppProcessContext" table="cmpp_wf_process_context" dynamic-update="true">
+		<id name="id" column="id" type="long" >
+			<generator class="native" />
+		</id>
+		<property name="nodeid" type="int"/>
+		<property name="formId" type="int"/>
+		<property name="articleId" type="long"/>
+		<property name="processDefinitionName" type="string"/>
+		<property name="lockKey" type="string"/>
+		<property name="state" type="int" not-null="true"/>
+		<property name="activity" type="string"/>
+		<property name="nextActivity" type="string"/>
+		<property name="role" type="string"/>
+		<property name="processStartDate" type="timestamp"/>
+		<property name="activityStartDate" type="timestamp"/>
+		<property name="stateStartDate" type="timestamp"/>
+		<property name="transportData" type="text"/>  
+		<property name="instanceDesc" type="text"></property>
+		<property name="definitionVersion" type="timestamp"></property>
+		<property name="instanceEndDate" type="timestamp"></property>
+	</class>
+	
+</hibernate-mapping>

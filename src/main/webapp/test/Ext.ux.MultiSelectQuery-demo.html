@@ -1,0 +1,106 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Ext.ux.MultiSelectQuery-demo</title>
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/patch.css" />
+	<link rel="stylesheet" type="text/css" href="../res/css/runTime.css" />
+	
+ 	<script type="text/javascript" src="../res/js/ext2/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="../res/js/ext2/ext-all-debug.js?20130402"></script>	
+	<script type="text/javascript" src="../res/js/ext2/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../res/js/ext_base_extension.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.MultiSelectQuery.js"></script>
+
+</head>
+<body>
+<script>
+Ext.onReady(function(){
+	Ext.BLANK_IMAGE_URL = "../res/js/ext2/resources/images/default/s.gif";
+	Ext.lOADING_IMAGE_URL= "../res/js/ext2/resources/images/default/grid/wait.gif"; //resources\images\default\grid
+	Ext.QuickTips.init();
+	Ext.form.Field.prototype.msgTarget = 'qtip';
+	
+	
+	new Ext.Viewport({
+		layout:"fit",
+		items:[{
+			xtype:'form',
+			labelWidth:80,
+			labelAlign:'left',
+			layout:'xform',
+			autoScroll:true,
+			frame:true,
+			itemCls:"itemStyle5",
+			items:[{
+				fieldLabel :'分类',
+				xtype:'qmselect',
+				id:'queryCombobox_1',
+				name:'cate',
+				minChars:0,
+				fields:['value','text','jp','qp'],
+				root:'',
+				//value:'[1,2,4,3,6,5,7,8]',
+				width:350,
+				dataSource:[{
+					value:1,
+					text:'中国',
+					jp:['zg'],
+					qp:['zhongguo']
+				},{
+					value:2,
+					text:'美国',
+					jp:['mg'],
+					qp:['meiguo']
+				},{
+					value:3,
+					text:'美国2',
+					jp:['mg2'],
+					qp:['meiguo2']
+				},{
+					value:4,
+					text:'美国3',
+					jp:['mg3'],
+					qp:['meiguo3']
+				},{
+					value:5,
+					text:'俄罗斯',
+					jp:['els'],
+					qp:['eluosi','aluosi']
+				},{
+					value:6,
+					text:'俄罗斯6',
+					jp:['els'],
+					qp:['eluosi','aluosi']
+				},{
+					value:7,
+					text:'俄罗斯7',
+					jp:['els'],
+					qp:['eluosi','aluosi']
+				}],
+				url:'../runtime/interface_134.jhtml',
+				queryFields:['text','jp','qp'],
+				valueField : 'value',//值
+				displayField : 'text'//显示文本
+			},{
+				fieldLabel :'分类2',
+				xtype:'combo',
+				id:'Combobox_1',
+				name:'cate',
+				minChars:0,
+				value:2,
+				fields:['value','text','jp','qp'],
+				dataSource:[[1,'中国'],[2,'中国2'],[3,'中国3']],
+				url:'../runtime/interface_134.jhtml',
+				queryFields:['text','jp','qp'],
+				valueField : 'value',//值
+				displayField : 'text'//显示文本
+			}]
+		}]
+	});
+});
+	
+</script>
+</body>
+</html>

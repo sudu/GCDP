@@ -1,0 +1,138 @@
+/*********for idx mask*******/
+.x-panel table{
+	color:#000;
+}
+
+.tplidxstyle {
+    background-color: #ACFA58;
+    border: 1px solid #FF6600;
+    float: left;
+    opacity: 0.4;
+	z-Index:8000
+}
+
+.tplidxstyle2 {
+    background-color: #ACFA58;
+    border: 1px solid #FF6600;
+    float: left;
+    opacity: 0.4;
+	z-Index:8000
+}
+.tplidxstyle3{
+	background: SkyBlue;
+	float: left;
+	opacity: 0.6;
+	z-Index:8000
+}
+.tplidxstyleHighlight {
+    background-color: #ACFA58;
+    border: 1px outset gray;
+    float: left;
+    opacity: 0.6;
+	z-Index:8000
+}
+.tplidxstyleHighlightMouseDown {
+    background-color: #ACFA58;
+    border: 1px inset gray;
+    float: left;
+    opacity: 0.6;
+	z-Index:8000
+}
+.tplidxstyle3{
+	background: SkyBlue;
+	float: left;
+	opacity: 0.6;
+	z-Index:8000
+}
+.maskTitle{
+	float:left;
+	color:#fff;
+	background:red;
+	overflow:hidden;
+}
+.maskTitle .btn{
+	float:left;
+	cursor:pointer;
+	width:16px;
+	height:20px;
+	margin-right:3px;
+}
+
+.moveUpBtn{
+	background:url(images/col-move-bottom.gif) no-repeat scroll 50% 50%  transparent;
+}
+.moveDownBtn{
+	background:url("images/col-move-down.gif") no-repeat scroll 50% 50% transparent;
+}
+.deleteBtn{
+	background:url("images/tab-close-on.gif") no-repeat scroll 50% 50% transparent;
+}
+.dragMoveBtn{
+	float:left;
+	cursor:move;
+	width:40px;
+	height:20px;
+	margin-right:3px;
+}
+
+#fbIdxListBox{}
+#fbIdxListBox li{
+	color:#0E76CD;
+	border: 1px solid #DCE1E5;
+}
+#fbIdxListBox  span{
+	padding-left:2px;
+	cursor:pointer;
+}
+#fbIdxListBox .icon-tools{
+	float:right;
+	cursor:pointer;
+	width:16px;
+	height:16px;
+	padding-right:5px;
+	background:url(images/edit.gif) no-repeat scroll transparent
+}
+
+
+.buttonMini {
+	cursor:pointer;
+   border-top: 1px solid #96d1f8;
+   background: #65a9d7;
+   background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+   background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
+   background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+   background: -ms-linear-gradient(top, #3e779d, #65a9d7);
+   background: -o-linear-gradient(top, #3e779d, #65a9d7);
+   padding: 2px 4px;
+   -webkit-border-radius: 7px;
+   -moz-border-radius: 7px;
+   border-radius: 7px;
+   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
+   box-shadow: rgba(0,0,0,1) 0 1px 0;
+   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+   color: white;
+   font-size: 14px;
+   font-family: Georgia, serif;
+   text-decoration: none;
+   vertical-align: middle;
+}
+.buttonMini:hover {
+	cursor:pointer;
+   border-top-color: #28597a;
+   text-decoration: none;
+   background: #28597a;
+   color: #ccc;
+}
+.buttonMini:active {
+   border-top-color: #1b435e;
+   background: #1b435e;
+}
+
+/**列表页样式**/
+.x-grid3-cell-inner, .x-grid3-hd-inner {
+	overflow: hidden;
+	padding: 4px 3px 4px 5px;
+	text-overflow: ellipsis;/*ellipsis clip*/
+	white-space: nowrap;
+}

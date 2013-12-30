@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.MonitorMapper">
+	
+	<!--Log-->
+	<select id="getFromLog" parameterType="monitorLog" resultType="monitorLog" >
+		select * from cmpp_monitor_log
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+	</select>
+	
+	<delete id="deleteFromLog" parameterType="monitorLog">
+		delete from cmpp_monitor_log
+		where id=#{id}
+	</delete>
+	
+	<insert id="insertToLog" parameterType="monitorLog" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_monitor_log 
+		(taskName,result,issueDate,details)
+		values(#{taskName},#{result},#{issueDate},#{details})
+	</insert>
+	
+	<update id="updateToLog" parameterType="monitorLog">
+		update cmpp_monitor_log
+		<set>
+			<if test="taskName != null">taskName = #{taskName},</if>
+			<if test="result != null">result = #{result},</if>
+			<if test="issueDate != null">issueDate = #{issueDate},</if>
+			<if test="details != null">details = #{details}</if>
+		</set> 
+		where id=#{id}
+	</update>
+	
+	<select id="getAllFromLog" resultType="monitorLog" >
+		select * from cmpp_monitor_log
+		<where>
+			<if test="filterTxt != null">${filterTxt} = #{filterValue}</if>
+		</where>
+		order by issueDate desc
+		limit #{from},#{limit}
+	</select>
+	
+	<select id="getByTaskFromLog" parameterType="monitorLog" resultType="monitorLog" >
+		select * from cmpp_monitor_log
+		where taskName = #{taskName}
+		<if test="orderByField != null">order by ${orderByField}</if>
+		<if test="orderByField == null">order by id desc</if>
+	</select>
+
+	<select id="getByTimeFromLog" parameterType="monitorLog" resultType="monitorLog">
+		select * from cmpp_monitor_log 
+		where issueDate &gt; #{startTime} and issueDate &lt; #{endTime} and taskName=#{taskName}
+		<if test="orderByField != null">order by ${orderByField}</if>
+		<if test="orderByField == null">order by id desc</if>
+	</select>
+	
+	<select id="getLastLogByName" parameterType="String" resultType="monitorLog" >
+		SELECT * 
+		FROM cmpp_monitor_log a,(SELECT MAX(issueDate) issueDate FROM cmpp_monitor_log WHERE taskName=#{taskName}) b 
+		WHERE a.taskName=#{taskName} AND a.issueDate=b.issueDate
+	</select>
+    
+    <select id="getLogCount" resultType="int"> 
+        select count(*) from cmpp_monitor_log
+        <where>
+			<if test="filterTxt != null">${filterTxt} = #{filterValue}</if>
+		</where>
+    </select>
+    
+    <delete id="cleanLog" parameterType="String">
+    	delete from cmpp_monitor_log
+    	where issueDate &lt; #{cleanDate}
+	</delete>
+	
+	
+	<!--Err-->
+	<select id="getFromErr" parameterType="monitorErr" resultType="monitorErr" >
+		select * from cmpp_monitor_err
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+	</select>
+	
+	<delete id="deleteFromErr" parameterType="monitorErr">
+		delete from cmpp_monitor_err
+		where id=#{id}
+	</delete>
+	
+	<insert id="insertToErr" parameterType="monitorErr" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_monitor_err 
+		(nodeid,taskName,errType,issueDate,details,logId)
+		values(#{nodeid},#{taskName},#{errType},#{issueDate},#{details},#{logId})
+	</insert>
+	
+	<update id="updateToErr" parameterType="monitorErr">
+		update cmpp_monitor_err
+		<set>
+			<if test="nodeid != null">nodeid = #{nodeid},</if>
+			<if test="taskName != null">taskName = #{taskName},</if>
+			<if test="errType != null">errType = #{errType},</if>
+			<if test="issueDate != null">issueDate = #{issueDate},</if>
+			<if test="details != null">details = #{details},</if>
+			<if test="logId != null">logId = #{logId}</if>
+		</set> 
+		where id=#{id}
+	</update>
+    
+	<select id="getAllFromErr" resultType="monitorErr" >
+		select * from cmpp_monitor_err
+		<where>
+			<if test="filterTxt != null">${filterTxt} = #{filterValue}</if>
+		</where>
+		limit #{from},#{limit}
+	</select>
+	
+	<select id="getByNodeIdFromErr" resultType="monitorErr" >
+		select * from cmpp_monitor_err
+		<where>
+			<if test="filterTxt != null">${filterTxt} like '${filterValue}%' and</if>
+			<if test="nodeId != null">nodeid=${nodeId}</if>
+		</where>
+		order by issueDate desc
+		limit #{from},#{limit}
+	</select>
+	
+	<select id="getByTimeFromErr" resultType="monitorErr">
+		select * from cmpp_monitor_err
+		where issueDate > #{beginDate} and issueDate &lt; #{endDate}
+	</select>
+	
+	<select id="getErrCount" resultType="int"> 
+        select count(*) from cmpp_monitor_err
+        <where>
+			<if test="filterTxt != null">${filterTxt} = #{filterValue}</if>
+		</where>
+    </select>
+    
+    <select id="getErrCountByNodeID" resultType="int"> 
+        select count(*) from cmpp_monitor_err
+        <where>
+			<if test="filterTxt != null">${filterTxt} like '${filterValue}%' and</if>
+			<if test="nodeId != null">nodeid=${nodeId}</if>
+		</where>
+    </select>
+    
+    <delete id="cleanErr" parameterType="String">
+    	delete from cmpp_monitor_err
+    	where issueDate &lt; #{cleanDate}
+	</delete>
+    
+	<!--Task-->
+	<select id="getFromTask" parameterType="monitorTask" resultType="monitorTask" >
+		select * from cmpp_monitor_task
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+	</select>
+	
+	<delete id="deleteFromTask" parameterType="monitorTask">
+		delete from cmpp_monitor_task
+		where id=#{id}
+	</delete>
+	
+	<insert id="insertToTask" parameterType="monitorTask" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_monitor_task
+		(nodeid,taskName,warnValue,errValue,measure,isCheck,email,mobile,description)
+		values(#{nodeid},#{taskName},#{warnValue},#{errValue},#{measure},#{isCheck},#{email},#{mobile},#{description})
+	</insert>
+	
+	<update id="updateToTask" parameterType="monitorTask">
+		update cmpp_monitor_task
+		<set>
+			<if test="nodeid != null">nodeid = #{nodeid},</if>
+			<if test="taskName != null">taskName = #{taskName},</if>
+			<if test="warnValue != null">warnValue = #{warnValue},</if>
+			<if test="errValue != null">errValue = #{errValue},</if>
+			<if test="measure != null">measure = #{measure},</if>
+			<if test="isCheck != null">isCheck = #{isCheck},</if>
+			<if test="email != null">email= #{email},</if>
+			<if test="mobile != null">mobile= #{mobile},</if>
+			<if test="description != null">description= #{description}</if>
+		</set> 
+		where id=#{id}
+	</update>
+	
+	<select id="getActiveTask" parameterType="String" resultType="monitorTask" >
+		select * from cmpp_monitor_task where taskName = #{taskName} and isCheck = 1
+	</select>
+	
+	<select id="getAllTask" resultType="monitorTask" >
+		select * from cmpp_monitor_task
+		<where>
+			<if test="filterTxt != null">${filterTxt} = #{filterValue}</if>
+		</where>
+		limit #{from},#{limit}
+	</select>
+	
+	<select id="getTaskCount" resultType="int"> 
+        select count(*) from cmpp_monitor_task
+        <where>
+			<if test="filterTxt != null">${filterTxt} = #{filterValue}</if>
+		</where>
+    </select>
+    
+	<select id="getTaskByNodeID" resultType="monitorTask" >
+		select * from cmpp_monitor_task
+		<where>
+			<if test="filterTxt != null">${filterTxt} like '${filterValue}%' and</if>
+			<if test="nodeId != null">nodeid=${nodeId}</if>
+		</where>
+		order by taskName
+		limit #{from},#{limit}		
+	</select>
+	
+    <select id="getTaskCountByNodeID" resultType="int"> 
+        select count(*) from cmpp_monitor_task
+        <where>
+			<if test="filterTxt != null">${filterTxt} like '${filterValue}%' and</if>
+			<if test="nodeId != null">nodeid=${nodeId}</if>
+		</where>
+    </select>
+    
+    <select id="getTaskByName" parameterType="String" resultType="String" >
+		select DISTINCT taskName from cmpp_monitor_task
+		where taskName like '${value}%'
+	</select>
+	
+	<select id="getTaskByExactName" parameterType="String" resultType="monitorTask" >
+		select * from cmpp_monitor_task
+		where taskName = #{taskName}
+		GROUP BY taskName
+	</select>
+</mapper>

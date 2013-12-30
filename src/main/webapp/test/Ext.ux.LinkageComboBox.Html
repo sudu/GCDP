@@ -1,0 +1,113 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Ext.ux.MultiSelect Demo</title>
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/patch.css" />
+	<link rel="stylesheet" type="text/css" href="../res/css/runTime.css" />
+	
+ 	<script type="text/javascript" src="../res/js/ext2/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="../res/js/ext2/ext-all-debug.js"></script>	
+	<script type="text/javascript" src="../res/js/ext2/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../res/js/ext_base_extension.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.LinkageComboBox.js"></script>
+
+</head>
+<body>
+<script>
+Ext.onReady(function(){
+	Ext.BLANK_IMAGE_URL = "../res/js/ext2/resources/images/default/s.gif";
+	Ext.lOADING_IMAGE_URL= "../res/js/ext2/resources/images/default/grid/wait.gif"; //resources\images\default\grid
+	Ext.QuickTips.init();
+	Ext.form.Field.prototype.msgTarget = 'qtip';
+	
+	
+	new Ext.Viewport({
+		layout:"fit",
+		items:[{
+			xtype:'form',
+			labelWidth:80,
+			labelAlign:'left',
+			layout:'xform',
+			autoScroll:true,
+			frame:true,
+			itemCls:"itemStyle5",
+			items:[new Ext.ux.LocalLinkageComboBox({
+				memory_max_count:3,
+				xtype:'xAsynLinkageComboBox',
+				dataSource:[
+	["a1","我是第一级01",[
+		["a11","我是第二级0101",[
+			["a111","我是第三级010101"],
+			["a112","我是第三级010102"],
+			["a113","我是第三级010103"]
+		]],
+		["a12","我是第二级0102"],
+		["a13","我是第二级0103",[
+			["a131","我是第三级010301"],
+			["a132","我是第三级010302"],
+			["a133","我是第三级010303"]
+		]]
+	]],
+	["a2","我是第一级02",[
+		["a21","我是第二级0201",[
+			["a211","我是第三级020101"],
+			["a212","我是第三级020102"],
+			["a213","我是第三级020103"]
+		]],
+		["a22","我是第二级0202",[
+			["a221","我是第三级020201"],
+			["a222","我是第三级020202"],
+			["a223","我是第三级020203"]
+		]],
+		["a23","我是第二级0203",[
+			["a231","我是第三级020301"],
+			["a232","我是第三级020302"],
+			["a233","我是第三级020303"]
+		]]
+	]],
+	["a3","我是第一级03",[
+		["a31","我是第二级0301",[
+			["a211","我是第三级030101"],
+			["a212","我是第三级030102"],
+			["a213","我是第三级030103"]
+		]],
+		["a32","我是第二级0302",[
+			["a221","我是第三级030201"],
+			["a222","我是第三级030202"],
+			["a223","我是第三级030203"]
+		]],
+		["a33","我是第二级0303",[
+			["a231","我是第三级030301"],
+			["a232","我是第三级030302"],
+			["a233","我是第三级030303"]
+		]]
+	]]
+],
+				"hideNote":true,"x_next":"LinkageComboLocal_10","allowBlank":true,"labelStyle":"","width":300,"fieldNote":"","fieldLabel":"标签","hideLabel":false,"id":"LinkageComboLocal_9","x_previous":"","noteStyle":"","style":"","value":"",	
+				anchor:'95%',
+				height:300,
+				"x_next":"LinkageComboLocal_10"
+			}),new Ext.ux.LocalLinkageComboBox({
+				memory_max_count:3,
+				xtype:'xAsynLinkageComboBox',
+				"dataSource":"",
+				"hideNote":true,"x_next":"LinkageComboLocal_11","allowBlank":true,"labelStyle":"","width":300,"fieldNote":"","fieldLabel":"标签","hideLabel":false,"id":"LinkageComboLocal_10","x_previous":"LinkageComboLocal_9","noteStyle":"","style":"","value":"",
+				anchor:'95%',
+				height:300
+			}),new Ext.ux.LocalLinkageComboBox({
+				memory_max_count:3,
+				xtype:'xAsynLinkageComboBox',
+				"dataSource":"",
+				"hideNote":true,"x_next":"","allowBlank":true,"labelStyle":"","width":300,"fieldNote":"","fieldLabel":"标签","hideLabel":false,"id":"LinkageComboLocal_11","x_previous":"LinkageComboLocal_10","noteStyle":"","style":"","value":"",
+				anchor:'95%',
+				height:300
+			})]
+		}]
+	});
+});
+	
+</script>
+</body>
+</html>

@@ -1,0 +1,493 @@
+<!DOCTYPE struts PUBLIC
+        "-//Apache Software Foundation//DTD Struts Configuration 2.3//EN"
+        "http://struts.apache.org/dtds/struts-2.3.dtd">
+<struts>
+    <include file="struts-default.xml"/>
+    
+    <package name="default" extends="struts-default" namespace="/">
+    
+    	<!-- added for ajax (即action name = loginAuth) -->
+		<result-types>
+			<result-type name="json" class="org.apache.struts2.json.JSONResult" />
+		</result-types>
+    
+    	<interceptors>
+    		
+    		<!-- 修改默认拦截器，显示日志 -->
+			<interceptor-stack name="appDefaultStack">
+				<interceptor-ref name="defaultStack">
+					<param name="exception.logEnabled">true</param>
+					<param name="exception.logLevel">INFO</param>
+				</interceptor-ref>
+			</interceptor-stack>
+    		
+    		<!-- 权限拦截器 -->
+    		<interceptor name="authority" class="com.me.GCDP.interceptor.AuthorizationInterceptor">
+	    		<param name="excludeMethods">loginMethod, secLogin, signInSwitch, checkUserName, checkSignInInfo</param>
+	    	</interceptor>
+	    	<interceptor name="runtimeAuthority" class="com.me.GCDP.interceptor.RunTimeAuthorizationInterceptor">
+    			<param name="excludeMethods">loginMethod, secLogin, signInSwitch, checkUserName, checkSignInInfo</param>
+    		</interceptor>
+    		
+    		<interceptor-stack name="authorityStack">
+	    		<interceptor-ref name="authority" />
+	    		<interceptor-ref name="appDefaultStack" />
+    		</interceptor-stack>
+    		
+    		<interceptor-stack name="runTimeAuthorityStack">
+	    		<interceptor-ref name="runtimeAuthority" />
+	    		<interceptor-ref name="appDefaultStack" />
+    		</interceptor-stack>
+    		
+			<!-- cookie拦截器 -->
+		    <interceptor-stack name="cookieStack">
+			    <interceptor-ref name="cookie">
+				    <param name="cookiesName">cmpp_cn,cmpp_user,cmpp_token</param>
+				    <param name="cookiesValue">*</param>
+				</interceptor-ref>
+		    </interceptor-stack>
+		    <!-- 用户定义接口拦截器 -->
+		    <interceptor name="ifInterceptor" class="com.me.GCDP.interceptor.InterfaceInterceptor"></interceptor>
+	    </interceptors>
+	    <!-- 设置默认拦截器 -->
+	    <default-interceptor-ref name="appDefaultStack" />
+    
+	    <global-results>
+	    	<result name="result" type="freemarker">/ftl/result.ftl</result>
+	    	<result name="msg" type="freemarker">/ftl/msg.ftl</result>
+	    	<result name="message" type="freemarker">/ftl/message.ftl</result>
+	    	<result name="error">/ftl/error.jsp</result>
+	    	<result name="input">/ftl/input.jsp</result>
+	    	<result name="authorizationFails">/ftl/authorizationFails.jsp</result>
+	    	<result name="pwdLogin">/develop/authority/userNamePwdLogin.jsp</result>
+	    </global-results>
+	    
+	    <global-exception-mappings>
+            <exception-mapping exception="java.sql.SQLException" result="error"/>
+            <exception-mapping exception="java.lang.Exception" result="error"/>
+        </global-exception-mappings>
+	    
+	    <action name="upload" class="com.me.GCDP.action.FileUploadAction">
+			<interceptor-ref name="fileUpload">
+				<!-- 配置允许上传的文件类型，多个用","分隔 -->
+				<!-- param name="allowedTypes">image/bmp,image/png,image/gif,image/jpeg,image/jpg,image/x-png, image/pjpeg</param-->
+				<!-- 配置允许上传的文件大小，单位字节 -->
+				<param name="maximumSize">1048576000</param>
+			</interceptor-ref>
+			<interceptor-ref name="appDefaultStack" />
+			<result name="uploadResult" type="freemarker">/ftl/uploadResult.ftl</result>
+		</action>
+		
+		<action name="ckupload" class="com.me.GCDP.action.CkUploadAction">
+			<interceptor-ref name="fileUpload">
+				<!-- 配置允许上传的文件类型，多个用","分隔 -->
+				<!-- param name="allowedTypes">image/bmp,image/png,image/gif,image/jpeg,image/jpg,image/x-png, image/pjpeg</param-->
+				<!-- 配置允许上传的文件大小，单位字节 -->
+				<param name="maximumSize">1048576000</param>
+			</interceptor-ref>
+			<interceptor-ref name="appDefaultStack" />
+			<result name="upload" type="freemarker">/ftl/ckupload.ftl</result>
+		</action>
+		
+		<!-- 获取智能裁图坐标以及相应的分发 -->
+		<action name="intelliImage" class="com.me.GCDP.action.IntelliImageCutAction">
+			<result name="cut"></result>
+			<result name="send"></result>
+		</action>
+		
+		<!-- 登录认证 ：JQuery AJAX   -->
+		<action name="loginAuth" class="com.me.GCDP.action.AuthorityAction">  
+            <result type="json">
+            	<param name="root">msg</param>
+            </result>  
+            <interceptor-ref name="authorityStack"></interceptor-ref>
+        </action> 
+        
+        <!-- 资源管理 -->
+        <action name="fileMgr" class="com.me.GCDP.action.resource.FileMgrAction">
+            <interceptor-ref name="fileUpload">
+				<param name="maximumSize">1048576000</param>
+			</interceptor-ref>
+			<interceptor-ref name="appDefaultStack" />
+
+			<result name="uploadpage" type="freemarker">/runtime/resource/file/customDirUpload.ftl</result>	
+			<result name="msg" type="freemarker">/runtime/resource/msg.ftl</result>
+
+        </action>
+        <action name="folderMgr" class="com.me.GCDP.action.resource.FolderMgrAction">
+            <result name="gotoNewFolder" type="freemarker">/runtime/resource/folder/newFolder.ftl</result>
+            <result name="msg" type="freemarker">/runtime/resource/folder/msg.ftl</result>
+        </action>
+        <!-- show all folders and files -->
+        <action name="resourceMgr" class="com.me.GCDP.action.resource.ResourceMgrAction">
+        	<interceptor-ref name="appDefaultStack" />
+        	<result name="data" type="freemarker">/runtime/resource/data.ftl</result>
+        	<result name="msg"  type="freemarker">/runtime/resource/msg.ftl</result>
+		</action>
+
+        <!-- 资源管理：断点续传功能 -->
+        <action name="pauseResumeUpload" class="com.me.GCDP.action.upload.PauseResumeUploadAction">
+            <interceptor-ref name="fileUpload">
+				<param name="maximumSize">200 * 1024 * 1024</param>
+			</interceptor-ref>
+			<interceptor-ref name="appDefaultStack" />
+            <result type="json">
+            	<param name="excludeNullProperties">true</param> 
+            	<param name="excludeProperties">
+            		uploadUtil, fileOperator, filedata
+            	</param>
+            </result>
+        </action>
+		
+		<action name="index">
+			<result name="success">/index.ftl</result>
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>
+    </package>
+    
+    <package name="resource_mgr" extends="runtime" namespace="/runtime/resource">
+    	<action name="list">
+			<result name="success">/runtime/resource/list.ftl</result>
+		</action>
+		<action name="fileList">
+			<result name="success">/runtime/resource/file/list.ftl</result>
+		</action>
+
+    </package>
+    
+    <package name="develop" extends="default" namespace="/develop">
+    	<default-interceptor-ref name="authorityStack"/>
+    	
+    	<action name="index">
+			<result name="success">/develop/index.ftl</result>
+		</action>
+		
+		<action name="authority" class="com.me.GCDP.action.AuthorityAction">
+			<result name="user_manager" type="freemarker">/develop/authority/user_manager.ftl</result>
+			<result name="group_manager" type="freemarker">/develop/authority/group_manager.ftl</result>
+			<result name="result" type="redirect">${url}</result>
+			<interceptor-ref name="authorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="task" class="com.me.GCDP.action.TaskAction">
+			<result name="list" type="freemarker">/develop/task/list.ftl</result>
+			<result name="view" type="freemarker">/develop/task/view.ftl</result>
+			<result name="result" type="freemarker">/develop/task/msg.ftl</result>
+			<result name="running_task_list" type="freemarker">/develop/task/running_task.ftl</result>
+		</action>
+	
+		<action name="scriptMgr">
+			<result name="success">/develop/script/scriptMgr.ftl</result>
+		</action>
+		
+		<action name="scriptThreadMgr" class="com.me.GCDP.action.script.ScriptThreadAction">
+			<result name="list" type="freemarker">/develop/script/scriptThreadList.ftl</result>
+		</action>
+		
+		<action name="script" class="com.me.GCDP.action.script.ScriptAction">
+			<result name="main" type="freemarker">/develop/script/index.ftl</result>
+			<result name="eval" type="freemarker">/develop/script/ftl/result.ftl</result>
+			<result name="plist" type="freemarker">/develop/script/plist.ftl</result>
+			<result name="pluginDoc" type="freemarker">/develop/script/scriptdoc.ftl</result>
+			<result name="OpenAndSave" type="freemarker">/develop/script/ftl/openandsave.ftl</result>
+			<result name="versionList" type="freemarker">/develop/script/versionList.ftl</result>
+			
+			<result name="commonScriptList" type="freemarker">/develop/script/ftl/commonScriptList.ftl</result>
+			<result name="commonScript" type="freemarker">/develop/script/ftl/commonScript.ftl</result>
+			<interceptor-ref name="cookieStack"></interceptor-ref>
+			<interceptor-ref name="authorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="scriptdebug" class="com.me.GCDP.action.script.ScriptDebugAction">
+			<result name="main" type="freemarker">/develop/script/index.ftl</result>
+			<result name="json" type="freemarker">/develop/script/ftl/json.ftl</result>
+		</action>
+		
+		<action name="interface_mgr" class="com.me.GCDP.action.interf.InterfaceManageAction">
+			<result name="main" type="freemarker">/develop/interface/index.ftl</result>
+			<result name="view" type="freemarker">/develop/interface/view.ftl</result>
+			<result name="msg" type="freemarker">/develop/interface/msg.ftl</result>
+			<interceptor-ref name="cookieStack"></interceptor-ref>
+			<interceptor-ref name="authorityStack"></interceptor-ref>
+		</action>
+		
+		<action name="xformAdapter" class="com.me.GCDP.action.adapter.XFormAdapterAction">
+			<result name="fieldAdapterCfg" type="freemarker">/develop/adapter/fieldAdapterCfg.ftl</result>
+			<result name="saveFieldAdapterCfg" type="freemarker">/develop/adapter/saveFieldAdapterCfg.ftl</result>
+			<result name="sysFormFieldAdapterCfg" type="freemarker">/develop/adapter/sysFormFieldAdapterCfg.ftl</result>
+			<result name="initOrResetSysForm" type="freemarker">/develop/adapter/initOrResetSysForm.ftl</result>
+		</action>
+		
+		<action name="xform" class="com.me.GCDP.action.XFormAction">
+			<result name="designer" type="freemarker">/develop/xform/designer.ftl</result>
+			<result name="saveConfig" type="freemarker">/develop/xform/saveConfig.ftl</result>
+			<result name="formListConfig" type="freemarker">/develop/xform/formlistconfig.ftl</result>
+			<result name="formConfig" type="freemarker">/develop/xform/formconfig.ftl</result>
+			<result name="saveviewconfig" type="freemarker">/develop/xform/saveviewconfig.ftl</result>
+			<result name="viewManage" type="freemarker">/develop/xform/viewManage.ftl</result>
+			<result name="viewMgr" type="freemarker">/develop/xform/viewMgr.ftl</result>
+			<result name="formManage" type="freemarker">/develop/xform/formManage.ftl</result>
+			<result name="formDescription" type="freemarker">/develop/xform/formDescription.ftl</result>
+			<result name="formDescriptionIndex" type="freemarker">/develop/xform/formDescriptionIndex.ftl</result>
+			<result name="import" type="freemarker">/develop/xform/import.ftl</result>
+			<result name="export" type="freemarker">/develop/xform/export.ftl</result>
+			<interceptor-ref name="fileUpload">
+				<!-- 配置允许上传的文件类型，多个用","分隔 -->
+				<!-- param name="allowedTypes">image/bmp,image/png,image/gif,image/jpeg,image/jpg,image/x-png, image/pjpeg</param-->
+				<!-- 配置允许上传的文件大小，单位字节 -->
+				<param name="maximumSize">1048576000</param>
+			</interceptor-ref>
+			<interceptor-ref name="appDefaultStack" />
+		</action>
+		<action name="xlist" class="com.me.GCDP.action.XListAction">
+			<result name="list" type="freemarker">/develop/xlist/list.ftl</result>
+			<result name="data" type="freemarker">/develop/xlist/data.ftl</result>
+			<result name="delete" type="freemarker">/develop/xlist/delete.ftl</result>
+		</action> 
+		<action name="dynamic" class="com.me.GCDP.action.dynamic.DynamicAction">
+			<result name="index" type="freemarker">/develop/dynamic/index.ftl</result>
+			<result name="listData" type="freemarker">/develop/dynamic/listData.ftl</result>
+			<result name="pushConfig" type="freemarker">/develop/dynamic/return.ftl</result>
+			<result name="pushPage" type="freemarker">/develop/dynamic/return.ftl</result>
+			<result name="pushTable" type="freemarker">/develop/dynamic/return.ftl</result>
+			<result name="dynStatus" type="freemarker">/develop/dynamic/dynStatus.ftl</result>
+			<result name="pagedDynStatus" type="freemarker">/develop/dynamic/pagedDynStatus.ftl</result>
+			<result name="pageStatusDetail" type="freemarker">/develop/dynamic/pageStatusDetail.ftl</result>
+			<result name="chart" type="freemarker">/develop/dynamic/chart.ftl</result>
+			<result name="previewDynPage" type="freemarker">/develop/dynamic/previewDynPage.ftl</result>
+		</action>
+		<action name="data" class="com.me.GCDP.action.DataAction">
+			<result name="save" type="freemarker">/develop/data/save.ftl</result>
+			<result name="data" type="freemarker">/develop/data/data.ftl</result>			
+			<result name="list" type="freemarker">/develop/data/list.ftl</result>
+			<result name="delete" type="freemarker">/develop/data/delete.ftl</result>			
+			<result name="dycPageData" type="freemarker">/develop/data/dycPageData.ftl</result>
+			<result name="saveDycPage" type="freemarker">/develop/data/save.ftl</result> 
+		</action>
+		
+		
+		<action name="listConfig" class="com.me.GCDP.action.ListConfigAction">
+			<result name="listManage" type="freemarker">/develop/xlist/listManage_${sourceType}.ftl</result>
+		</action>
+		
+		<action name="node" class="com.me.GCDP.action.NodeAction">
+			<result name="list" type="freemarker">/develop/node/list.ftl</result>
+			<result name="view" type="freemarker">/develop/node/view.ftl</result>
+		</action>
+		
+		<action name="source" class="com.me.GCDP.action.source.SourceAction">
+			<result name="list" type="freemarker">/develop/source/list.ftl</result>
+			<result name="add" type="freemarker">/develop/source/add.ftl</result>
+			<result name="viewSource" type="freemarker">/develop/source/viewSource.ftl</result>
+			<result name="viewSubscribe" type="freemarker">/develop/source/viewSubscribe.ftl</result>
+			<result name="fieldList" type="freemarker">/develop/source/fieldList.ftl</result>
+			<result name="subscribeList" type="freemarker">/develop/source/subscribeList.ftl</result>
+			<result name="replayStatus" type="freemarker">/develop/source/replayStatus.ftl</result>
+		</action>
+						
+		<action name="test" class="com.me.GCDP.action.TestAction">
+			<result name="test" type="freemarker">/develop/test.ftl</result>
+		</action>
+		
+		<action name="workflowMgr" class="com.me.GCDP.action.workflow.WorkflowMgrAction">
+			<result name="index" type="freemarker">/develop/ccflow/index.ftl</result>
+			<result name="monitor" type="freemarker">/develop/ccflow/monitor.ftl</result>
+			<result name="list" type="freemarker">/develop/ccflow/list.ftl</result>
+			<result name="save" type="freemarker">/develop/ccflow/ftl/save.ftl</result>
+			<result name="getdata" type="freemarker">/develop/ccflow/ftl/data.ftl</result>			
+			<result name="getlist" type="freemarker">/develop/ccflow/ftl/list.ftl</result>
+		</action>
+		<action name="workflowMonitor" class="com.me.GCDP.action.workflow.WorkflowStatusAction">
+			<result name="instanceList" type="freemarker">/develop/ccflow/ftl/monitor/instanceList.ftl</result>
+			<result name="list" type="freemarker">/develop/ccflow/instanceList.ftl</result>
+			<result name="statusInfo" type="freemarker">/develop/ccflow/ftl/monitor/statusInfo.ftl</result>
+		</action>
+		<action name="workflow" class="com.me.GCDP.action.workflow.WorkflowAction">
+			<result name="debugResult" type="freemarker">/develop/script/ftl/result.ftl</result>
+		</action>
+		
+		<!--table back up-->
+		<action name="tabBak" class="com.me.GCDP.action.tableBak.TableBakAction">
+			<result name="tableBak" type="freemarker">/develop/tableBak/tabBak.ftl</result>
+		</action>
+		
+	</package>
+	    
+    <package name="source" extends="default" namespace="/develop/source">
+       	<default-interceptor-ref name="authorityStack"/>
+   	
+    	<action name="index">
+			<result name="success">/develop/source/index.ftl</result>
+		</action>
+    </package>
+    
+    <package name="develop_dynamic" extends="develop" namespace="/develop/dynamic">
+		<action name="view">
+			<result name="success">/develop/dynamic/view.ftl</result>
+		</action>
+		<action name="index">
+			<result name="success">/develop/dynamic/list.ftl</result>
+		</action>
+    </package>
+    <package name="develop_interface" extends="develop" namespace="/develop/interface">
+		<action name="view">
+			<result name="success">/develop/interface/view.ftl</result>
+		</action>
+		<action name="list">
+			<result name="success">/develop/interface/list.ftl</result>
+		</action>
+    </package>
+    
+	<package name="runtime" extends="default" namespace="/runtime">
+		<action name="message" class="com.me.GCDP.action.message.MessageAction">
+			<result name="msgList" type="freemarker">/runtime/message/msgList.ftl</result>
+			<result name="message" type="freemarker">/runtime/message/message.ftl</result>
+		</action>
+		
+		<action name="getScriptLog" method="getLog" class="com.me.GCDP.action.script.ScriptAction">
+			<result name="LogText" type="freemarker">/runtime/script/log.ftl</result>
+			<result name="PureLogText" type="freemarker">/runtime/script/purelog.ftl</result>
+		</action>
+		
+		<action name="rtMgr" class="com.me.GCDP.action.RuntimeMgrAction">
+			<result name="sysMenu" type="freemarker">/config/sysMenu.ftl</result>
+			<result name="runtimeConfig" type="freemarker">/config/runtimeConfig.ftl</result>
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>
+		
+		<action name="index" class="com.me.GCDP.action.RuntimeMgrAction">
+			<result name="success" type="freemarker">/runtime/index.ftl</result>
+			<result name="index_preview" type="freemarker">/runtime/index_preview.ftl</result>
+			
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>
+		
+		<action name="online" class="com.me.GCDP.action.online.OnlineAction">
+			<result name="result" type="freemarker">/ftl/online.ftl</result>
+			<interceptor-ref name="cookieStack"></interceptor-ref>
+			<interceptor-ref name="appDefaultStack" />
+		</action>
+		<action name="interface_*" class="com.me.GCDP.action.interf.InterfaceAction">
+			<result name="index" type="freemarker">/runtime/interface/index.ftl</result>
+			<interceptor-ref name="ifInterceptor"></interceptor-ref>
+			<interceptor-ref name="appDefaultStack"></interceptor-ref>
+		</action>
+		<action name="proxy" class="com.me.GCDP.action.ProxyAction">
+			<result name="index" type="freemarker">/runtime/proxy/index.ftl</result>
+		</action>
+		<action name="if_*" class="com.me.GCDP.action.interf.InterfaceAction">
+			<result name="index" type="freemarker">/runtime/interface/index.ftl</result>
+			<interceptor-ref name="ifInterceptor"></interceptor-ref>
+			<interceptor-ref name="appDefaultStack"></interceptor-ref>
+		</action>
+		<action name="template" class="com.me.GCDP.action.xform.TemplateAction">
+			<result name="preview" type="freemarker">/runtime/template/preview.ftl</result>
+			<result name="idxEditor" type="freemarker">/runtime/template/idxEditor.ftl</result>
+			<result name="blockEditor" type="freemarker">/runtime/template/blockEditor.ftl</result>
+			<result name="design" type="freemarker">/runtime/template/design.ftl</result>
+			<result name="preview-json" type="freemarker">/runtime/template/preview-json.ftl</result>
+			<result name="build" type="freemarker">/runtime/template/build.ftl</result>
+			<result name="buildBlock" type="freemarker">/runtime/template/buildBlock.ftl</result>
+		<!-- 
+			<result name="preview" type="freemarker">/runtime/template/preview2.ftl</result>
+			<result name="idxEditor" type="freemarker">/runtime/template/idxEditor2.ftl</result>
+			<result name="blockEditor" type="freemarker">/runtime/template/blockEditor2.ftl</result>
+			<result name="design" type="freemarker">/runtime/template/design2.ftl</result>
+			<result name="preview-json" type="freemarker">/runtime/template/preview2-json.ftl</result>
+			<result name="build" type="freemarker">/runtime/template/build.ftl</result>
+			<result name="buildBlock" type="freemarker">/runtime/template/buildBlock2.ftl</result>
+		-->
+			<interceptor-ref name="cookieStack"></interceptor-ref>
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>
+		<action name="tplform" class="com.me.GCDP.action.xform.TplFormAction">
+			<result name="list" type="freemarker">/runtime/tplform/list.ftl</result>
+<!--			<result name="list" type="freemarker">/runtime/tplform/list2.ftl</result>-->
+			<result name="editor" type="freemarker">/runtime/tplform/editor.ftl</result>
+			<result name="save" type="freemarker">/runtime/tplform/save.ftl</result>
+			<result name="delete" type="freemarker">/runtime/tplform/delete.ftl</result>
+			<result name="listdata" type="freemarker">/runtime/tplform/listdata.ftl</result>
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>
+		<action name="xform" class="com.me.GCDP.action.xform.XformAction">
+			<result name="viewConfig" type="freemarker">/runtime/xform/viewConfig.ftl</result>
+			<result name="viewData" type="freemarker">/runtime/xform/viewData.ftl</result>
+<!-- 			<result name="saveData" type="freemarker">/runtime/xform/saveData.ftl</result> -->
+			<result name="renderTpl" type="freemarker">/runtime/xform/renderTpl.ftl</result>
+			<result name="renderError" type="freemarker">/runtime/xform/renderError.ftl</result>
+			<result name="render" type="freemarker">/data/template/form/${templateName}.ftl</result>
+			<result name="saveData" type="freemarker">/runtime/xform/saveData2.ftl</result>
+			<interceptor-ref name="cookieStack"></interceptor-ref>
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>			
+		<action name="xlist" class="com.me.GCDP.action.XListAction">
+			<result name="list" type="freemarker">/runtime/xlist/list.ftl</result>
+			<result name="data" type="freemarker">/runtime/xlist/data.ftl</result>
+			<result name="delete" type="freemarker">/runtime/xlist/delete.ftl</result>
+			<result name="renderTpl" type="freemarker">/runtime/xform/renderTpl.ftl</result>
+			<result name="renderError" type="freemarker">/runtime/xform/renderError.ftl</result>
+			<result name="render" type="freemarker">/data/template/list/${templateName}.ftl</result>
+			<result name="runScript" type="freemarker">/runtime/xlist/runScript.ftl</result>
+		</action>
+		<action name="xlist_auth" class="com.me.GCDP.action.XListAction">
+			<result name="list" type="freemarker">/runtime/xlist/list.ftl</result>
+			<result name="data" type="freemarker">/runtime/xlist/data.ftl</result>
+			<result name="delete" type="freemarker">/runtime/xlist/delete.ftl</result>
+			<result name="renderTpl" type="freemarker">/runtime/xform/renderTpl.ftl</result>
+			<result name="renderError" type="freemarker">/runtime/xform/renderError.ftl</result>
+			<result name="render" type="freemarker">/data/template/list/${templateName}.ftl</result>
+			<result name="runScript" type="freemarker">/runtime/xlist/runScript.ftl</result>
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>
+		<action name="templatectr" class="com.me.GCDP.action.xform.TemplateCtrAction">
+			<result name="list" type="freemarker">/runtime/templatectr/list.ftl</result>
+			<result name="idxTypeList" type="freemarker">/runtime/templatectr/idxTypeList.ftl</result>
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>
+		<action name="search" class="com.me.GCDP.action.xform.SearchAction">
+			<result name="search" type="freemarker">/runtime/search/search.ftl</result>
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>
+		<action name="version" class="com.me.GCDP.action.version.VersionAction">
+			
+		</action>
+		
+		<!-- by Han XianQi -->
+		<action name="newSearch" class="com.me.GCDP.action.search.NewSearchAction">
+			<result name="data" type="freemarker">/runtime/xlist/data.ftl</result>
+			<result name="msg" type="freemarker">/runtime/xlist/msg.ftl</result>
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>
+
+		<action name="dataProvider" class="com.me.GCDP.action.DataProviderAction">
+			<result name="datalist" type="freemarker">/ftl/datalist.ftl</result>
+			<result name="data" type="freemarker">/ftl/data.ftl</result>
+			<interceptor-ref name="runTimeAuthorityStack"/>
+		</action>
+		
+		<action name="xadapter" class="com.me.GCDP.action.adapter.XAdapterAction">
+			<result name="data" type="freemarker">/runtime/xlist/adapterData.ftl</result>
+		</action>
+		
+	</package>
+	
+	<!--monitor-->
+	<package name="err" extends="default" namespace="/monitor">
+		<action name="service" class="com.me.GCDP.action.monitor.ServiceAction">
+			<interceptor-ref name="authorityStack" />
+			<result name="overView" type="freemarker">/develop/monitor/monitorOverview.ftl</result>
+			<result name="statusPage" type="freemarker">/develop/monitor/monitorCurrentState.ftl</result>
+			<result name="pagedStatus" type="freemarker">/develop/monitor/pagedStatus.ftl</result>
+			<result name="detail" type="freemarker">/develop/monitor/monitorDetail.ftl</result>
+			<result name="logPage">/develop/monitor/monitorLogPage.html</result>
+			<result name="pagedLog" type="freemarker">/develop/monitor/pagedLog.ftl</result>
+			<result name="errPage" type="freemarker">/develop/monitor/monitorErrPage.ftl</result>
+			<result name="pagedErr" type="freemarker">/develop/monitor/pagedErr.ftl</result>
+			<result name="taskPage" type="freemarker">/develop/monitor/monitorTaskPage.ftl</result>
+			<result name="pagedTask" type="freemarker">/develop/monitor/pagedTask.ftl</result>
+			<result name="logRecord" type="freemarker">/develop/monitor/logRecord.ftl</result>
+			<result name="chart" type="freemarker">/develop/monitor/chart.ftl</result>
+			<result name="taskOp" type="freemarker">/develop/monitor/taskOp.ftl</result>			
+		</action>
+	</package>
+</struts>

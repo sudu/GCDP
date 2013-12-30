@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.SourceMapper">
+
+	<select id="get" parameterType="source" resultType="source" >
+		select id,name,formId,fieldList,nodeid,des
+		from cmpp_source
+		<where>
+			<if test="id != null">id = #{id}</if>
+			<if test="formId != null">AND formId = #{formId}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<insert id="insert" parameterType="source" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_source
+		(name,formId,fieldList,nodeid,des)
+		values
+		(#{name},#{formId},#{fieldList},#{nodeid},#{des})
+	</insert>
+	
+	<update id="update" parameterType="source">
+		update cmpp_source 
+		<set>
+			<if test="name != null">name = #{name},</if>
+			<if test="formId != null">formId = #{formId},</if>
+			<if test="fieldList != null">fieldList = #{fieldList},</if>
+			<if test="nodeid != null">nodeid = #{nodeid},</if>
+			<if test="des != null">des = #{des}</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="delete" parameterType="source">
+		delete from cmpp_source
+		where id=#{id} and nodeid=#{nodeid}
+	</delete>
+	
+	<select id="getSubscribeList" parameterType="subscribe" resultType="subscribe" >
+		select id,sourceId,callBackUrl,method,subscribeDate,
+				status statusCode,creator
+		from cmpp_source_subscribe
+		<where>
+			<if test="id != null">id = #{id}</if>
+			<if test="sourceId != null">sourceId = #{sourceId}</if>
+			<if test="nodeid != null">nodeid = #{nodeid}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<insert id="insertSubscribe" parameterType="subscribe" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_source_subscribe
+		(sourceId,callBackUrl,method,subscribeDate,status,creator,name)
+		values
+		(#{sourceId},#{callBackUrl},#{method},#{subscribeDate},#{statusCode},#{creator},#{name})
+	</insert>
+	
+	<update id="updateSubscribe" parameterType="subscribe">
+		update cmpp_source_subscribe 
+		<set>
+			<if test="callBackUrl != null">callBackUrl = #{callBackUrl},</if>
+			<if test="method != null">method = #{method},</if>
+			<if test="statusCode != null">status = #{statusCode},</if>
+			<if test="name != null">name = #{name},</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<update id="updateSubscribeStatus" parameterType="subscribe">
+		update cmpp_source_subscribe 
+		<set>
+			<if test="statusCode != null">status = #{statusCode},</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<delete id="deleteSubscribe" parameterType="subscribe">
+		delete from cmpp_source_subscribe
+		where 
+		<if test="id != null">id = #{id}</if>
+		<if test="sourceId != null">sourceId = #{sourceId}</if>
+	</delete>
+	
+</mapper>

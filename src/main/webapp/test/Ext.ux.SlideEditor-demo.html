@@ -1,0 +1,149 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Ext.ux.ImageCollection Demo</title>
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/patch.css" />
+	<link rel="stylesheet" type="text/css" href="../res/css/runTime.css" />
+	<link rel="stylesheet" type="text/css" href="../res/css/portal.css" />
+ 	<script type="text/javascript" src="../res/js/ext2/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="../res/js/ext2/ext-all-debug.js"></script>	
+	<script type="text/javascript" src="../res/js/ext2/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../res/js/ext_base_extension.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.Portal.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.SlideEditor.js"></script>
+	<link rel="stylesheet" type="text/css" href="../res/css/Ext.ux.SlideEditor.css" />
+	</style>
+</head>
+<body>
+<script>
+Ext.onReady(function(){
+	Ext.BLANK_IMAGE_URL = "../res/js/ext2/resources/images/default/s.gif";
+	Ext.lOADING_IMAGE_URL= "../res/js/ext2/resources/images/default/grid/wait.gif"; //resources\images\default\grid
+	Ext.QuickTips.init();
+	Ext.form.Field.prototype.msgTarget = 'qtip';
+	
+	new Ext.Viewport({
+		layout:"fit",
+		items:[{
+			xtype:"form",
+			layout:"xform",
+			id:'form1',
+			autoHeight:true,
+			items:[{
+				xtype:'slideeditor',
+				name:'slideeditor',
+				fieldLabel:'幻灯片',
+				fieldNote:'幻灯编辑器',
+				id:"slideeditor_1",
+				//height:250,
+				//width:500,
+				border:false,
+				//layout:"form",
+				title:'图集编辑器',
+				descriptionVisible:true,
+				titleVisible:false,
+				uploadUrl:"upload!file.jhtml?needCompress=true&maxFilesize=10240",
+				waterMarkUrl:'upload!waterMark.jhtml',//加水印接口url
+				//waterMarkImageUrl:'http://res.img.ifeng.com/8cbe73a7378dafdb/2011/0721/8d23e80f5f2e2ae5cc723e48a02d45b1.png',
+				waterMarkImageButtons:'[{item:{"text":"娱乐水印","url":"http://res.img.ifeng.com/8cbe73a7378dafdb/2011/0721/8d23e80f5f2e2ae5cc723e48a02d45b1.png"}},{item:{"text":"星座水印","url":"http://y0.ifengimg.com/a/2013/0925/06ee5147e679445de3532da04e8a4e77.png"}}]',
+				waterMarkPositon:"tile",//水印位置(默认：southeast,northeast,southwest,northwest,center,tile(平铺))
+				insertToDocumentText:'插入到正文',
+				insertToDocumentEnable:true,//插入到正文按钮是否启用
+				insertToDocumentHandler:"(function(){var image = this.getImage();console.log(image.url +'|'+ image.width +'|'+ image.height)})",//插入到正文的函数代码
+				value:Ext.encode({
+					"mainimage": 1,
+					"image": [{
+						"picUrl": "http://y1.ifengimg.com/a/2013_39/c39a3b204752525.jpg",
+						"waterMarkUrl":"cds",
+						"description": "西野翔可爱生活照。",
+						"link": "http://ent.ifeng.com/",
+						"title":"西野翔可爱生活照",
+						"width": 1080,
+						"height": 1620,
+						"byte": 311124,
+						"waterMark":true,
+						"shortcutsPics": [{
+							"spicUrl": "http://s2.mimg.ifeng.com/upload/day_121114/201211141104429339.jpg",
+							"swidth": 321,
+							"sheight": 213,
+						},{
+							"spicUrl": "http://s4.mimg.ifeng.com/upload/day_121114/201211141104418542.jpg",
+							"swidth": 321,
+							"sheight": 213,
+						}]
+					},{
+						"picUrl": "http://y3.ifengimg.com/a/2013_39/689a322e612ebaf.jpg",
+						"description": "西野翔可爱生活照2。",
+						"link": "",
+						"title":"dsfddsfsd",
+						"width": 432,
+						"height": 324,
+						"byte": 43553,
+						"waterMark":false,
+						"shortcutsPics": []
+					}]
+				})
+
+		
+			}],
+			buttons:[{
+				text:"保存",
+				handler:function(){
+					var formPanel = Ext.getCmp('form1');
+					if(!formPanel.form.isValid()){
+						Ext.Toast.show('输入未完成或验证不通过',{
+						   title:'提示',
+						   buttons: Ext.Msg.OK,
+						   animEl: 'elId',
+						   minWidth:420,
+						   icon: Ext.MessageBox.WARNING
+						});
+						return;
+					}
+				}
+			}]
+		}]
+	});
+	
+	/*
+	Ext.getCmp('slideeditor_1').setValue(Ext.encode({
+					"mainimage": 1,
+					"image": [{
+						"picUrl": "http://s2.mimg.ifeng.com/upload/day_121114/201211141104429339.jpg",
+						"waterMarkUrl":"cds",
+						"description": "西野翔可爱生活照。",
+						"link": "http://ent.ifeng.com/",
+						"title":"西野翔可爱生活照",
+						"width": 1080,
+						"height": 1620,
+						"byte": 311124,
+						"waterMark":true,
+						"shortcutsPics": [{
+							"spicUrl": "http://s2.mimg.ifeng.com/upload/day_121114/201211141104429339.jpg",
+							"swidth": 321,
+							"sheight": 213,
+						},{
+							"spicUrl": "http://s4.mimg.ifeng.com/upload/day_121114/201211141104418542.jpg",
+							"swidth": 321,
+							"sheight": 213,
+						}]
+					},{
+						"picUrl": "http://s4.mimg.ifeng.com/upload/day_121114/201211141104418542.jpg",
+						"description": "西野翔可爱生活照2。",
+						"link": "",
+						"title":"dsfddsfsd",
+						"width": 432,
+						"height": 324,
+						"byte": 43553,
+						"waterMark":false,
+						"shortcutsPics": []
+					}]
+				}));
+	*/			
+});
+	
+</script>
+</body>
+</html>

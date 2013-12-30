@@ -1,0 +1,548 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>所有表单</title>
+	<link rel="shortcut icon" href="../res/img/favicon.ico" />
+	<link rel="stylesheet" type="text/css" href="./../res/js/ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="./../res/js/ext2/resources/css/patch.css" />
+
+ 	<script type="text/javascript" src="./../res/js/ext2/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="./../res/js/ext2/ext-all-debug.js"></script>	
+	<script type="text/javascript" src="./../res/js/ext2/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="./../res/js/ext_base_extension.js"></script>
+	<script type="text/javascript" src="./../res/js/controls/Ext.ux.form.LovCombo.js"></script>
+	<script type="text/javascript" src="./../res/js/config/formTemplate.js"></script>
+
+	<style>
+
+	
+		.extAdd{background:url("../res/js/ext2/resources/images/default/dd/drop-add.gif") left  no-repeat !important;}
+		.btnAdd{width:18px;height:18px;float:left;cursor:pointer;background:url("../res/js/ext2/resources/images/default/dd/drop-add.gif") left  no-repeat !important;}
+		.x-panel {
+			border-color: #99BBE8;
+			border-style: solid;
+			border-width: 0;
+			float: left;
+		}
+		.x-panel-header {
+			height: 15px;
+			overflow: hidden;
+		}
+		
+		/*button*/
+		/*
+		.x-btn button {background: #65a9d7;}
+		.x-btn-text {
+		   border-top: 1px solid #96d1f8;
+		   background: #65a9d7;
+		   background: -webkit-gradient(linear, left top, left bottom, from(#3e779d), to(#65a9d7));
+		   background: -webkit-linear-gradient(top, #3e779d, #65a9d7);
+		   background: -moz-linear-gradient(top, #3e779d, #65a9d7);
+		   background: -ms-linear-gradient(top, #3e779d, #65a9d7);
+		   background: -o-linear-gradient(top, #3e779d, #65a9d7);
+		   -webkit-border-radius: 8px;
+		   -moz-border-radius: 8px;
+		   border-radius: 8px;
+
+		   text-shadow: rgba(0,0,0,.4) 0 1px 0;
+		   color: white;
+		   font-size: 14px;
+		   font-family: Georgia, Serif;
+		   text-decoration: none;
+		   vertical-align: middle;
+		   }
+		.x-btn-text:hover {
+		   border-top-color: #28597a;
+		   background: #28597a;
+		   color: #ccc;
+		   }
+		.x-btn-text:active {
+		   border-top-color: #1b435e;
+		   background: #1b435e;
+	   }
+	   */
+	   .staticLabel{ background:transparent;border:none;color:#666666}
+	   
+	   
+	    /*
+		 * Ext.ux.form.LovCombo CSS File
+		 */
+		.ux-lovcombo-icon {
+			width:16px;
+			height:16px;
+			float:left;
+			background-position: -1px -1px ! important;
+			background-repeat:no-repeat ! important;
+		}
+		.ux-lovcombo-icon-checked {
+			background: transparent url(../res/js/ext2/resources/images/default/menu/checked.gif);
+		}
+		.ux-lovcombo-icon-unchecked {
+			background: transparent url(../res/js/ext2/resources/images/default/menu/unchecked.gif);
+		}
+		/* eof */
+	</style>	
+	
+	<script type="text/javascript">
+		var formId__= Ext.parseQuery().formId;;
+		var nodeId__= Ext.parseQuery().nodeId;;
+
+		function setActiveTab(url,title){
+			if(top && top.openTab){
+				top.openTab(url,title);
+			}else{
+				window.open(url);
+			}
+		}
+	</script>	
+
+<script>
+var bindFunc = function(obj,func){
+	return function(){
+		func.apply(obj,arguments);
+	};
+};
+var addEventHandler=function(obj, type, func) {
+		if(!obj){return;}
+		var doOn=function(o){
+			if(o.addEventListener){o.addEventListener(type, func, false);}
+			else if(o.attachEvent){o.attachEvent("on" + type, func);}
+			else{o["on" + type] = func;}
+		}
+		var IsArray=function(v){
+			try{
+				var a = v[0];
+				return typeof(a) != "undefined";
+			}catch(e){
+				return false;
+			}
+		}
+		if(obj.tagName!='SELECT'&&IsArray(obj)){
+			for(var i=0,oLen=obj.length;i<oLen;i++){
+				doOn(obj[i],type.func);
+			}
+		}else{
+			doOn(obj);
+		}
+};
+</script>	
+</head>
+<body>	
+<script type="text/javascript">
+var formMgr = {
+	formInfoData:null,
+	container:null,
+	comboForm:null,
+	init:function(){
+		this.initUI();
+		this.container = Ext.getCmp('formListBox');
+		this.txtSearch = Ext.getCmp('txtSearch');
+		this.comboForm = Ext.getCmp('comboForm');
+		if(this.txtSearch){
+			addEventHandler(this.txtSearch.getEl().dom,'keyup',bindFunc(this.txtSearch.getEl().dom,function(e){
+				if(formMgr.timeoutId) clearTimeout(formMgr.timeoutId);
+				formMgr.timeoutId = setTimeout(formMgr.search,50);
+			}));
+		}
+		this.initAllForm();
+	},
+	initUI:function(){
+		new Ext.Viewport({
+			layout:"fit",
+			items:[{
+				xtype:'panel',
+				region:"center",
+				//layout:"column",
+				autoScroll:true,
+				border:true,
+				id:'formListBox',
+				bodyStyle :'float:left;',
+				tbar:formId__!='0'?null:[{
+					xtype:'lovcombo',
+					id:'comboForm',
+					style:'margin-left:5px;',
+					width:200,
+					maxHeight:350,
+					allowBlank : true, 
+					readOnly : false,  
+					hideOnSelect:false,	
+					mode : "remote",   
+					emptyText:'选择要显示的表单',		
+					triggerAction: 'all',
+					//checkField:'checked',
+					store : new Ext.data.JsonStore({ //填充的数据
+						url : "source!add.jhtml?nodeId=" + nodeId__,
+						fields : ['title', 'id'],
+						root : 'formlist',
+						sortInfo : {field: "id", direction: "ASC"} ,
+						listeners:{
+							"load":function(store,records,options){
+								store.insert(0,new Ext.data.Record({title:'==全部==',id:0}));
+							}
+						}
+					}),
+					valueField : 'id',
+					displayField : 'title',
+					listeners:{
+						"change":function(obj,newValue,oldValue){
+							
+						}
+					}
+				},{
+					text:'确定',
+					style:'margin-left:5px',
+					scope:this,
+					handler:function(){
+						var formIds =  this.comboForm.getValue() ;
+						if(!formIds) return;
+						formIds= ',' + formIds + ',';
+						if(formIds.indexOf(',0,')!=-1){
+							formMgr.setHtml(formMgr.formInfoData);
+						}else{
+							var _data =formMgr.formInfoData;
+							var result=[];
+							for (i=0;i<_data.length;i++){
+								if (formIds.indexOf(',' + _data[i].id + ',')!=-1){
+									result.push(_data[i]);
+								}
+							}
+							formMgr.setHtml(result);
+						}
+						
+					}
+				},{
+					xtype:'tbfill'
+				},{
+					xtype:'textfield',
+					id:'txtSearch',
+					width:250,
+					emptyText:'支持表单ID、表名、表单名称全拼和简拼',
+					enableKeyEvents:true,
+					style:'background:url(../res/img/search.gif) 230px 1px no-repeat;margin:0 5px;padding-right:20px;border-radius:10px;',
+					listeners:{
+						scope:this,
+						'specialkey':function(obj,e){
+							if(e.getCharCode()==Ext.EventObject.ENTER){
+								var searchtxt=obj.getValue().replace(/\s/ig,'');
+								this.search(e,searchtxt);
+							}
+						}
+					}
+					
+				}],
+				items:[{
+					xtype:'panel'
+				}]
+			}]
+		});
+
+	},
+	initAllForm:function(){
+		Ext.getBody().mask("正在获取数据,请稍候......");
+		Ext.Ajax.request({  
+			url:'xform!FormListConfig.jhtml?nodeId=' + nodeId__ + '&formId=' + formId__,  //获取表单所有数据
+			method:"GET",  
+			scope:this,
+			success:function(response,opts){
+				Ext.getBody().unmask();
+				var res = Ext.util.JSON.decode(response.responseText);
+				if(res.success == false){
+					Ext.Msg.show({
+						   title:'错误提示',
+						   msg: decodeURIComponent(ret.message?ret.message:ret.statusText),
+						   buttons: Ext.Msg.OK,
+						   animEl: 'elId',
+						   minWidth:420,
+						   icon: Ext.MessageBox.ERROR 
+					});
+				}else{
+					this.formInfoData = res;
+					this.setHtml(res);
+				}
+			},
+			failure:function(ret,opts){
+				Ext.getBody().unmask();
+				Ext.Msg.show({
+					title:'错误提示',
+					msg: decodeURIComponent(ret.message?ret.message:ret.statusText),
+					buttons: Ext.Msg.OK,
+					animEl: 'elId',
+					minWidth:420,
+					icon: Ext.MessageBox.ERROR 
+				});
+			}	
+		});
+	},
+	search:function(e,searchtxt){
+		
+		if(!searchtxt){
+			var target=formMgr.getEvent(e),searchtxt=formMgr.txtSearch.getValue().replace(/\s/ig,'');
+		}
+		var _data = formMgr.formInfoData;
+		var result=[];
+		for (i=0;i<_data.length;i++){
+			if (formMgr._match(_data[i],searchtxt)){
+				result.push(_data[i]);
+			}
+		}
+		formMgr.setHtml(result);
+	},
+	_match:function(item,searchtxt){
+		searchtxt = searchtxt.toLowerCase();
+		var len = searchtxt.length;
+		/*
+		var pinyins = item.en[0];
+		for(var i=0;i<pinyins.length;i++){
+			if(pinyins[i].substr(0,len).toLowerCase()==searchtxt){
+				return true;
+			}
+		}
+		var jianpins = item.en[1];
+		for(var i=0;i<jianpins.length;i++){
+			if(jianpins[i].substr(0,len).toLowerCase()==searchtxt){
+				return true;
+			}
+		}
+		*/
+		var title = item.title;
+		var id = item.id + '';
+		var tableName = item.tableName;
+		if(title.indexOf(searchtxt)!=-1 || id.substr(0,len).toLowerCase()==searchtxt || tableName.substr(0,len).toLowerCase()==searchtxt ){
+			return true;
+		}
+		return false;
+		
+	},
+	setHtml:function(dataList){
+		while(this.container.items.length>0){
+			this.container.remove(this.container.items.get(0));
+		}
+		var openPage = function(url,title){
+			var _url = url;
+			var _title = title;
+			return function(){
+				setActiveTab(_url,_title);
+			}
+		}
+		for(var i=dataList.length-1;i>=0;i--){
+			var item = dataList[i];
+			var formId = item.id;
+						
+			var scriptUrl = 'scriptdebug.jhtml?nodeId=' + nodeId__ + '&id1=' + formId ;
+			var subPanel = new Ext.Panel({
+				title:item.title + '('+ item.tableName +')' ,
+				width:245,
+				height:formId__!='0'?null:233,
+				layout:'anchor',
+				shadow :true,
+				shadowOffset:10,
+				bodyStyle :'overflow-x: hidden;overflow-y: scroll;',
+				style:'float:left;margin:15px 0 0 15px;'
+			});
+
+			var tbar = new Ext.Toolbar([{
+				xtype:'label',
+				cls:'staticLabel',
+				text:'通用:'
+			},{
+				xtype:'tbfill'
+			},{
+				text:'表配置',
+				handler:openPage('xform!formManage.jhtml?formId=' + formId + '&nodeId=' + nodeId__,'表配置-' + item.title )
+			},{
+				text:'模板管理',
+				handler:openPage('../runtime/tplform!list.jhtml?dataFormId=' + formId + '&dataId=0&nodeId=' + nodeId__,'模板管理-' + item.title )
+			},{
+				text:'脚本库管理',
+				handler:openPage('scriptMgr.jhtml?nodeId=' + nodeId__ + '&formId=' + formId,'脚本库管理-' + item.title )
+			}]); 
+			subPanel.add(tbar);
+			
+			tbar = new Ext.Toolbar([{
+				xtype:'label',
+				cls:'staticLabel',
+				text:'脚本:'
+			},{
+				xtype:'tbfill'
+			},{
+				text:'保存前',
+				handler:openPage( scriptUrl + '&id2=0&stype=form&tpl=before_save','保存前脚本-' + item.title )
+			},{
+				text:'保存后',
+				handler:openPage(scriptUrl + '&id2=1&stype=form&tpl=after_save','保存后脚本-' + item.title )
+			},{
+				text:'预览',
+				handler:openPage(scriptUrl + '&id2=2&stype=form&tpl=preview','预览脚本-' + item.title )
+			},{
+				text:'发布',
+				handler:openPage(scriptUrl + '&id2=3&stype=form&tpl=publish','发布脚本-' + item.title )
+			}]);
+			subPanel.add(tbar);
+			
+			tbar = new Ext.Toolbar([{
+				xtype:'label',
+				cls:'staticLabel',
+				text:'操作:'
+			},{
+				xtype:'tbfill'
+			},{
+				text:'导出表单',
+				handler:function(){window.open('xform!export.jhtml?formId=' + formId + '&nodeId=' + nodeId__,'出表单-' );}
+			}]);
+			subPanel.add(tbar);
+
+			//表单视图
+			var fCfg = [];
+			for(var j = 0,len = item.forms.length;j<len;j++){
+				var view = item.forms[j];
+				fCfg.push({
+					xtype:'toolbar',
+					items:[{
+						xtype:'textfield',
+						cls:'staticLabel',
+						style:'width:150px;',
+						readOnly:true,
+						value:view.title + "("+ view.id +")"
+					},{
+						text:'配置',
+						handler:openPage('xform!viewManage.jhtml?nodeId=' + nodeId__ + '&formId='+ formId +'&viewId=' + view.id,'修改配置-' + view.title )
+					},{
+						text:'打开',
+						handler:openPage('../runtime/xform!render.jhtml?nodeId=' + nodeId__ + '&formId='+ formId +'&viewId=' + view.id,'视图-' + view.title )
+					}]
+				});
+			}
+						
+			var fPanel = new Ext.Panel({
+				title:'<div style="float:left">表单视图</div><div onclick="formMgr.createViewGuide('+ formId +',\'新建表单视图-'+ item.title +'\')" class="btnAdd" title="新建表单视图"></div>',
+				collapsible:true,
+				titleCollapse :false,
+				//style:'margin:5px;',
+				//frame:true,
+				border:false,
+				//width:240,
+				anchor:'94%',
+				//height:105,
+				//autoScroll:true,
+				items:fCfg.length>0?fCfg:null
+			});
+			subPanel.add(fPanel);	
+			
+			//列表视图
+			fCfg = [];
+			for(var j = 0,len = item.list.length;j<len;j++){
+				var listView = item.list[j];
+				fCfg.push({
+					xtype:'toolbar',
+					items:[{
+						xtype:'textfield',
+						cls:'staticLabel',
+						style:'width:150px;',
+						readOnly:true,
+						value:listView.title + "("+ listView.id +")"
+					},{
+						text:'配置',
+						handler:openPage('listConfig!getListManage.jhtml?nodeId=' + nodeId__ + '&formId='+ formId +'&listId=' + listView.id,'修改配置-' + listView.title )
+					},{
+						text:'打开',
+						handler:openPage('../runtime/xlist!render.jhtml?nodeId=' + nodeId__ + '&formId='+ formId +'&listId=' + listView.id,'列表页-' + listView.title )
+					}]
+				});
+			}
+						
+			fPanel = new Ext.Panel({
+				title:'<div style="float:left">列表视图</div><div onclick="formMgr.createListview('+ formId +',\'新建列表视图-'+ item.title +'\')" class="btnAdd" title="新建列表视图"></div>',
+				collapsible:true,
+				titleCollapse :false,
+				//style:'margin:0 5px 5px 5px;',
+				//width:240,
+				anchor:'94%',
+				//height:105,
+				border:false,
+				//frame:true,
+				//autoScroll:true,
+				items:fCfg.length>0?fCfg:null
+			});
+			subPanel.add(fPanel);				
+
+			this.container.add(subPanel);	
+			this.container.doLayout();				
+		}			
+	},
+	createViewGuide:function(formId,title){
+		//创建表单视图向导，选择默认模板
+		var _self = this;
+		var _json = Designer_controls_formTemplate || [];
+		var _html = '<table style="padding:5px;">';
+		for(var i=0; i<_json.length; i++){
+			_html += '<tr><td style="padding-right:10px"><input id="templateRadio'+i+'" type="radio" name="templateRadio" value="'+_json[i][0]+'" '+(i==0?'checked="true"':'')+'/></td><td><label for="templateRadio'+i+'">'+_json[i][1]+'</label></td></tr>';
+			_html += '<tr><td></td><td style="padding:5px 0">'+_json[i][2]+'</td></tr>';
+		}
+		_html += '</table>';
+		var viewGuideWin = new Ext.Window({
+			title:'请选择模板',
+			height:300,
+			width:400, 
+			buttonAlign: "center",
+			closable:true ,
+			closeAction:'close',
+			maskDisabled:false,
+			modal:true,
+			border:false,
+			layout:'fit',
+			items:[{
+				xtype: 'panel',
+				autoScroll:true,
+				html:_html,
+			}],
+			buttons:[{
+				text:'确定',
+				handler:function(){
+					var radios = window.document.getElementsByName("templateRadio");
+					var templateValue;
+					for (var i=0; i<radios.length;i++){
+					   if (radios[i].checked){
+						   templateValue = radios[i].value;
+						   break;
+					   }
+					 }
+					//console.log("===templateValue:"+templateValue);
+					viewGuideWin.close();
+					_self.createView(formId,title,templateValue);
+				}
+			},{
+				text:'取消',
+				handler:function(){
+					viewGuideWin.close();
+				}
+			}]
+		});
+		viewGuideWin.show();
+	},
+	createView:function(formId,title,templateValue){
+		setActiveTab('xform!viewManage.jhtml?nodeId=' + nodeId__ + '&formId='+ formId +'&viewId=0&templateValue='+templateValue,title);
+	},
+	createListview:function(formId,title){
+		setActiveTab('listConfig!getListManage.jhtml?nodeId=' + nodeId__ + '&formId='+ formId +'&listId=0',title);
+	},
+	getEvent:function(e){
+		var event=e||window.event;
+		if(event){return event.srcElement||event.target;}
+	}
+
+}
+</script>
+<script>
+
+Ext.onReady(function(){
+	Ext.BLANK_IMAGE_URL = "../res/js/ext2/resources/images/default/s.gif";
+	Ext.lOADING_IMAGE_URL= "../res/js/ext2/resources/images/default/grid/wait.gif"; //resources\images\default\grid
+	Ext.QuickTips.init();
+	Ext.form.Field.prototype.msgTarget = 'qtip';
+	formMgr.init();
+});
+</script>
+	
+</body>
+</html>

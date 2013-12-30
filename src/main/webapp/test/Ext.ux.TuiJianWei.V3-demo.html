@@ -1,0 +1,99 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>Ext.ux.TuiJianWei.V3 Demo</title>
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/patch.css" />
+	<link rel="stylesheet" type="text/css" href="../res/css/runTime.css" />
+	
+ 	<script type="text/javascript" src="../res/js/ext2/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="../res/js/ext2/ext-all-debug.js"></script>	
+	<script type="text/javascript" src="../res/js/ext2/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../res/js/ext_base_extension.js"></script>
+	<script type="text/javascript" src="../res/js/CookiesHelper.js"></script>
+	
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.TuiJianWei.V3.js"></script>
+	
+	<style>
+	
+	.cmpp-drag-over-top{
+		border-top: 1px solid red;
+	}
+	.cmpp-drag-over-bottom{
+		border-bottom: 1px solid red;
+	}
+	</style>
+	
+</head>
+<body>
+<script>
+Ext.onReady(function(){
+	Ext.BLANK_IMAGE_URL = "../res/js/ext2/resources/images/default/s.gif";
+	Ext.lOADING_IMAGE_URL= "../res/js/ext2/resources/images/default/grid/wait.gif"; //resources\images\default\grid
+	Ext.QuickTips.init();
+	Ext.form.Field.prototype.msgTarget = 'qtip';
+	
+	new Ext.Viewport({
+		layout:"fit",
+		items:[{
+			xtype:"form",
+			layout:"xform2",
+			autoHeight:true,
+			items:[{
+				xtype:'tuijianwei3',
+				name:'myTuiJianWei',
+				fieldLabel:'幻灯片',
+				hideNote:true,
+				hideLabel:true,
+				id:"TuiJianWeiV3",
+				searchItems:[{item:{//支持多按钮，多个导入
+					searchTitle:"文章搜索结果",
+					searchBtnTxt:"导入文章",
+					dataSourceListPage:'http://m.cmpp.ifeng.com/Cmpp/runtime/xlist!render.jhtml?nodeId=11003&formId=2018&listId=302',//数据源列表页地址
+				}},{item:{//支持多按钮，多个导入
+					searchTitle:"视频搜索结果列表",
+					searchBtnTxt:"导入视频",
+					dataSourceListPage:'http://m.cmpp.ifeng.com/Cmpp/runtime/xlist!render.jhtml?nodeId=11003&formId=2024&listId=309',//数据源列表页地址
+				}}],
+				isWidthFreeRow:1,
+				fields:'["id","title","url"]',
+				columnsCfg:'[{field:"id",isView:true,tipTpl:"",title:"ID",align:"center",width:50,tpl:"{id}"},{field:"title",isView:true,tipTpl:"",title:"名称",tpl:"{title}"},{field:"url",isView:true,tipTpl:"",width:120,title:"url",tpl:"{url}"}]',
+				value:'{"root":[{"summary":"","title":"突破天际你们以为我是谁啊！","thumbImageUrl":"","id":"25279440","source":"网络","docType":"2","createTime":"2012-12-21 15:40:20","publishedUrl":"../runtime/xform!render.jhtml?nodeId=11003&formId=2018&viewId=317&id=25279440"},{"summary":"新华网贵阳１２月２１日电（记者王橙澄）《贵阳建设全国生态文明示范城市规划（２０１２－２０２０年）》近日获得国家发改委批复。根据《规划》，到２０２０年，贵阳将建成全国生态文明示范城市，为推进全国城市生态文明建设发挥示范作用。","title":"国家发改委批复贵阳建设全国生态文明示范城市","thumbImageUrl":"","id":"25279439","source":"新华网","docType":"1","createTime":"2012-12-21 15:48:23","publishedUrl":"../runtime/xform!render.jhtml?nodeId=11003&formId=2018&viewId=315&id=25279439"},{"summary":"新华网杭州１２月２１日电（记者屈凌燕）记者从杭州市农业局获悉，杭州已经就地封存了３０余吨可能存在问题的冷冻鸡产品，这些产品产自山东盈泰集团，该企业被曝光违规为肯德基和麦当劳等企业提供速生鸡原料。","title":"杭州封存30余吨问题冷冻鸡制品","thumbImageUrl":"","id":"25279438","source":"新华网","docType":"1","createTime":"2012-12-21 15:48:23","publishedUrl":"../runtime/xform!render.jhtml?nodeId=11003&formId=2018&viewId=315&id=25279438"},{"summary":"我校出席澳门特别行政区“高等教育素质保证研讨会”和“中葡高等院校校长论坛”","title":"江南大学设计学院2012年海峡两岸交...","thumbImageUrl":"","id":"25279436","source":"江南大学","docType":"1","createTime":"2012-12-21 15:48:22","publishedUrl":"../runtime/xform!render.jhtml?nodeId=11003&formId=2018&viewId=315&id=25279436"}]}',
+				editView:"{value:{url:'../runtime/xform!render.jhtml?nodeId=2001&formId=224&viewId=387',width:500,height:400}}"
+
+			}]
+		}]
+	});
+});
+	
+</script>
+<script>		
+
+/*******onMessage处理******/
+function onMessageHandler(e){
+	var dataStr = e.data;
+	try{
+		var dataJson = Ext.util.JSON.decode(dataStr);
+		if(dataJson.options){
+			var options = Ext.decode(decodeURIComponent(dataJson.options));
+			var hanlder = options.handler;//处理函数
+			var scope = options.scope;
+			if(hanlder){
+				eval('0,' + hanlder + '.call(' + scope + ',"'+ encodeURIComponent(Ext.encode(dataJson.data)) + '","'+ encodeURIComponent(Ext.encode(options.data)) + '","'+ encodeURIComponent(e.data) +'")');
+			}
+		}
+	}catch(ex){
+		console.log(ex);
+	}
+	
+}
+//监听postMessage消息事件
+if (typeof window.addEventListener != 'undefined') {
+	window.addEventListener('message', onMessageHandler, false);
+} else if (typeof window.attachEvent != 'undefined') {
+	window.attachEvent('onmessage', onMessageHandler);
+}
+</script>	
+</body>
+</html>

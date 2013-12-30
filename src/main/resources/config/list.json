@@ -1,0 +1,38 @@
+[
+ {
+	 id:1,
+	 listName:"动态前端页面列表",
+	 tableName:"cmpp_dynamicPage",	 
+	 returnField:"id,name,url,createDateTime,modifyDateTime,author",
+	 searchField:"id,name,url",	 
+	 sql:"",
+	 filter:"nodeId={nodeId}"
+ },
+ {
+	 id:2,
+	 listName:"动态前端列表",
+	 tableName:"cmpp_dynamicConfig",	 
+	 returnField:"id,name",
+	 searchField:"id,name",	 
+	 sql:"",
+	 filter:"nodeId={nodeId}"
+ },
+  {
+	 id:3,
+	 listName:"节点表结构列表",
+	 tableName:"cmpp_dynamic_r",	 
+	 returnField:"",
+	 searchField:"id,name",	 
+	 sql:"SELECT r.id,f.name from cmpp_dynamic_r r,cmpp_formConfig f where r.id = f.formId and type='table' ",
+	 filter:"r.dynId={dynId}"
+ },
+  {
+	 id:4,
+	 listName:"节点表单列表",
+	 tableName:"cmpp_dynamic_r",	 
+	 returnField:"",
+	 searchField:"id,name",	 
+	 sql:"SELECT r.id,p.name from cmpp_dynamic_r r,cmpp_dynamicPage p where r.id = p.id and type='page' ",
+	 filter:"r.dynId={dynId}"
+ }
+]

@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.GroupMapper">
+	<select id="get" parameterType="group" resultType="group" >
+		select id,groupname,remark from cmpp_group
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<delete id="delete" parameterType="group">
+		delete from cmpp_group
+		where id=#{id}
+	</delete>
+	
+	<select id="getById" parameterType="int" resultType="group" >
+		select id,groupname,remark from cmpp_group where id = #{groupId}
+
+	</select>
+	
+	<insert id="insert" parameterType="group" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_group 
+		(groupname,remark)values(#{groupname},#{remark})
+	</insert>
+	
+	<select id="getLastId" resultType="int">
+		SELECT LAST_INSERT_ID()
+	</select>
+	
+	<update id="update" parameterType="group">
+     	update cmpp_group set groupname=#{groupname},remark=#{remark} where id=#{id}
+    </update>
+	
+	<!--为多对多配置--> 
+    <select id="getGroupByUserId" parameterType="int" resultType="group"> 
+        select id,groupname,remark from cmpp_group where id in 
+        (select groupId from cmpp_user_group where userId=#{userId}) 
+    </select> 
+    
+    
+    <select id="getGroupByPage" parameterType="page" resultType="group"> 
+        select id,groupname,remark from cmpp_group
+        <where>
+			<if test="filterTxt != null">${filterTxt} like CONCAT('%',#{filterValue},'%' )</if>
+		</where>
+		order by id desc 
+        limit #{from},#{limit} 
+    </select>
+    
+    <select id="getGroupCount" resultType="int"> 
+        select count(*) from cmpp_group
+    </select>
+    
+    <select id="getNotJoinGroupByUserId" parameterType="page" resultType="group"> 
+        select id,groupname,remark from cmpp_group
+        <where>
+			<if test="filterTxt != null">${filterTxt} like CONCAT('%',#{filterValue},'%' ) and </if>
+			 id not in (select groupId from cmpp_user_group where userId=#{userId}) 
+		</where>
+		order by id desc 
+        limit #{from},#{limit}
+    </select> 
+    
+     <select id="getNotJoinGroupCount" parameterType="page" resultType="int"> 
+         select count(*) from cmpp_group
+        <where>
+			<if test="filterTxt != null">${filterTxt} like CONCAT('%',#{filterValue},'%' ) and </if>
+			 id not in (select groupId from cmpp_user_group where userId=#{userId}) 
+		</where>
+    </select> 
+
+</mapper>

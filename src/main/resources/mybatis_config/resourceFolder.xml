@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.ResourceFolderMapper">
+
+	<insert id="insert" parameterType="folder" useGeneratedKeys="true" keyProperty="folderID">
+		insert into cmpp_resource_folder 
+			(folderName, folderPath, parentID, distributionEnabled, distributionPath, 
+				author, creationTime, nodeid)
+		values
+			(#{folderName}, #{folderPath}, #{parentID}, #{distributionEnabled}, #{distributionPath}, 
+				#{author}, #{creationTime}, #{nodeid})
+	</insert>
+
+	<select id="get" parameterType="folder" resultType="folder" >
+		select 
+			folderID, folderName, folderPath, parentID, distributionEnabled,  
+			distributionPath, author, creationTime, nodeid
+		from 
+		 	cmpp_resource_folder
+		<where>
+			<if test="folderID != null">folderID = #{folderID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by folderID desc
+	</select>
+	
+	<update id="update" parameterType="folder">
+     	update 
+     		cmpp_resource_folder 
+     	<set>
+			<if test="folderName != null">folderName=#{folderName},</if>
+			<if test="folderPath != null">folderPath=#{folderPath},</if>
+			<if test="parentID != null">parentID=#{parentID},</if>
+			<if test="distributionEnabled != null">distributionEnabled=#{distributionEnabled},</if>
+			<if test="distributionPath != null">distributionPath=#{distributionPath},</if>
+			<if test="parentID != null">parentID=#{parentID},</if>
+		</set>
+		<where>
+			<if test="folderID != null">folderID = #{folderID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+    </update>
+	
+	<delete id="delete" parameterType="folder">
+		delete from cmpp_resource_folder
+		where folderID = #{folderID} AND nodeid = #{nodeid}
+	</delete>
+	
+	<select id="getLastId" resultType="int">
+		SELECT LAST_INSERT_ID()
+	</select>
+	
+	<!--  -->
+	
+	<select id="getByParentID" parameterType="folder" resultType="folder" >
+		select 
+			folderID, folderName, folderPath, parentID, distributionEnabled,  
+			distributionPath, author, creationTime, nodeid
+		from 
+		 	cmpp_resource_folder
+		<where>
+			<if test="parentID != null">parentID = #{parentID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by folderID desc
+	</select>
+	
+	<select id="getByFolderPath" parameterType="folder" resultType="folder" >
+		select 
+			folderID, folderName, folderPath, parentID, distributionEnabled,  
+			distributionPath, author, creationTime, nodeid
+		from 
+		 	cmpp_resource_folder
+		<where>
+			<if test="folderPath != null">folderPath = #{folderPath}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by folderID desc
+	</select>
+	
+	<!-- 后去某节点下的所有文件夹 -->
+	<select id="getByNode" parameterType="folder" resultType="folder" >
+		select 
+			folderID, folderName, folderPath, parentID, distributionEnabled,  
+			distributionPath, author, creationTime, nodeid
+		from 
+		 	cmpp_resource_folder
+		<where>
+			<if test="nodeid != null">nodeid = #{nodeid}</if>
+		</where>
+		order by folderID desc
+	</select>
+	
+	<!-- 根据文件分发的服务器路径查找文件夹 -->
+	<select id="getByDistributionPath" parameterType="folder" resultType="folder" >
+		select 
+			folderID, folderName, folderPath, parentID, distributionEnabled,  
+			distributionPath, author, creationTime, nodeid
+		from 
+		 	cmpp_resource_folder
+		<where>
+			<if test="distributionPath != null">distributionPath = #{distributionPath}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by folderID desc
+	</select>
+	
+	<!-- 获取某目录下的所有子目录 -->
+	<select id="getByDistributionPathLike" parameterType="folder" resultType="folder">
+		select 
+			folderID, folderName, folderPath, parentID, distributionEnabled,  
+			distributionPath, author, creationTime, nodeid
+		from 
+		 	cmpp_resource_folder
+		<where>
+			<if test="distributionPath != null">distributionPath like '${distributionPath}_%'</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by folderID desc
+	</select>
+	
+	<!-- 支持分页 -->
+	<select id="getPagenationFolders" resultType="folder" >
+		select * 
+		from cmpp_resource_folder
+		<!--  
+		where nodeid=#{nodeId}
+		-->
+		<where>
+			<if test="nodeId != null">nodeid = #{nodeId}</if>
+			<if test="filterValue != null">AND ${filterTxt} like '%${filterValue}%'</if>
+		</where>
+		order by folderPath desc
+		limit #{from},#{limit}		
+	</select>
+	
+	<select id="getPagenationFoldersWithoutLimit" resultType="folder" >
+		select * 
+		from cmpp_resource_folder
+		<where>
+			<if test="nodeId != null">nodeid = #{nodeId}</if>
+			<if test="filterValue != null">AND ${filterTxt} like '%${filterValue}%'</if>
+		</where>
+		order by folderPath desc
+	</select>
+	
+	<select id="getFolderCount" resultType="int">
+		select count(*) 
+		from cmpp_resource_folder
+		<!--  
+		where nodeid=#{nodeId}
+		-->
+		<where>
+			<if test="nodeId != null">nodeid = #{nodeId}</if>
+			<if test="filterValue != null">AND ${filterTxt} like '%${filterValue}%'</if>
+		</where>
+	</select>
+	
+	<select id="getPagenationFoldersBySearch" resultType="folder" >
+		select * 
+		from cmpp_resource_folder
+		<where>
+			<if test="nodeId != null">nodeid = #{nodeId}</if>
+			<if test="filterValue != null">AND ${filterTxt} like '%${filterValue}%'</if>
+		</where>
+		order by folderPath desc
+		limit #{from}, #{limit}		
+	</select>
+	
+</mapper>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.TaskMapper">
+		<select id="get" parameterType="task" resultType="task" >
+		select id,taskName,taskGroup,startTime,endTime,nextFireTime,repeatCount,runCount,repeatInterval,exp,status,type,nodeId,creator,lastModifyTime
+		from cmpp_task
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<delete id="delete" parameterType="task">
+		delete from cmpp_task
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="task" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_task 
+		(taskName,taskGroup,startTime,endTime,nextFireTime,repeatCount,runCount,repeatInterval,exp,status,type,nodeId,creator,lastModifyTime)
+		values(#{taskName},#{taskGroup},#{startTime},#{endTime},#{nextFireTime},#{repeatCount},#{runCount},#{repeatInterval},#{exp},#{status},#{type},#{nodeId},#{creator},#{lastModifyTime})
+	</insert>
+	
+	<select id="getLastId" resultType="int">
+		select   count(*)   from   cmpp_task; 
+	</select>
+	
+	<select id="getTaskById" parameterType="int" resultType="task" >
+		select id,taskName,taskGroup,startTime,endTime,nextFireTime,repeatCount,runCount,repeatInterval,exp,status,type,nodeId,creator,lastModifyTime
+		from cmpp_task where id = #{id}
+	</select>
+	
+	<update id="update" parameterType="task">
+     	update cmpp_task set taskName=#{taskName},taskGroup=#{taskGroup},startTime=#{startTime},endTime=#{endTime},nextFireTime=#{nextFireTime},repeatCount=#{repeatCount},runCount=#{runCount},repeatInterval=#{repeatInterval},exp=#{exp},status=#{status},type=#{type},lastModifyTime=#{lastModifyTime} 
+     	where id=#{id}
+    </update>
+    
+    <select id="getTaskList" parameterType="int" resultType="task"> 
+        select id,taskName,taskGroup,startTime,endTime,nextFireTime,repeatCount,runCount,repeatInterval,exp,status,type,nodeId,creator,lastModifyTime
+		from cmpp_task
+        where nodeId=#{nodeId}
+        order by id desc
+    </select> 
+    
+    <select id="getTaskByStatus" parameterType="int" resultType="task"> 
+        select id,taskName,taskGroup,startTime,endTime,nextFireTime,repeatCount,runCount,repeatInterval,exp,status,type,nodeId,creator,lastModifyTime
+		from cmpp_task
+        where status=#{status}
+    </select> 
+    
+     <select id="getStartTask" resultType="task"> 
+        select id,taskName,taskGroup,startTime,endTime,nextFireTime,repeatCount,runCount,repeatInterval,exp,status,type,nodeId,creator,lastModifyTime
+		from cmpp_task
+        where status=1 or status=2
+    </select> 
+    
+    
+	
+</mapper>

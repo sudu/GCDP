@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-config.dtd"> 
+
+<configuration>
+	<settings>
+		<setting name="cacheEnabled" value="true"/>
+	</settings>
+	
+	<typeAliases>
+		<typeAlias alias="interface" type="com.me.GCDP.model.Interface"/>
+		<typeAlias alias="user" type="com.me.GCDP.model.User"/>
+		<typeAlias alias="group" type="com.me.GCDP.model.Group"/>
+		<typeAlias alias="userGroup" type="com.me.GCDP.model.UserGroup"/>
+		<typeAlias alias="authority" type="com.me.GCDP.model.Authority"/>
+		<typeAlias alias="page" type="com.me.GCDP.model.PageCondition"/>
+		<typeAlias alias="node" type="com.me.GCDP.model.Node"/>
+		<typeAlias alias="task" type="com.me.GCDP.model.Task"/>
+		<typeAlias alias="formConfig" type="com.me.GCDP.model.FormConfig"/>
+		<typeAlias alias="source" type="com.me.GCDP.model.Source"/>
+		<typeAlias alias="subscribe" type="com.me.GCDP.model.SourceSubscribe"/>
+		<typeAlias alias="field" type="com.me.GCDP.model.TableField"/>
+		<typeAlias alias="TagParserModel" type="com.me.GCDP.model.TagParserModel"/>
+		<typeAlias alias="message" type="com.me.GCDP.model.Message"/>
+		<typeAlias alias="script" type="com.me.GCDP.model.Script"/>
+		<typeAlias alias="version" type="com.me.GCDP.model.Version"/>
+		<typeAlias alias="template" type="com.me.GCDP.model.Template"/>
+		
+		<!-- 状态检查 -->
+		<typeAlias alias="monitorLog" type="com.me.GCDP.model.MonitorLog"/>
+		<typeAlias alias="monitorErr" type="com.me.GCDP.model.MonitorErr"/>
+		<typeAlias alias="monitorTask" type="com.me.GCDP.model.MonitorTask"/>
+
+		<!-- 动态前端 -->
+		<typeAlias alias="dynamicConfig" type="com.me.GCDP.model.DynamicConfig"/>
+		<typeAlias alias="dynPageStatus" type="com.me.GCDP.model.DynPageStatus"/>
+
+		<!-- 资源管理 -->
+		<typeAlias alias="folder" type="com.me.GCDP.model.ResourceFolder"/>
+		<typeAlias alias="file" type="com.me.GCDP.model.ResourceFile"/>
+		
+		<!-- 断点续传 -->
+		<typeAlias alias="uploadFile" type="com.me.GCDP.model.UploadFile"/>
+		
+	</typeAliases>
+	
+	<mappers>
+		<mapper resource="mybatis_config/interface.xml"/>
+		<mapper resource="mybatis_config/user.xml"/>
+		<mapper resource="mybatis_config/group.xml"/>
+		<mapper resource="mybatis_config/userGroup.xml"/>
+		<mapper resource="mybatis_config/authority.xml"/>
+		<mapper resource="mybatis_config/node.xml"/>
+		<mapper resource="mybatis_config/task.xml"/>
+		<mapper resource="mybatis_config/formConfig.xml"/>
+		<mapper resource="mybatis_config/source.xml"/>
+		<mapper resource="mybatis_config/tagParser.xml"/>
+		<mapper resource="mybatis_config/message.xml"/>
+		<mapper resource="mybatis_config/script.xml"/>
+		<mapper resource="mybatis_config/version.xml"/>
+		<mapper resource="mybatis_config/template.xml"/>
+		<!--状态检查-->
+		<mapper resource="mybatis_config/monitor.xml"/>
+		
+		<!--动态前端-->
+		<mapper resource="mybatis_config/dynamicConfig.xml"/>
+		<mapper resource="mybatis_config/dynPageStatus.xml"/>
+		
+		<!-- 工作流 -->
+		<mapper resource="mybatis_config/process.xml"/>
+		<mapper resource="mybatis_config/processinstance.xml"/>
+		<mapper resource="mybatis_config/pluginstatus.xml"/>
+		
+		<!-- 资源管理 -->
+		<mapper resource="mybatis_config/resourceFolder.xml"/>
+		<mapper resource="mybatis_config/resourceFile.xml"/>
+		
+		
+	</mappers> 
+		
+</configuration>

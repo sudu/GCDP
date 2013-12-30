@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.VersionMapper">
+	<select id="get" parameterType="version" resultType="version" >
+		select id,username,`key`,lastmodify from cmpp_version
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<select id="getById" parameterType="int" resultType="version" >
+		select id,username,`key`,lastmodify from cmpp_version where id = #{id}
+
+	</select>
+	<select id="getByKey" parameterType="int" resultType="version" >
+		select id,username,`key`,lastmodify from cmpp_version where `key` = #{key} order by id desc
+
+	</select>	
+	<select id="getByUserName" parameterType="java.lang.String" resultType="version" >
+		select id,username,`key`,lastmodify from cmpp_version where username = #{userName} order by id desc
+
+	</select>
+	
+	<delete id="delete" parameterType="version">
+		delete from cmpp_version
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="version" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_version(`key`,lastmodify,username)values(#{key},#{lastmodify},#{username})
+	</insert>
+	
+	<update id="update" parameterType="version">
+     	update cmpp_version set username=#{username},lastmodify=#{lastmodify},`key`=#{key} where id=#{id}
+    </update>
+    
+	<select id="getLastId" resultType="int">
+		SELECT LAST_INSERT_ID()
+	</select>
+	
+		
+	<select id="getByPage" parameterType="page" resultType="version"> 
+        select id,username,`key`,lastmodify from cmpp_version 
+        <where>
+			<if test="filterTxt != null">`${filterTxt}`=#{filterValue}</if>
+		</where>
+		order by id desc 
+        limit #{from},#{limit} 
+    </select> 
+    
+    <select id="getCount" parameterType="page"  resultType="int"> 
+        select count(*) from cmpp_version 
+		<where>
+			<if test="filterTxt != null">`${filterTxt}`=#{filterValue}</if>
+		</where> 
+    </select>
+    
+    
+</mapper>

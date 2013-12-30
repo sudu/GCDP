@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.DynamicConfigMapper">
+
+	<select id="get" parameterType="dynamicConfig" resultType="dynamicConfig" >
+		select id,nodeId,name,svrIp,svrPath,status,ext,dbUrl,dbUser,dbPwd,cache,searchReaderIp,searchWriterIp,searchServerName
+		from cmpp_dynamicConfig
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<delete id="delete" parameterType="dynamicConfig">
+		delete from cmpp_dynamicConfig
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="dynamicConfig" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_dynamicConfig
+		(nodeId,name,svrIp,svrPath,status,ext,dbUrl,dbUser,dbPwd,cache,searchReaderIp,searchWriterIp,searchServerName)
+		values
+		(#{nodeId},#{name},#{svrIp},#{svrPath},#{status},#{ext},#{dbUrl},#{dbUser},#{dbPwd},#{cache},#{searchReaderIp},#{searchWriterIp},#{searchServerName})
+	</insert>
+	
+	<update id="update" parameterType="dynamicConfig">
+		update cmpp_dynamicConfig
+		<set>
+			<if test="nodeId != null">nodeId = #{nodeId},</if>
+			<if test="name != null">name = #{name},</if>
+			<if test="svrIp != null">svrIp = #{svrIp},</if>
+			<if test="svrPath != null">svrPath = #{svrPath},</if>
+			<if test="status != null">status = #{status},</if>
+			<if test="ext != null">ext = #{ext},</if>
+			<if test="dbUrl != null">dbUrl = #{dbUrl},</if>
+			<if test="dbUser != null">dbUser = #{dbUser},</if>
+			<if test="dbPwd != null">dbPwd = #{dbPwd},</if>
+			<if test="cache != null">cache = #{cache},</if>
+			<if test="searchReaderIp != null">cache = #{searchReaderIp},</if>
+			<if test="searchWriterIp != null">cache = #{searchWriterIp},</if>
+			<if test="searchServerName != null">cache = #{searchServerName},</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<select id="getAllDyns" resultType="dynamicConfig"> 
+        select * from cmpp_dynamicConfig
+    </select>
+
+</mapper>

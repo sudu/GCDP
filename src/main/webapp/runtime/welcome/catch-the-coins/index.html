@@ -1,0 +1,108 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>catch-the-coins</title>
+<meta http-equiv="content-type" content="text/html;charset=utf-8" />
+<style type="text/css">
+body {
+background: #000;
+}
+#stage{position:relative;background:#999;width:1000px;height:500px;
+	float: left;
+	border-radius: 12px;
+	border: 3px solid #ccc;
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#b5bdc8), color-stop(36%,#828c95), color-stop(100%,#28343b)); /* webkit */
+}
+.money{
+	
+	box-shadow: 2px 2px 2px #fff;
+    background:#f60;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    position: absolute;
+    left:0;
+    top:0;
+    text-align: center;
+    vertical-align: middle;
+    line-height: 40px;
+    
+}
+.tips {
+	float: left;
+	width: 180px;
+	padding: 10px;
+	color: #fff;
+}
+.tips h2 {font-size: 15px;}
+.tips p {font-size: 13px; margin-bottom: 12px; }
+
+#man{position:absolute;left:450px; bottom:0px; width:100px;height: 10px; 
+	background: #ddd; border-bottom-right-radius: 5px; border-bottom-left-radius: 5px;
+	z-index: 9;}
+#pn2{position:absolute; right:0px; top: 0px; background:#000;font-size:24px;line-height:30px;font-weight:bold;text-align:center;color:#fff; width:200px;height:30px; border-bottom-left-radius:12px;   border-top-right-radius:12px;  opacity:.2; text-shadow: 1px 1px 1px #fff; }
+#pn{position:absolute; right:0px; top: 0px; font-size:24px;line-height:30px;font-weight:bold;text-align:center;color:#fff; width:200px;height:30px; border-bottom-left-radius:12px;   border-top-right-radius:12px; text-shadow: 1px 1px 1px #fff;z-index: 4 }
+#btn {
+	width: 200px;
+	height: 80px;
+	position: absolute;
+	top: 220px;
+	left: 50%;
+	margin-left: -100px;
+background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e4f5fc), color-stop(50%,#bfe8f9), color-stop(51%,#9fd8ef), color-stop(100%,#2ab0ed)); /* webkit */
+	color: #333;
+	font-size: 22px;
+	border: 0;
+	border-radius: 12px;
+}
+#btn:hover {
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#6db3f2), color-stop(50%,#54a3ee), color-stop(51%,#3690f0), color-stop(100%,#1e69de)); /* webkit */
+	color: #fff;
+}
+
+#gameover {
+	font-weight: bold;
+	font-size: 40px;
+	top: 220px;
+	width: 100%;
+	text-align: center;
+	color: red;
+	position: absolute;
+	display: none;
+	text-shadow: 2px 1px 1px #fff; 
+}
+</style>
+<script type="text/javascript">
+<!--
+var G = function(d){return document.getElementById(d);}
+//-->
+</script>
+</head>
+
+<body>
+
+<div id="stage">
+	<div id="money_box"></div>
+<div id="pn">0</div><div id="pn2"></div>
+<div id="man"></div>
+<button id="btn">start</button>
+<div id="gameover">gameover</div>
+</div>
+
+<div class="tips">
+	<h2>捡钱</h2>
+	<p>说明：通过左右方向键操作</p>
+	<p>钱有4种类型 <br />1）无敌：5秒钟内炸弹和负数的钱接到无效。<br />2）炸弹：在没有无敌的状态下直接gameover <br />3）钱：有正数和负数，正数累加，负数减少</p>
+	<p>gameover条件：1）在没有无敌的状态下接到炸弹。2）分数小于0</p>
+</div>
+
+</body>
+</html>
+<script type="text/javascript" src="js/man.js"></script>
+<script type="text/javascript" src="js/money.js"></script>
+<script type="text/javascript" src="js/stage.js"></script>
+<script type="text/javascript">
+<!--
+window.onload=Stage.init;
+//-->
+</script>

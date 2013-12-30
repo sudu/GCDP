@@ -1,0 +1,10 @@
+{
+	id:#{subscribe.id!0},
+	sourceId:#{subscribe.sourceId!0},
+	id:#{subscribe.id!0},
+	callBackUrl:"${subscribe.callBackUrl!""}",
+	method:"${subscribe.method!""}",
+	creator:"${subscribe.creator!""}",
+	statusCode:"${subscribe.statusCode!""}",
+	script:"${(subscribe.script?js_string)!""}"
+}

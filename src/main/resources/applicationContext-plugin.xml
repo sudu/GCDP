@@ -1,0 +1,145 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="db" class="com.me.GCDP.script.plugin.DataBasePlugin">
+		<property name="dataSource" ref="dataSource"/>
+	</bean>
+	<bean id="oracle" class="com.me.GCDP.script.plugin.OracleDBPlugin">
+		
+	</bean>
+	
+	<!-- 插件工厂 -->
+	<bean id="pluginFactory" class="com.me.GCDP.script.plugin.ScriptPluginFactory" init-method="init">
+		<property name="pluginMap">
+			<map>
+				<entry key="freemarker">
+					<bean class="com.me.GCDP.freemarker.FreeMarkerPlugin" />
+				</entry>
+				<entry key="file">
+					<bean class="com.me.GCDP.script.plugin.FilePlugin" >
+						<property name="privateBox" value="${script.Private.Dir}" />
+						<property name="publicBox" value="${script.Public.Dir}" />
+					</bean>
+				</entry>
+				<entry key="db">
+					<ref bean="db"/>
+				</entry>
+				<entry key="oracle">
+					<ref bean="oracle"/>
+				</entry>
+				<entry key="http">
+					<bean class="com.me.GCDP.script.plugin.HttpPlugin" />
+				</entry>
+				<entry key="string">
+					<bean class="com.me.GCDP.script.plugin.StringPlugin" />
+				</entry>
+				<entry key="coder">
+					<bean class="com.me.GCDP.script.plugin.CoderPlugin" />
+				</entry>
+				<entry key="log">
+					<bean class="com.me.GCDP.script.plugin.LogPlugin" />
+				</entry>
+				<entry key="search">
+					<bean class="com.me.GCDP.search.SearchPlugin" >
+						<property name="searchService" ref="searchService"/>
+					</bean>
+				</entry>
+				<entry key="cmppDB">
+					<bean class="com.me.GCDP.script.plugin.CmppDBPlugin" init-method="init">
+						<!-- <property name="cmppDBService" ref="cmppDBService"/>
+						<property name="ikvDBClient" ref="ikvDBClient"/>
+						<property name="prefix" value="${cmpp.ikvdbclient.prefix}"/> -->
+					</bean>
+				</entry>
+				<entry key="xml">
+					<bean class="com.me.GCDP.script.plugin.XMLPlugin" />
+				</entry>
+				<entry key="util">
+					<bean class="com.me.GCDP.script.plugin.UtilPlugin">
+						<property name="edmurl" value="${script.message.edmurl}" />
+					</bean>
+				</entry>
+				<entry key="image">
+					<bean class="com.me.GCDP.script.plugin.ImagePlugin">
+						<property name="imageURL" value="${image.URL}" />
+						<property name="imageServerName" value="${image.ServerName}" />
+					</bean>
+				</entry>
+				<entry key="form">
+					<bean class="com.me.GCDP.xform.FormPlugin">
+						<property name="searchSvr" ref="searchService"/>
+						<property name="scriptService" ref="scriptService"/>
+						<property name="subSvr" ref="subscribeService"/>
+					</bean>
+				</entry>
+				<entry key="form2">
+					<bean class="com.me.GCDP.xform.Form2Plugin">
+						<property name="formService" ref="formService"/>
+					</bean>
+				</entry>
+				<entry key="template">
+					<bean class="com.me.GCDP.template.TemplatePlugin">
+						<property name="formService" ref="formService"/>
+						<property name="templateMapper" ref="templateMapper"/>
+					</bean>
+				</entry>
+				<entry key="menu">
+					<bean class="com.me.GCDP.script.plugin.SysMenuPlugin">
+						<property name="scriptService" ref="scriptService"/>
+					</bean>
+				</entry>
+				<entry key="user" >
+					<bean class="com.me.GCDP.security.SecurityPlugin">
+						<property name="securityManager" ref="securityManager"/>
+						<property name="db" ref="db"></property>
+					</bean>
+				</entry>
+				<entry key="queue">
+					<bean class="com.me.GCDP.script.plugin.QueuePlugin" init-method="init">
+						<property name="url" value="${queue.URL}"/>
+						<property name="stateURL" value="${queue.stateURL}"/>
+					</bean>
+				</entry>
+				<entry key="script">
+					<bean class="com.me.GCDP.script.plugin.ScriptEvalPlugin" init-method="init">
+						<property name="scriptService" ref="scriptService" />
+					</bean>
+				</entry>
+				<entry key="redis">
+					<bean class="com.me.GCDP.script.plugin.RedisPlugin">
+						<property name="jedisPool" ref="jedisPool" />
+					</bean>
+				</entry>
+				<entry key="html">
+					<bean class="com.me.GCDP.script.plugin.HtmlPlugin" />
+				</entry>
+				<entry key="env">
+					<bean class="com.me.GCDP.util.env.EnvPlugin" />
+				</entry>
+				<entry key="dyn">
+					<bean class="com.me.GCDP.script.plugin.DynData" >
+						<property name="default_cache_count" value="${script.dyn.default.cachecount}"/>
+						<property name="default_cache_timeout" value="${script.dyn.default.cachetimeout}"/>
+						<property name="jedisPool" ref="jedisPool" />
+						<property name="dataSource" ref="dataSource"/>
+						<property name="search" ref="searchService"/>
+					</bean>
+				</entry>
+				<entry key="pinYin">
+					<bean class="com.me.GCDP.util.plugin.pinYinPlugin" >
+					</bean>
+				</entry>
+				<entry key="wf">
+					<bean class="com.me.GCDP.workflow.plugin.CmppWorkflowPlugin">
+					</bean>
+				</entry>
+			</map>
+		</property>
+	</bean>
+</beans>

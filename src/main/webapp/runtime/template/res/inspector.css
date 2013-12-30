@@ -1,0 +1,150 @@
+
+#fbToolbar {
+	background: url("../../../res/js/ext2/resources/images/default/panel/white-top-bottom.gif") repeat-x scroll 0 -1px #99BBE8;
+	height: 27px;
+	font-size: 14px;
+	z-index: 2147483503;
+	cursor: default;width:100%;position:fixed;top:0px;left:0px;
+}
+.fbButton {
+	text-decoration: none;
+	display: block;
+	float: left;
+	color: black;
+	padding: 4px 6px 4px 7px;
+	cursor: default;
+}
+.fbButton:hover {
+	color: #333;
+	text-decoration: none;
+	background: #F5F5EF url(images/buttonBg.png);
+	padding: 3px 5px 3px 6px;
+	border: 1px solid white;
+	border-bottom: 1px solid #BBB;
+	border-right: 1px solid #BBB;
+}
+.fbBtnPressed {
+	background: #E3E3DB url(images/buttonBgHover.png) !important;
+	padding: 3px 4px 2px 6px !important;
+	margin: 1px 0 0 1px !important;
+	border: 1px solid #ACA899 !important;
+	border-color: #ACA899 #ECEBE3 #ECEBE3 #ACA899 !important;
+}
+.space20 {
+	float:left;
+	margin-left:30px;
+}
+#fbToolbarDomList{
+	float:left;
+}
+#fbToolbarDomList span{
+	display: block;
+	float: left;
+	padding: 4px 3px 4px 3px;
+}
+#fbToolbarDomList a{
+	text-decoration: none;
+	display: block;
+	float: left;
+	padding: 4px 3px 4px 3px;
+	cursor: pointer;
+}
+#fbToolbarDomList .current{
+	font-weight:bold;
+}
+
+
+/*********for idx*******/
+.tplidxstyle {
+    background-color: #ACFA58;
+    border: 1px solid #FF6600;
+    float: left;
+    opacity: 0.2;
+	z-Index:8000
+}
+
+.tplidxstyle2 {
+    background-color: #ACFA58;
+    border: 1px solid #FF6600;
+    float: left;
+    opacity: 0.4;
+	z-Index:8000
+}
+
+.tplidxstyleHighlight {
+    background-color: #ACFA58;
+    border: 1px outset gray;
+    float: left;
+    opacity: 0.6;
+	z-Index:8000
+}
+.tplidxstyleHighlightMouseDown {
+    background-color: #ACFA58;
+    border: 1px inset gray;
+    float: left;
+    opacity: 0.6;
+	z-Index:8000
+}
+.tplidxstyle3{
+	background: SkyBlue;
+	float: left;
+	opacity: 0.6;
+	z-Index:8000
+}
+.maskTitle{
+	float:left;
+	color:red;
+	overflow:hidden;
+}
+
+.inputUnit {
+    display: inline-block;
+    padding: 5px 15px 5px 5px;
+    width: 100px;
+}
+
+.itemStyle {
+	padding:5px;
+	/*border: 1px solid silver;*/
+	margin-bottom:0;
+}
+
+.TPE_consoleUl{
+	padding:2px;
+}
+.TPE_consoleUl li{
+	color:#0E76CD;
+	border: 1px solid #DCE1E5;
+}
+.TPE_consoleUl a{
+	margin:0 3px 0 3px;
+	cursor:pointer;
+}
+
+#fbIdxListBox{}
+#fbIdxListBox li{
+	color:#0E76CD;
+	border: 1px solid #DCE1E5;
+}
+#fbIdxListBox span {
+    cursor: pointer;
+    display: inline-block;
+    padding-left: 2px;
+    width: 168px;
+}
+#fbIdxListBox .icon-tools{
+	float:right;
+	cursor:pointer;
+	width:16px;
+	height:16px;
+	padding-right:5px;
+	background:url(images/edit.gif) no-repeat scroll transparent
+}
+
+.fbButtonFixed {
+	float: right; 
+	margin-left: 5px;
+	width:16px;
+	height:16px;
+	background:url(images/fixed.gif) no-repeat scroll transparent
+}

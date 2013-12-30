@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.TemplateMapper">
+
+	<select id="get" parameterType="template" resultType="template" >
+		select 
+		id,name,content,dataFormId,dataId,`enable`,createDate,modifyDate,powerPath
+		from cmpp_template
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<select id="getById" parameterType="int" resultType="template" >
+		select
+		*
+		from cmpp_template
+		where id = #{id}
+	</select>
+	
+	<select id="getByCustom" parameterType="map" resultType="template">
+	    select 
+	    <choose>
+	    	<when test="customSelect!=null">${customSelect}</when>
+	    	<otherwise>
+	    	*
+	    	</otherwise>
+	    </choose>
+	    from cmpp_template
+	    <where>
+	    <if test="customWhere!=null">${customWhere}</if>
+	    </where>
+	    order by
+	    <choose>
+	    	<when test="orderByField!=null">${orderByField}</when>
+	    	<otherwise>id desc</otherwise>
+	    </choose>
+		<if test="limit!=null">
+		limit
+			<if test="start!=null">${start},</if>${limit}
+		</if>	    
+	</select>
+	
+	<select id="countByCustom" parameterType="string" resultType="int">
+	    select 
+	    count(*)
+	    from cmpp_template
+	    ${value}
+	</select> 
+	
+	<select id="getPowerPathInFormConfig" resultType="string" >
+		select powerPath from cmpp_formConfig where tableName='cmpp_template'
+	</select>
+	
+	<delete id="delete" parameterType="template">
+		delete from cmpp_template
+		where id=#{id}
+	</delete>
+	
+	<delete id="deleteById" parameterType="int">
+		delete from cmpp_template
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="template" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_template
+		(name,content,dataFormId,dataId,`enable`,createDate,powerPath)
+		values
+		(#{name},#{content},#{dataFormId},#{dataId},#{enable},NOW(),#{powerPath})
+	</insert>
+	
+	<insert id="insertFull" parameterType="template" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_template
+		(name,content,dataFormId,dataId,`enable`,createDate,modifyDate,powerPath)
+		values
+		(#{name},#{content},#{dataFormId},#{dataId},#{enable},#{createDate},#{modifyDate},#{powerPath})
+	</insert>
+	
+	<update id="update" parameterType="template" flushCache="true" >
+		update cmpp_template 
+		<set>
+			<if test="name != null">name = #{name},</if>
+			<if test="content != null">content = #{content,jdbcType=BLOB},</if>
+			<if test="dataFormId != null">dataFormId = #{dataFormId,javaType=java.lang.Integer,jdbcType=INTEGER},</if>
+			<if test="dataId != null">dataId = #{dataId},</if>
+			<if test="enable != null">`enable` = #{enable},</if>
+			<if test="powerPath != null">powerPath = #{powerPath},</if>
+			modifyDate = Now(),
+		</set>
+		where id=#{id}
+	</update>
+</mapper>

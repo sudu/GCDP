@@ -1,0 +1,1 @@
+<input id="${id}" name="xform.${id}" value="${value!''}" type="text"/>

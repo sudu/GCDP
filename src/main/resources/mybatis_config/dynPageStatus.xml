@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.DynPageStatusMapper">
+
+	<select id="get" parameterType="dynPageStatus" resultType="dynPageStatus" >
+		select id,dynID,pageUrl,requireCount,respTime,code200Count,code400Count,code500Count,issueDate
+		from cmpp_dynPageStatus
+		<where>
+			<if test="id != null">id = #{id}</if>
+		</where>
+		order by id desc
+	</select>
+	
+	<delete id="delete" parameterType="dynPageStatus">
+		delete from cmpp_dynPageStatus
+		where id=#{id}
+	</delete>
+	
+	<insert id="insert" parameterType="dynPageStatus" useGeneratedKeys="true" keyProperty="id">
+		insert into cmpp_dynPageStatus
+		(dynID,pageUrl,requireCount,respTime,code200Count,code400Count,code500Count,issueDate)
+		values
+		(#{dynID},#{pageUrl},#{requireCount},#{respTime},#{code200Count},#{code400Count},#{code500Count},#{issueDate})
+	</insert>
+	
+	<update id="update" parameterType="dynPageStatus">
+		update cmpp_dynPageStatus 
+		<set>
+			<if test="dynID != null">dynID = #{dynID},</if>
+			<if test="pageUrl != null">pageUrl = #{pageUrl},</if>
+			<if test="requireCount != null">requireCount = #{requireCount},</if>
+			<if test="respTime != null">respTime = #{respTime},</if>
+			<if test="code200Count != null">code200Count = #{code200Count},</if>
+			<if test="code400Count != null">code400Count = #{code400Count},</if>
+			<if test="code500Count != null">code500Count = #{code500Count},</if>
+			<if test="issueDate != null">issueDate = #{issueDate},</if>
+		</set>
+		where id=#{id}
+	</update>
+	
+	<select id="getPageStatusByTime" parameterType="dynPageStatus" resultType="dynPageStatus" >
+		select * 
+		from cmpp_dynPageStatus 
+		where issueDate &gt; #{startTime} and issueDate &lt; #{endTime} and dynID=#{dynID} and pageUrl=#{pageUrl}
+		order by issueDate
+	</select>
+	
+	<select id="getAllPageStatus" resultType="dynPageStatus" >
+		select * 
+		from cmpp_dynPageStatus
+		where dynID=#{nodeId} and ${filterTxt} = #{filterValue}
+		order by id desc
+		limit #{from},#{limit}		
+	</select>
+	
+	<select id="getAllPageStatusCount" resultType="int">
+		select count(*) 
+		from cmpp_dynPageStatus
+		where dynID=#{nodeId} and ${filterTxt} = #{filterValue}
+	</select>
+	
+	<select id="getLastPages" resultType="dynPageStatus" >
+		select * 
+		from cmpp_dynPageStatus, (select pageUrl purl,MAX(issueDate)lastIssueDate from cmpp_dynPageStatus where ${filterTxt} = #{filterValue} group by pageUrl) b
+		where ${filterTxt} = #{filterValue} and issueDate=b.lastIssueDate and pageUrl=b.purl
+		order by pageUrl desc
+		limit #{from},#{limit}
+	</select>
+	
+	<select id="getLastPageCount" resultType="int"> 
+        select count(*) 
+		from cmpp_dynPageStatus, (select pageUrl purl,MAX(issueDate)lastIssueDate from cmpp_dynPageStatus where ${filterTxt} = #{filterValue} group by pageUrl) b
+		where ${filterTxt} = #{filterValue} and issueDate=b.lastIssueDate and pageUrl=b.purl
+    </select>
+	
+</mapper>

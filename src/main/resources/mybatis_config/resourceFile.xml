@@ -1,0 +1,226 @@
+<?xml version="1.0" encoding="UTF-8" ?> 
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" 
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd"> 
+
+<mapper namespace="com.me.GCDP.mapper.ResourceFileMapper">
+
+	<insert id="insert" parameterType="file" useGeneratedKeys="true" keyProperty="fileID">
+		insert into cmpp_resource_file 
+			(fileName, fileDesc, fileSize, fileType, parentID, distributionAddress, 
+				author, creationTime, nodeid, enabled, lastModify)
+		values
+			(#{fileName}, #{fileDesc}, #{fileSize}, #{fileType}, #{parentID}, #{distributionAddress}, 
+				#{author}, #{creationTime}, #{nodeid}, #{enabled}, #{lastModify})
+	</insert>
+
+	<select id="get" parameterType="file" resultType="file" >
+		select 
+			fileID, fileName, fileDesc, fileSize, fileType, parentID,  
+			distributionAddress, author, creationTime, nodeid, enabled, lastModify
+		from 
+		 	cmpp_resource_file
+		<where>
+			<if test="fileID != null">fileID = #{fileID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by fileID desc
+	</select>
+	
+	<update id="update" parameterType="file">
+     	update 
+     		cmpp_resource_file 
+     	set 
+     		fileName=#{fileName}, fileDesc=#{fileDesc}, fileSize=#{fileSize}, fileType=#{fileType}, parentID=#{parentID},
+     		distributionAddress=#{distributionAddress}, author=#{author}, nodeid=#{nodeid}, 
+     		enabled = #{enabled},lastModify=#{lastModify}
+     	where fileID=#{fileID}
+    </update>
+    
+    <!-- 更新文件“描述字段” -->
+    <update id="updateFileDesc" parameterType="file">
+     	update 
+     		cmpp_resource_file 
+     	set 
+     		fileDesc=#{fileDesc}
+     	where fileID=#{fileID}
+    </update>
+	
+	<delete id="delete" parameterType="file">
+		delete from cmpp_resource_file
+		where fileID = #{fileID}
+	</delete>
+	
+	<delete id="deleteByDistributionAddress" parameterType="file">
+		delete from cmpp_resource_file
+		where distributionAddress = #{distributionAddress}
+	</delete>
+	
+	<select id="getLastId" resultType="int">
+		SELECT LAST_INSERT_ID()
+	</select>
+	
+	<select id="getFilesByNodeID" parameterType="int" resultType="file">
+		select 
+			fileID, fileName, fileDesc, fileSize, fileType, parentID,  
+			distributionAddress, author, creationTime, nodeid, enabled, lastModify,
+		from 
+		 	cmpp_resource_file
+		<where>
+			<if test="nodeid != null">nodeid = #{nodeid}</if>
+		</where>
+		order by fileID desc
+	</select>
+	
+	<!-- 由分发地址获取上传的文件信息。 主要用于用户自定义URL分发 -->
+	<select id="getFilesByDistributionAddress" parameterType="file" resultType="file">
+		select 
+			fileID, fileName, fileDesc, fileSize, fileType, parentID,  
+			distributionAddress, author, creationTime, nodeid, enabled, lastModify
+		from 
+		 	cmpp_resource_file
+		<where>
+			<if test="enabled != null">enabled = #{enabled}</if>
+			<if test="distributionAddress != null">AND distributionAddress = #{distributionAddress}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by fileID desc
+	</select>
+	
+	<!-- 删除文件下的文件 -->
+	<delete id="deleteByParentID" parameterType="file">
+		delete from cmpp_resource_file
+		<where>
+			<if test="parentID != null">parentID = #{parentID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+	</delete>
+	<!-- 根据fileID获取记录 -->
+	<select id="getFilesByParentAndNode" parameterType="file" resultType="file">
+		select 
+			fileID, fileName, fileDesc, fileSize, fileType, parentID,  
+			distributionAddress, author, creationTime, nodeid, enabled, lastModify
+		from 
+		 	cmpp_resource_file
+		<where>
+			<if test="enabled != null">enabled = #{enabled}</if>
+			<if test="parentID != null">AND parentID = #{parentID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by fileID desc
+	</select>
+	<!-- 根据状态获取记录 -->
+	<select id="getFilesByRecordStatus" parameterType="file" resultType="file">
+		select 
+			fileID, fileName, fileDesc, fileSize, fileType, parentID,  
+			distributionAddress, author, creationTime, nodeid, enabled, lastModify
+		from 
+		 	cmpp_resource_file
+		<where>
+			<!--  
+			<if test="enabled != null">enabled = '1'</if>
+			-->
+			<if test="enabled != null">enabled = #{enabled}</if>
+			<if test="parentID != null">AND parentID = #{parentID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by fileID desc
+	</select>
+	
+	<!-- 根据fileID，将记录的状态设置为不可用 -->
+	<update id="disablbeRecord" parameterType="file">
+     	update cmpp_resource_file set enabled = #{enabled}, lastModify=#{lastModify}
+     	<where>
+			<if test="fileID != null">fileID = #{fileID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+    </update>
+    
+    <!-- 根据parentID，将记录的状态设置为不可用 -->
+    <update id="disablbeRecordByParentID" parameterType="file">
+     	update cmpp_resource_file set enabled = #{enabled}, lastModify=#{lastModify}
+     	<where>
+			<if test="parentID != null">parentID = #{parentID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+    </update>
+    
+    <!-- 分页，排序， 搜索 -->
+    <select id="getPagenationFiles" resultType="file" >
+		select * 
+		from cmpp_resource_file
+		<where>
+			<if test="parentID != null">parentID = #{parentID}</if>
+			<if test="enabled != null">	AND enabled = #{enabled}</if>
+			<if test="nodeId != null">	AND nodeid = #{nodeId}</if>
+			<if test="filterValue != null">AND ${filterTxt} like '%${filterValue}%'</if>
+		</where>
+		order by creationTime desc
+		limit #{from},#{limit}		
+	</select>
+	
+	<select id="getPagenationFilesWithoutLimit" resultType="file" >
+		select * 
+		from cmpp_resource_file
+		<where>
+			<if test="parentID != null">parentID = #{parentID}</if>
+			<if test="enabled != null">	AND enabled = #{enabled}</if>
+			<if test="nodeId != null">AND nodeid = #{nodeId}</if>
+			<if test="filterValue != null">AND ${filterTxt} like '%${filterValue}%'</if>
+		</where>
+		order by creationTime desc
+	</select>
+	
+	<!-- 获取活跃状态的记录总数 -->
+	<select id="getFileCount" resultType="int">
+		select count(*) 
+		from cmpp_resource_file
+		<where>
+			<if test="parentID != null">parentID = #{parentID}</if>
+			<if test="enabled != null">AND enabled = #{enabled}</if>
+			<if test="nodeId != null">AND nodeid = #{nodeId}</if>
+			<if test="filterValue != null">AND ${filterTxt} like '%${filterValue}%'</if>
+		</where>
+	</select>
+	
+	<!-- 搜索活跃状态的文件记录 -->
+	<select id="getPagenationFilesBySearch" resultType="file" >
+		select * 
+		from cmpp_resource_file
+		<where>
+			<if test="parentID != null">parentID = #{parentID}</if>
+			<if test="nodeId != null"> AND nodeid = #{nodeId}</if>
+			<if test="enabled != null">AND enabled = #{enabled}</if>
+			<if test="filterValue != null">AND ${filterTxt} like '%${filterValue}%'</if>
+		</where>
+		order by creationTime desc
+		limit #{from}, #{limit}		
+	</select>
+	
+	<select id="getFilesByIdAndNode" parameterType="file" resultType="file">
+		select 
+			fileID, fileName, fileDesc, fileSize, fileType, parentID,  
+			distributionAddress, author, creationTime, nodeid, enabled, lastModify
+		from 
+		 	cmpp_resource_file
+		<where>
+			<if test="fileID != null">fileID = #{fileID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+		</where>
+		order by fileID desc
+	</select>
+	
+	<select id="getFilesById" parameterType="file" resultType="file">
+		select 
+			fileID, fileName, fileDesc, fileSize, fileType, parentID,  
+			distributionAddress, author, creationTime, nodeid, enabled, lastModify
+		from 
+		 	cmpp_resource_file
+		<where>
+			<if test="fileID != null">fileID = #{fileID}</if>
+			<if test="nodeid != null">AND nodeid = #{nodeid}</if>
+			<if test="enabled != null">AND enabled = #{enabled}</if>
+		</where>
+		order by fileID desc
+	</select>
+	
+</mapper>

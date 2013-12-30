@@ -1,0 +1,736 @@
+ <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>订阅者管理</title>
+
+	<link rel="stylesheet" type="text/css" href="./../../res/js/ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="./../../res/js/ext2/resources/css/patch.css" />
+ 	<script type="text/javascript" src="./../../res/js/ext2/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="./../../res/js/ext2/ext-all-debug.js"></script>	
+	<script type="text/javascript" src="./../../res/js/ext2/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="./../../res/js/ext_base_extension.js"></script>
+	<script type="text/javascript" src="./../../res/js/controls/Ext.ux.RadioGroup.js"></script>  
+	<style>
+	/*****table的样式****/
+		#fieldTable { 
+			width: 100%;
+			padding: 0; 
+			margin: 0; 
+		} 
+		#fieldTable input{
+			font-size:11px;
+			width:100%;
+		}
+		caption { 
+		padding: 0 0 5px 0; 
+		width: 550px; 
+		font: italic 11px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; 
+		text-align: right; 
+		} 
+
+		#fieldTable th { 
+			font: bold 2 "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; 
+			color: #4f6b72; 
+			border-right: 1px solid #C1DAD7; 
+			border-bottom: 1px solid #C1DAD7; 
+			border-top: 1px solid #C1DAD7; 
+			letter-spacing: 2px; 
+			text-transform: uppercase; 
+			text-align: left; 
+			padding: 2px 2px 2px 4px; 
+			background: D0D0D0  no-repeat; 
+		} 
+
+		#fieldTable th.nobg { 
+			border-top: 0; 
+			border-left: 0; 
+			border-right: 1px solid #C1DAD7; 
+			background: none; 
+		} 
+
+		#fieldTable td { 
+			border-right: 1px solid #C1DAD7; 
+			border-bottom: 1px solid #C1DAD7; 
+			background: #fff; 
+			font-size:11px; 
+			padding: 2px 2px 2px 4px; 
+		} 
+
+
+		td.alt { 
+		background: #F5FAFA; 
+		color: #797268; 
+		} 
+
+		th.spec { 
+		border-left: 1px solid #C1DAD7; 
+		border-top: 0; 
+		background: #fff no-repeat; 
+		font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; 
+		} 
+
+		th.specalt { 
+		border-left: 1px solid #C1DAD7; 
+		border-top: 0; 
+		background: #f5fafa no-repeat; 
+		font: bold 10px "Trebuchet MS", Verdana, Arial, Helvetica, sans-serif; 
+		color: #797268; 
+		} 
+
+		.itemStyle {
+		    padding:8px;
+		    /*border: 1px solid silver;*/
+		    margin-bottom:0;
+		}
+		.itemStyle5 {
+		    padding:5px;
+		    /*border: 1px solid silver;*/
+		    margin-bottom:0;
+		}
+		/**checkboxGroup radiogroup**/
+		.inputUnit {
+			display: inline-block;
+			margin-right: 5px;
+		}
+
+	</style>
+</head>
+<body>
+<script type="text/javascript">
+
+
+</script>
+<script type="text/javascript">
+var params = Ext.parseQuery();
+var _sourceId = params['sourceId'];
+var _nodeId = params['nodeId'];
+
+subscriberMgr = {
+	centerPanel:null,
+	editWin:null,
+	init:function(){
+		var viewport = new Ext.Viewport({
+			layout: 'border',
+			items:[{
+				xtype:"panel",
+				id:"centerPanel",
+				region:'center',
+				//style:'padding:10px;',
+				autoScroll:true,
+				layout:'column'
+			}]
+		});
+		this.getSubscriber();
+	},
+	getSubscriber:function(){
+		Ext.getBody().mask("正在获取数据......");
+		Ext.Ajax.request({  
+			url:'../source!subscribeList.jhtml?nodeId=' + _nodeId + '&source.id=' + _sourceId,
+			method:'get',	
+			success:function(response,opts){
+				Ext.getBody().unmask();
+				var ret = Ext.util.JSON.decode(response.responseText);
+				if(ret.success==false){
+					Ext.Msg.show({
+						   title:'错误提示',
+						   msg: decodeURIComponent(ret.message?ret.message:ret.statusText),
+						   buttons: Ext.Msg.OK,
+						   animEl: 'elId',
+						   minWidth:420,
+						   icon: Ext.MessageBox.ERROR 
+					});
+				}else{
+					subscriberMgr.initSubscriberPanel(ret);
+				}
+			},
+			failure:function(ret,opts){
+				Ext.getBody().unmask();
+				Ext.Msg.show({
+					title:'错误提示',
+					msg: decodeURIComponent(ret.message?ret.message:ret.statusText),
+					buttons: Ext.Msg.OK,
+					animEl: 'elId',
+					minWidth:420,
+					icon: Ext.MessageBox.ERROR 
+				});
+			}
+		});
+	},
+	initSubscriberPanel:function(data){
+		subscriberMgr.centerPanel = Ext.getCmp('centerPanel');
+		var subs = data.subs;
+		//创建模板
+		var tpl= new Ext.XTemplate(
+			'<table id="fieldTable" cellspacing="0">',
+			'<tr><td align="right" width="100">回调接口URL:</td><td><input type="text" readonly value="{callBackUrl}"></input></td></tr>',
+			'<tr><td align="right">回调方法:</td><td align="center">{method}</td></tr>',
+			'<tr><td align="right">订阅时间</td><td align="center">{subscribeDateStr}</td></tr>',
+			'<tr><td align="right">推送总次数:</td><td align="center">{totalCount}</td></tr>',
+			'<tr><td align="right">推送错误总次数:</td><td align="center" style="color:red;">{pushErrCount}</td></tr>',
+			'<tr><td align="right">最近推送错误次数:</td><td align="center" style="color:red;">{lastPushErrCount}</td></tr>',
+			'<tr><td align="right">脚本错误总次数:</td><td align="center" style="color:red;">{scriptErrCount}</td></tr>',
+			'<tr><td align="right">最近脚本错误次数:</td><td align="center" style="color:red;">{lastScriptErrCount}</td></tr>',
+			'<tr><td align="right">最后推送时间:</td><td align="center">{lastPushDateStr}</td></tr>',
+			'<tr><td align="right">最后推送ID:</td><td align="center">{lastId}</td></tr>',
+			'<tr><td align="right">最后错误信息:</td><td align="center" style="color:red;">{errInfo}</td></tr>',
+			'<tr><td align="right">状态:</td><td align="center">{status}</td></tr>',
+			'</table>'
+		);
+		
+		for(var i=0;i<subs.length;i++){
+			var panel = new Ext.Panel({
+				title:'订阅者:【' + subs[i].creator + '】 ID:' + subs[i].id,
+				width:350,
+				autoHeight:true,
+				style:'padding:10px;',
+				html:tpl.applyTemplate(subs[i]),
+				bbar:[{
+					xtype:'button',
+					text:'修改订阅',
+					handler:subscriberMgr.modify(subs[i].id)
+				},{
+					text:'数据回放',
+					scope:subs[i],
+					handler:function(obj){
+						subscriberMgr.dataReplay(this.id,obj)
+					}
+				},{
+					xtype:'tbfill'
+				},{
+					text:'取消订阅',
+					handler:subscriberMgr.delSub(subs[i].id)
+				}]
+			});
+			subscriberMgr.centerPanel.add(panel);
+		}	
+		subscriberMgr.centerPanel.doLayout();
+	},
+	modify:function(id){
+		var subId = id;
+		return function(){
+			Ext.getBody().mask("正在获取数据......");
+			Ext.Ajax.request({  
+				url:'../source!viewSubscribe.jhtml?subscribe.id=' + subId +  '&nodeId=' + _nodeId,
+				method:'get',	
+				success:function(response,opts){
+					Ext.getBody().unmask();
+					var ret = Ext.util.JSON.decode(response.responseText);
+					if(ret.success==false){
+						Ext.Msg.show({
+							   title:'错误提示',
+							   msg: decodeURIComponent(ret.message?ret.message:ret.statusText),
+							   buttons: Ext.Msg.OK,
+							   animEl: 'elId',
+							   minWidth:420,
+							   icon: Ext.MessageBox.ERROR 
+						});
+					}else{
+						subscriberMgr.showEditWin(ret);
+					}
+				},
+				failure:function(ret,opts){
+					Ext.getBody().unmask();
+					Ext.Msg.show({
+						title:'错误提示',
+						msg: decodeURIComponent(ret.message?ret.message:ret.statusText),
+						buttons: Ext.Msg.OK,
+						animEl: 'elId',
+						minWidth:420,
+						icon: Ext.MessageBox.ERROR 
+					});
+				}
+			});
+		}
+	},
+	delSub:function(id){
+		var subId=id;
+		return function(){
+			Ext.Msg.show({
+				title:'提示',
+				msg: '您确定取消订阅吗?',
+				buttons: Ext.Msg.YESNO,
+				fn:function(button,text){   
+					if(button=='yes'){
+						Ext.getBody().mask("正在取消订阅......");
+						Ext.Ajax.request({  
+							url:'../source!deleteSubscribe.jhtml?subscribe.id=' + subId,
+							method:'get',	
+							success:function(response,opts){
+								Ext.getBody().unmask();
+								var ret = Ext.util.JSON.decode(response.responseText);
+								if(ret.success==false){
+									Ext.Msg.show({
+										   title:'错误提示',
+										   msg: decodeURIComponent(ret.message?ret.message:ret.statusText),
+										   buttons: Ext.Msg.OK,
+										   animEl: 'elId',
+										   minWidth:420,
+										   icon: Ext.MessageBox.ERROR 
+									});
+								}else{
+									location.reload();
+								}
+							},
+							failure:function(ret,opts){
+								Ext.getBody().unmask();
+								Ext.Msg.show({
+									title:'错误提示',
+									msg: decodeURIComponent(ret.message?ret.message:ret.statusText),
+									buttons: Ext.Msg.OK,
+									animEl: 'elId',
+									minWidth:420,
+									icon: Ext.MessageBox.ERROR 
+								});
+							}
+						});
+					}
+				},
+				animEl: 'elId',
+				icon: Ext.MessageBox.QUESTION
+		   });
+			
+		}
+	},
+	showEditWin:function(data){
+		var id2=data.id;
+		var win = new Ext.Window({
+			title:'订阅者:【' + data.creator + '】',
+			height:500,
+			width:600, 
+			buttonAlign: "center",
+			closable:true ,
+			closeAction:'close',
+			modal:false,
+			maximizable:true,
+			layout:'fit',
+			items:[{
+				xtype:'form',
+				buttonAlign:'center',
+				id:'frmSubscriber',
+				labelAlign:'left',
+				itemCls:'itemStyle5',
+				style:'padding:5px',
+				bodyStyle:'padding:0 5px 5px 5px',
+				url:'../source!updateSubscribe.jhtml',
+				layout:'xform2',
+				items:[{
+					xtype:'hidden',
+					name:'subscribe.id',
+					value:data.id
+				},{
+					xtype:'hidden',
+					name:'nodeId',
+					value:_nodeId
+				},{
+					xtype:'hidden',
+					style:'padding-top:5px',
+					name:'subscribe.sourceId',
+					value:_sourceId
+				},{
+					xtype:'textfield',
+					fieldLabel:'回调接口URL',
+					width:363,
+					allowBlank :false,
+					blankText :'不能为空',
+					name:'subscribe.callBackUrl',
+					value:data.callBackUrl
+				},{
+					xtype:'radiogroup',
+					fieldLabel:'回调方法',
+					name:'subscribe.method',
+					data:"[['get','GET'],['post','POST']]",
+					value:data.method
+				},{
+					xtype:'combo',
+					fieldLabel:'状态',
+					selectOnFocus:true,
+					editable:false,		
+					triggerAction: 'all',
+					mode:'local',
+					name:'subscribe.statusCode',
+					hiddenName:'subscribe.statusCode',
+					store:new Ext.data.SimpleStore({fields:['value','text'],data:[[0,'正常'],[1,'等待审核'],[2,'停止推送'],[3,'脚本错误'],[4,'推送错误'],[5,'有错误自动中止']]}),
+					valueField : 'value',//值
+					displayField : 'text',//显示文本
+					value:data.statusCode
+				},{
+					xtype:'textfield',
+					fieldLabel:'订阅人',
+					width:168,
+					name:'subscribe.creator',
+					value:data.creator
+				},{
+					xtype:'textarea',
+					fieldLabel:'脚本',
+					name:'subscribe.script',
+					width:363,
+					height:250,
+					value:data.script,
+					extra:{
+						xtype:'panel',
+						width:355,
+						border:false,
+						frame:false,
+						style :'float:right;',
+						items:[{
+							xtype:"button",
+							text:"调试脚本",
+							style:"margin-left:1em;display:inline-block;",
+							listeners:{
+								'click':function(){
+									subscriberMgr.debug(id2)(this.ownerCt.field);
+								}
+							}						
+						},{
+							xtype:"button",
+							text:"代码范例",
+							style:"margin-left:1em;display:inline-block;",
+							listeners:{
+								'click':function(){
+									subscriberMgr.showSampleCode();
+								}
+							}
+						}]
+					}
+				}]
+			}],
+			buttons:[{
+				text:'更新',
+				handler:function(){
+					var frm = Ext.getCmp('frmSubscriber').getForm();
+					if(!frm.isValid()){
+						Ext.Toast.show('输入不合法！',{
+							title:'提示',
+							time:1000,
+							minWidth:420
+						});
+						return;
+					}
+					frm.submit({
+						waitMsg : "正在提交数据，请稍候......",  
+						success:function(form,xhr){
+							var ret = Ext.util.JSON.decode(xhr.response.responseText);
+							if(!ret.success){
+								Ext.Msg.show({
+								   title:'错误提示',
+								   msg: decodeURIComponent(ret.message),
+								   buttons: Ext.Msg.OK,
+								   animEl: 'elId',
+								   minWidth:420,
+								   icon: Ext.MessageBox.ERROR 
+								});
+							}else{
+								Ext.Toast.show('更新成功',{
+								   title:'提示',
+								   buttons: Ext.Msg.OK,
+								   animEl: 'elId',
+								   minWidth:420,
+								   icon: Ext.MessageBox.INFO,
+								   callback:function(){
+										subscriberMgr.editWin.close(); 
+								   }
+								});
+							}
+						},
+						failure:function(form,xhr){
+							Ext.Msg.show({
+								   title:'错误提示',
+								   msg: decodeURIComponent((xhr.result&&xhr.result.message)||xhr.response.statusText),
+								   buttons: Ext.Msg.OK,
+								   animEl: 'elId',
+								   minWidth:420,
+								   icon: Ext.MessageBox.ERROR 
+							});				
+						}	
+					});
+				}
+			},{
+				text:'关闭',
+				handler:function(obj,e){
+					subscriberMgr.editWin.close();
+				}
+			}]
+		});
+		subscriberMgr.editWin = win;
+		win.show();
+	},
+	showSampleCode:function(){
+		if(!subscriberMgr.sampleCodeWin){
+			subscriberMgr.sampleCodeWin = new Ext.Window({
+				title:"代码范例",
+				height:350,
+				width:450, 
+				buttonAlign: "center",
+				closable:true ,
+				closeAction:'hide',
+				modal:false,
+				maximizable:true,
+				layout:'fit',
+				items:[{
+					xtype:'textarea',
+					readOnly:true,
+					value:'\n\t\
+\/\/订阅过滤器*****\n\t\
+function filter(){\n\t\
+	\/\/todo...\n\t\
+	return true;\n\t\
+}\n\t\
+\n\t\
+\/\/获取订阅参数列表\n\t\
+function getParamsList(){\n\t\
+	return ["id","status","title","videoUrl","pageUrl","enable"];\n\t\
+}\n\t\
+\n\t\
+var ret = filter();\n\t\
+var plist = getParamsList();\n\t\
+dataPool.put("subscribe_ret",ret);\n\t\
+dataPool.put("subscribe_plist",plist);'
+				}],
+				buttons:[{
+					text:'关闭',
+					handler:function(obj){
+						subscriberMgr.sampleCodeWin.hide();
+					}
+				}]
+			});
+		}
+		subscriberMgr.sampleCodeWin.show();
+	},
+	//数据回放
+	dataReplay:function(subId,sender){
+		var win = new Ext.Window({
+			title:'数据回放窗口-' + subId,
+			height:280,
+			width:330, 
+			modal: false,
+			buttonAlign: "center",
+			closable:true ,
+			closeAction:'close',
+			modal:false,
+			maximizable:false,
+			layout:'fit',
+			tbar:[{
+				xtype:'tbtext',
+				text:'开始ID:'
+			},{
+				xtype:'numberfield',
+				name:'startId',
+				allowBlank:false,
+				width:60
+			},{
+				xtype:'tbtext',
+				text:'结束ID:'
+			},{
+				xtype:'numberfield',
+				name:'endId',
+				allowBlank:false,
+				width:60
+			},{
+				xtype:'tbfill'
+			}],
+			bbar:[{
+				xtype:'tbfill'
+			}]
+
+		});
+		win.show();
+		win.anchorTo(sender.el.parent('.x-panel'),"tl?",[10,10]);	
+
+		var progressBar = new Ext.ProgressBar({
+			width:310,
+			text :''
+		});
+		win.bottomToolbar.add(progressBar);
+		
+				//创建模板
+		var replayStatusTpl= new Ext.XTemplate(
+			'<table id="fieldTable" cellspacing="0">',
+			'<tr><td align="right" width="100">已推送次数:</td><td align="center">{totalCount}</td></tr>',
+			'<tr><td align="right">推送错误总次数:</td><td align="center" style="color:red">{pushErrCount}</td></tr>',
+			'<tr><td align="right">最近推送错误次数:</td><td align="center" style="color:red">{lastPushErrCount}</td></tr>',
+			'<tr><td align="right">脚本错误总次数:</td><td align="center" style="color:red">{scriptErrCount}</td></tr>',
+			'<tr><td align="right">最近脚本错误次数:</td><td align="center" style="color:red">{lastScriptErrCount}</td></tr>',
+			'<tr><td align="right">最后推送时间:</td><td align="center" style="color:red">{lastPushDateStr}</td></tr>',
+			'<tr><td align="right">最后推送ID:</td><td align="center">{lastId}</td></tr>',
+			'<tr><td align="right">最后错误信息:</td><td align="center" style="color:red">{errInfo}</td></tr>',
+			'</table>'
+		);
+		var scope = {win:win,subId:subId,progressBar:progressBar,tpl:replayStatusTpl};
+		win.addListener('beforeclose',function(){
+			if(scope.taskId){
+				Ext.Msg.show({
+					title:'提示',
+					msg: '正在进行数据回放，您确定要停止吗?',
+					buttons: Ext.Msg.YESNO,
+					icon:Ext.MessageBox.QUESTION,
+					scope:scope,
+					fn:function(button,text){   
+						if(button=='yes'){
+							subscriberMgr.stopReplay(this);	
+						}
+					}
+				});
+			}
+			return true;
+		},scope);
+		var replayBtn = win.topToolbar.addButton({
+			text:'开始推送',
+			scope:scope,
+			handler:function(obj,e){
+				this.startId = this.win.topToolbar.items.items[1].el.value;
+				this.endId = this.win.topToolbar.items.items[3].el.value;
+				this.sender = obj;
+				if(this.startId=="" || this.endId==""){
+					return;
+				}	
+				if(obj.getText()=='开始推送')	{
+					subscriberMgr.startReplay(this);	
+					obj.setText("停止推送");					
+				}else{
+					Ext.Msg.show({
+						title:'提示',
+						msg: '正在进行数据回放，您确定要停止吗?',
+						buttons: Ext.Msg.YESNO,
+						icon:Ext.MessageBox.QUESTION,
+						scope:this,
+						fn:function(button,text){   
+							if(button=='yes'){
+								subscriberMgr.stopReplay(this);	
+								this.sender.setText("开始推送");
+							}
+						}
+					});						
+				}
+			}
+		});
+		win.doLayout();
+
+	},
+	//开始回放
+	startReplay:function(scope){
+		Ext.Ajax.request({  
+			url:'../source!dataReplay.jhtml?source.id='+ _sourceId +'&subscribe.id='+ scope.subId +'&startId='+ scope.startId +'&endId='+ scope.endId +'&nodeId=' + _nodeId,
+			method:'get',	
+			scope:scope,
+			success:function(response,opts){
+				var ret = Ext.util.JSON.decode(response.responseText);
+				if(ret.success==false){
+					Ext.Msg.show({
+						   title:'错误提示',
+						   msg: decodeURIComponent(ret.message?ret.message:'出现异常'),
+						   buttons: Ext.Msg.OK,
+						   minWidth:420,
+						   icon: Ext.MessageBox.ERROR 
+					});
+				}else{
+					subscriberMgr.replayStatus(this);
+				}
+			},
+			failure:function(ret,opts){
+				Ext.Msg.show({
+					title:'错误提示',
+					msg: decodeURIComponent(ret.message?ret.message:'出现异常'),
+					buttons: Ext.Msg.OK,
+					minWidth:420,
+					icon: Ext.MessageBox.ERROR 
+				});
+			}
+		});
+	},
+	//停止回放 //todo
+	stopReplay:function(scope){
+		if(scope.taskId){
+			Ext.TaskMgr.stop(scope.taskId);
+		}
+		Ext.Ajax.request({  
+			url:'../source!stopReplay.jhtml?source.id='+ _sourceId +'&subscribe.id='+ scope.subId +'&startId='+ scope.startId +'&endId='+ scope.endId +'&nodeId=' + _nodeId,
+			method:'get',	
+			scope:scope,
+			success:function(response,opts){
+				var ret = Ext.util.JSON.decode(response.responseText);
+				if(ret.success==false){
+					Ext.Msg.show({
+						   title:'错误提示',
+						   msg: decodeURIComponent(ret.message?ret.message:'出现异常'),
+						   buttons: Ext.Msg.OK,
+						   minWidth:420,
+						   icon: Ext.MessageBox.ERROR 
+					});
+				}else{
+					this.win.body.update('todo.......');
+				}
+			},
+			failure:function(ret,opts){
+				Ext.Msg.show({
+					title:'错误提示',
+					msg: decodeURIComponent(ret.message?ret.message:'出现异常'),
+					buttons: Ext.Msg.OK,
+					minWidth:420,
+					icon: Ext.MessageBox.ERROR 
+				});
+			}
+		});
+	},
+	replayStatus:function(options){
+		options.taskId = Ext.TaskMgr.start({  
+			run:function(){  
+				
+				Ext.Ajax.request({  
+					url:'../source!replayStatus.jhtml?source.id='+ _sourceId +'&subscribe.id='+ this.options.subId +'&nodeId=' + _nodeId,
+					method:'get',	
+					scope:this,
+					success:function(response,opts){
+						var ret = Ext.util.JSON.decode(response.responseText);
+						if(ret.success==false){
+							Ext.TaskMgr.stop(this);
+							this.options.progressBar.reset();   //复位进度条
+							this.options.progressBar.updateText(ret.message);
+						}else{
+							var total = parseInt(this.options.endId) - parseInt(this.options.startId);
+							var i =  ret.totalCount / total;
+							this.options.progressBar.updateProgress(i, '进度：' + ret.totalCount + '/' + total);
+
+							if (ret.totalCount == total) {
+								Ext.TaskMgr.stop(this);
+								this.options.progressBar.updateText("完成");
+							}
+							this.options.win.body.update(this.options.tpl.applyTemplate(ret));
+						}
+					},
+					failure:function(ret,opts){
+						Ext.Msg.show({
+							title:'错误提示',
+							msg: decodeURIComponent(ret.message?ret.message:'出现异常'),
+							buttons: Ext.Msg.OK,
+							minWidth:420,
+							icon: Ext.MessageBox.ERROR 
+						});
+					}
+				});
+				
+			
+				
+			},  
+			interval:5000 ,  //每秒更新  
+			options:options
+		}); 
+	},
+	debug:function(i){return Ext.jsDebugger("../",_nodeId,_sourceId,i,"subscribe")}
+
+};
+
+
+Ext.onReady(function(){
+Ext.BLANK_IMAGE_URL = "./../../res/js/ext2/resources/images/default/s.gif";
+Ext.QuickTips.init();
+Ext.form.Field.prototype.msgTarget = 'qtip';
+
+
+subscriberMgr.init();
+
+});
+
+</script>
+</body>	
+</html>

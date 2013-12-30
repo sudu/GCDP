@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-mapping PUBLIC "-//Hibernate/Hibernate Mapping DTD 2.0//EN" 
+  "http://hibernate.sourceforge.net/hibernate-mapping-3.0.dtd">
+<hibernate-mapping package="com.me.GCDP.workflow.model" default-lazy="false" >
+
+	<class name="CmppPluginDef" table="cmpp_wf_plugin_def" dynamic-update="true">
+		<id name="pluginId" column="id" type="int" >
+			<generator class="identity" />
+		</id>
+		<property name="pluginType" type="byte"/>
+		<property name="nodeId" type="int"/>
+		<property name="ids" type="string"/>
+		<property name="exceptionIds" type="string"/>
+		<property name="mailTo" type="string"/>
+		<property name="rtxTo" type="string"/>
+		<property name="smsTo" type="string"/>
+		<property name="scriptType" type="string"/>
+		<property name="stopOnException" type="character"/>
+		<property name="nActivity" type="string"/>
+		<property name="pluginName" type="string"/>
+		<many-to-one name="activity" 
+			column="activityid" not-null="true"
+			class="com.me.GCDP.workflow.model.CmppActivityDef">
+		</many-to-one>
+		<property name="subRoutine" type="string"></property>
+		<property name="executeCase" type="string"></property>
+		<property name="mailToEnable" type="character"></property>
+		<property name="smsToEnable" type="character"></property>
+		<property name="cfgCode" type="string"/>
+	</class>
+</hibernate-mapping>

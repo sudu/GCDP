@@ -1,0 +1,114 @@
+
+.slideEditor .form-horizontal .control-group:before, .form-horizontal .control-group:after {
+    content: "";
+    display: table;
+    line-height: 0;
+}
+
+.slideEditor .form-horizontal .control-group:before, .form-horizontal .control-group:after {
+    content: "";
+    display: table;
+    line-height: 0;
+}
+.slideEditor .form-horizontal .control-group {
+    margin-bottom: 10px;
+	margin-top: 3px;
+}
+.slideEditor .form-horizontal .control-group {
+    margin-bottom: 10px;
+}
+.slideEditor .form-horizontal .control-label {
+    float: left;
+    text-align: right;
+    width: 40px;
+}
+.slideEditor .form-horizontal .controls {
+    margin-left: 50px;
+}
+.slideEditor .form-horizontal .controls {
+    margin-left: 50px;
+}
+.slideEditor .form-horizontal input,textarea {
+	font-size:12px;
+	font-family:宋体;
+}
+
+.slideEditor .image-info{
+	background: #DDDDDD;
+    opacity: 0.8;
+    top: 0;
+    width: 100%;
+}
+
+.slideEditor .image-ct{
+    float: left;
+    margin: 3px;
+    width: 100px;
+}
+.slideEditor .image-content{
+    min-height: 100px;
+	background: url("../img/loading.gif") no-repeat scroll center top transparent;
+}
+
+
+.slideEditor .image-size{
+}
+.slideEditor .image-kbs{
+	float: right; margin-right: 3px;
+}
+/*进度条*/
+.slideEditor .progress{
+	position:relative;
+	background-color:#F0EFEF;
+	border:1px solid #cccccc;
+	font-size:11px;
+	font-weight:700;
+}
+.slideEditor .progress span{
+	position:relative;
+	text-align:left;
+	color:#ffffff;
+	height:14px;
+	line-height:14px;
+	font-family:Arial;
+	display:block;
+}
+.slideEditor .progress .green{background-color:#66CC33;}
+/*缩略图*/
+.slideEditor .thumb{padding:3px;}
+.slideEditor .thumb-ul{list-style: none outside none;float:left;}
+.slideEditor .thumb-ul .shortcutImage{
+	height: 70px;
+	text-align: center;
+	margin: 3px;
+}
+.slideEditor .thumb-ul li {float:left;width:80px;margin:3px;border:1px dotted;}
+.slideEditor .thumb-ul img{
+	vertical-align: middle;
+	max-width: 70px;
+	max-height: 70px;
+}
+.slideEditor .thumb-ul li .shortcutText{
+	height: 18px;
+	line-height: 18px;
+	text-align: center;
+	background: #ddd;
+}
+.slideEditor .thumb-ul li .thumb-remove{
+	background: none repeat scroll 0 0 #DDDDDD;
+	height:16px;
+}
+.slideEditor .thumb-ul li .thumb-remove span{
+	cursor:pointer;
+	width:16px;
+	height:16px;
+	float:right;
+	
+}
+.slideEditor .thumb-tool{margin:10px 0 2px 2px}
+.slideEditor .thumb-tool label{ padding:0px 10px}
+
+/*slide item panel header*/
+.slideEditor .x-panel-header-text input{width:30px;font-size:12px;text-align:center}
+
+.slideEditor .control-hide{display:none;}

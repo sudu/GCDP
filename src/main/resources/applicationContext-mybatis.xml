@@ -1,0 +1,209 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<bean id="ifMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.InterfaceMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="userMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.UserMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="groupMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.GroupMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="userGroupMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.UserGroupMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="authorityMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.AuthorityMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="nodeMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.NodeMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="taskMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.TaskMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="templateMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.TemplateMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="formConfigMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.FormConfigMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="sourceMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.SourceMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="tagParserMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.TagParserMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="messageMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.MessageMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="scriptMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.ScriptMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+		<bean id="versionMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.VersionMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	<!---->
+	<bean id="monitorMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.MonitorMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="dynamicConfigMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.DynamicConfigMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="dynPageStatusMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean"> 
+				<property name="mapperInterface" value="com.me.GCDP.mapper.DynPageStatusMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- 工作流 -->
+	<bean id="processListMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+				<property name="mapperInterface" value="com.me.GCDP.workflow.mapper.ProcessListMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="processInstanceMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+				<property name="mapperInterface" value="com.me.GCDP.workflow.mapper.ProcessInstanceMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="pluginStatusMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+				<property name="mapperInterface" value="com.me.GCDP.workflow.mapper.PluginStatusMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<!-- 资源管理 -->
+	<bean id="folderMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+				<property name="mapperInterface" value="com.me.GCDP.mapper.ResourceFolderMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+	<bean id="fileMapper" parent="baseTransactionProxy">
+		<property name="target">
+			<bean class="org.mybatis.spring.mapper.MapperFactoryBean">
+				<property name="mapperInterface" value="com.me.GCDP.mapper.ResourceFileMapper" />
+				<property name="sqlSessionFactory" ref="sqlSessionFactory" />
+			</bean>
+		</property>
+	</bean>
+	
+</beans>

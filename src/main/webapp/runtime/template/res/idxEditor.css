@@ -1,0 +1,109 @@
+/*********for idx mask*******/
+/* design by 视频部\产品部\刘洁
+.tplidxstyle {
+background-color: #bfdc81;
+border: 2px solid red;
+float: left;
+opacity: 0.7;
+z-Index: 8000;
+}
+
+.maskTitle {
+color: rgb(2,2,2);
+float: left;
+overflow: hidden;
+text-align: center;
+font-size: 14px;
+font-weight: bold;
+vertical-align: middle;
+}
+
+.tplidxstyleHighlight {
+    background-color: #bfdc81;
+    border:2px dotted red;
+    float: left;
+    opacity: 0.8;
+	z-Index:8000
+}
+.tplidxstyleHighlightMouseDown {
+    background-color: #bfdc81;
+    border:2px dotted red;
+    float: left;
+    opacity: 0.8;
+	z-Index:8000
+}
+
+*/
+
+.tplidxstyle {
+    background-color: #ACFA58;
+    border: 1px solid #FF6600;
+    float: left;
+    opacity: 0.4;
+	z-Index:8000
+}
+
+.tplidxstyle2 {
+    background-color: #ACFA58;
+    border: 1px solid #FF6600;
+    float: left;
+    opacity: 0.4;
+	z-Index:8000
+}
+.tplidxstyle3{
+	background: SkyBlue;
+	float: left;
+	opacity: 0.6;
+	z-Index:8000
+}
+.tplidxstyleHighlight {
+    background-color: #ACFA58;
+    border: 1px outset gray;
+    float: left;
+    opacity: 0.8;
+	z-Index:8000
+}
+.tplidxstyleHighlightMouseDown {
+    background-color: #ACFA58;
+    border: 1px inset gray;
+    float: left;
+    opacity: 0.8;
+	z-Index:8000
+}
+.tplidxstyle3{
+	background: SkyBlue;
+	float: left;
+	opacity: 0.6;
+	z-Index:8000
+}
+.maskTitle{
+	background: blue;
+    color: #FFFFFF;
+    float: left;
+    overflow: hidden;
+    text-align: center;
+}
+
+#fbIdxListBox{}
+#fbIdxListBox li{
+	color:#0E76CD;
+	border: 1px solid #DCE1E5;
+	display:inline;
+	float:left;
+}
+#fbIdxListBox  span{
+	padding-left:2px;
+	cursor:pointer;
+}
+#fbIdxListBox .idx-title{
+	float: left;
+    width: 155px;
+}
+#fbIdxListBox .icon-tools{
+	float:left;
+	cursor:pointer;
+	width:16px;
+	height:16px;
+	padding-right:5px;
+	background:url(images/edit.gif) no-repeat scroll transparent
+}

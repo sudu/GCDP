@@ -1,0 +1,35 @@
+<html>
+<head>
+	<title>Zero Clipboard Test</title>
+	<style type="text/css">
+		body { font-family:arial,sans-serif; font-size:9pt; }
+		
+		.my_clip_button { width:150px; text-align:center; border:1px solid black; background-color:#ccc; margin:10px; padding:10px; cursor:default; font-size:9pt; }
+		.my_clip_button.hover { background-color:#eee; }
+		.my_clip_button.active { background-color:#aaa; }
+	</style>
+	<script type="text/javascript" src="ZeroClipboard.js"></script>
+	<script language="JavaScript">
+		//set path
+		ZeroClipboard.setMoviePath('ZeroClipboard.swf');
+		function initCopyBtn(obj,value){
+			//create client
+			var clip = new ZeroClipboard.Client();
+			clip.setText(value);
+			clip.addEventListener('complete',function(client,text) {
+				alert('copied: ' + text);
+			});
+			//glue it to the button
+			clip.glue(obj.id);
+		}
+	</script>
+</head>
+<body>
+<img src="../img/help.gif" id="btnCopy1" onload="initCopyBtn(this,'btnCopy1')"/>
+<img src="../img/help.gif" id="btnCopy2" onload="initCopyBtn(this,'btnCopy2')"/>
+<img src="../img/help.gif" id="btnCopy3" onload="initCopyBtn('btnCopy3','btnCopy3')"/>
+<img src="../img/help.gif" id="btnCopy4" onload="initCopyBtn('btnCopy4','btnCopy4')"/>
+<img src="../img/help.gif" id="btnCopy5" onload="initCopyBtn('btnCopy5','btnCopy5')"/>
+<img src="../img/help.gif" id="btnCopy6" onload="initCopyBtn('btnCopy6','btnCopy6')"/>
+</body>
+</html>

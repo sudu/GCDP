@@ -1,0 +1,319 @@
+/* Created by http://freehtml5templates.com */
+/* reset */
+* {
+margin: 0;
+padding: 0;
+}
+
+/* render html5 elements as block */
+header, footer, section, aside, nav, article {
+display: block;
+}
+
+body {
+line-height: 1;
+/*background: #f1f1f1 url("images/bg2.gif") repeat;*/
+font-family: Verdana, Arial, Helvetica, sans-serif;
+color: #666;
+font-size: 14px;
+line-height: 18px;
+}
+	
+/* layout */
+
+#container {
+float: left;
+width: 100%;
+}
+
+#content {
+margin: 0 280px 0 20px;
+}
+
+#sidebar {
+float: left;
+overflow: hidden;
+width: 280px;
+margin-top: 20px;
+margin: 0 -240px 0 20px;
+}
+
+.menu,
+#main,
+#wrapper {
+margin: 0 auto;
+width: 940px;
+}
+
+#wrapper {
+background: #FAF0E6 url('images/wbg.gif') repeat;
+padding: 0 20px;
+-webkit-box-shadow: 3px 3px 7px #777;
+-moz-box-shadow: 3px 3px 7px #777;
+}
+
+.footer-segment {
+float: left;
+margin-right: 20px;
+width: 210px;
+}
+
+#fourth {
+margin-right: 0;
+}
+
+#fourth p {
+padding-right: 5px;
+}
+
+/* basics */
+
+h1,h2,h3,h4,h5,h6 {
+font-weight: bold;
+clear: both;
+color: #433335;
+}
+
+a {
+color:#433335;
+}
+
+a:hover {
+color: #EDA4A4;
+}
+	
+hr {
+background-color: #E7E7E7;
+border: 0;
+height: 1px;
+margin-bottom: 18px;
+clear: both;
+}
+
+p {
+margin-bottom: 18px;
+}
+
+li {
+padding-left: 5px;
+}
+
+/* header */
+
+header {
+margin-top: 20px;
+padding: 30px 0 0 0;
+}
+
+header img {
+clear: both;
+border-top: 4px solid #433335;
+display: block;
+}
+
+header>h1 {
+position: absolute;
+top: 80px;
+margin: 0 0 0 20px;
+width: 700px;
+font-size: 40px;
+}
+
+header>h1 a {
+color: #EDA4A4;
+font-weight: bold;
+text-decoration: none;
+text-shadow: 0px 2px 3px #433335;
+}
+
+header>h2 {
+position: absolute;
+top: 120px;
+margin: 0 0 0 20px;
+width: 240px;
+color: #d69797;
+font-style: italic;
+text-shadow: 0px 2px 3px #433335;
+font-size: 16px;
+}
+
+/* nav */
+
+nav {
+background: #443333;
+margin: 0 auto;
+width: 940px;
+display: block;
+float: left;
+}
+
+nav .menu {
+font-size: 16px;
+font-weight: bold;
+margin-left: 12px;
+}
+
+nav .menu ul {
+list-style: none;
+margin: 0;
+}
+
+nav .menu li {
+float: left;
+position: relative;
+}
+
+nav .menu a {
+display: block;
+text-decoration: none;
+color: #FAF0E6;
+padding: 0 10px;
+line-height: 38px;
+}
+
+nav .menu a:hover {
+color: #EDA4A4;
+}
+
+/* nav 1-level dropdowns */
+nav .menu li ul { 
+display: none; 
+}
+
+nav .menu ul li a {
+display: block;
+text-decoration: none;
+color: #FAF0E6;
+background: #433335;
+margin-left: 1px;
+white-space: nowrap;
+}
+nav .menu ul li a:hover { 
+background: #433335; 
+}
+
+nav .menu li:hover ul {
+display: block;
+position: absolute;
+}
+
+nav .menu li:hover li {
+float: none;
+font-size: 11px;
+}
+nav .menu li:hover a { 
+background: #433335; 
+}
+
+nav .menu li:hover li a:hover { 
+background: #433335; 
+}
+
+/* main content */
+
+#main {
+overflow: hidden;
+padding: 40px 0 0 0;
+}
+
+#content {
+width: 600px;
+margin-bottom: 36px;
+color: #444;
+font-size: 16px;
+line-height: 24px;
+padding-left: 10px;
+/*border-left: 1px #433335 solid;*/
+}
+
+article {
+padding: 10px;
+}
+
+article img {
+border: none;
+-webkit-box-shadow: 3px 3px 7px #777;
+-moz-box-shadow: 3px 3px 7px #777;
+}
+
+#content p,
+#content ul,
+#content ol,
+#content hr {
+margin-bottom: 24px;
+}
+
+#content ul ul,
+#content ol ol,
+#content ul ol,
+#content ol ul {
+margin-bottom: 0;
+}
+
+#content h1,
+#content h2,
+#content h3,
+#content h4,
+#content h5,
+#content h6 {
+color: #433335;
+margin: 0 0 20px 0;
+line-height: 1.5em;
+text-shadow: 0px 2px 3px #ddd;
+}
+
+.alignleft,
+img.alignleft {
+display: inline;
+float: left;
+margin-right: 24px;
+margin-top: 4px;
+}
+
+.alignright,
+img.alignright {
+display: inline;
+float: right;
+margin-left: 24px;
+margin-top: 4px;
+}
+
+.aligncenter,
+img.aligncenter {
+clear: both;
+display: block;
+margin-left: auto;
+margin-right: auto;
+}
+
+img.alignleft, img.alignright, img.aligncenter {
+margin-bottom: 12px;
+}
+
+/* sidebar and footer widget blocks */
+
+aside h3 {
+font-size: 18px;
+line-height: 1.5em;
+text-shadow: 0px 2px 3px #ddd;
+}
+
+aside ul {
+list-style: square inside;
+margin-bottom: 20px;
+}
+
+footer {
+margin-bottom: 20px;
+clear:both;
+}
+
+#footer-area {
+border-top: 4px solid #433335;
+margin-top: -4px;
+padding: 18px 0;
+overflow: hidden;
+}
+
+
+

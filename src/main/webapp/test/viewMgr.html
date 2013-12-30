@@ -1,0 +1,382 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>视图管理2</title>
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/patch.css" />
+	<link rel="stylesheet" type="text/css" href="../res/css/designTime.css" />
+	<script type="text/javascript" src="../res/js/ext2/adapter/ext/ext-base.js"></script>
+    <script type="text/javascript" src="../res/js/ext2/ext-all-debug.js"></script>
+	<script type="text/javascript" src="../res/js/ext2/ext-lang-zh_CN.js"></script>    
+	<script type="text/javascript" src="../res/js/ext_base_extension.js"></script>  
+	<script type="text/javascript" src="../res/js/ext_vtypes.js"></script>  
+	<script type="text/javascript" src="../res/js/designTimeClass.js"></script>  
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.TitleField.js"></script> 
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.grid.GroupPropertyGrid.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.Sort.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.ControlSort.js"></script>
+	<script type="text/javascript" src="../res/js/editors/Ext.ux.CustomEditors.TextArea.js"></script>
+	<script type="text/javascript" src="../res/js/editors/Ext.ux.CustomEditors.ArrayEditor.js"></script>
+	<script type="text/javascript" src="../res/js/editors/Ext.ux.CustomEditors.KeyValueEditor.js"></script>
+	<script type="text/javascript" src="../res/js/editors/Ext.ux.ListItemEditor.js"></script>
+	<script type="text/javascript" src="../res/js/editors/Ext.createRecordsField.js"></script>
+	<script type="text/javascript" src="../res/js/editors/Ext.createWinEditor.js"></script>
+	<script type="text/javascript" src="../res/js/editors/Ext.ux.DimenEditor.js"></script>
+	<script type="text/javascript" src="../res/js/editors/Ext.ux.ArrayEditor.js"></script>
+	<script type="text/javascript" src="../res/js/editors/Ext.ux.JsonEditor.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.CheckboxGroup.js"></script>
+	<script type="text/javascript" src="../res/js/editors/Ext.ux.CheckGroupEditor.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.LinkageComboBox.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.LinkageFieldSet.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.LinkageFieldText.js"></script>	
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.TopNewEditField.js"></script>
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.TextArea2.js"></script> 	
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.HTMLField.js"></script> 	
+	
+	<script type="text/javascript" src="../res/js/controls/Ext.ux.Portal.js"></script>
+	<style>
+		.design .x-panel-mr{
+			background:none;
+			padding-right:0
+		}
+		.design .x-panel-br{
+			background:none;
+			padding-right:0
+		}
+		.design .x-panel-bl{
+			background:none;
+			padding-right:0
+		}
+		.design .x-panel-ml{
+			background:none;
+			padding-right:0
+		}
+		.design .x-panel-bc{
+			background:none;
+			padding-right:0
+		}			
+		.design .x-panel-tl{
+			display:none
+		}	
+	</style>
+	
+	<script>
+		var formId__ = 186;
+		var viewId__ = 307;
+		var nodeId__ = 2001; 
+		var viewConfig__ = {
+			formView:{},
+			fields:[["title","消息标题","VARCHAR"],["tag","消息标签","VARCHAR"],["contant","消息正文","TEXT"],["link","消息链接","VARCHAR"],["docLink","文章列表链接","TEXT"],["contantLink","内容类型","INT"],["onLine","是否上线","INT"]]
+		};
+		Ext.ns("Designer");
+		Ext.ns("Designer.controls");
+	</script>	
+	
+	<script>
+	Static = {
+		saveType:[[1,'nosave'],[2,'db'],[3,'nosql']],
+		indexType:[[0,'不检索'],[1,'索引'],[2,'索引+排序'],[3,'索引+分词'],[4,'全文索引'],[5,'特殊符号分词'],[6,'仅存储']],
+		fieldType:[['INT','INT'],['FLOAT','FLOAT'],['DOUBLE','DOUBLE'],['CHAR','CHAR'],['VARCHAR','VARCHAR'],['TEXT','TEXT'],['mediumtext','mediumtext'],['DATETIME','DATETIME']],
+		inputType:[[1,'可编辑'],[2,'隐藏'],[3,'只读'],[4,'不出现']]
+	} 
+
+    function mxApplication(){
+		var config={
+			"graph":{
+				"container":Ext.getCmp("graph-panel")
+			},
+			"propertyEditor":{
+				"container":Ext.getCmp("property-panel")
+			},			
+			"toolbar":{
+				"container":Ext.getCmp("controls-panel"),
+				"controls":Designer.controls
+			}
+			
+		};
+		window.editor = new xformEditor(config);
+	}
+	</script>	
+</head>
+<body>
+<script type="text/javascript" src="../res/js/config/formTemplate.js"></script>	
+<script type="text/javascript" src="../res/js/config/controlsUI_cfg.js"></script>
+<script type="text/javascript">	
+
+function xformEditor(a) {
+	this.config = a;
+    if (document.body != null) {
+		this.templates = this.decodeTemplates(a.toolbar.controls);
+		this.toolbar = this.createToolbar(a.toolbar);
+
+		this.graph = this.createGraph(a.graph.container);
+    }
+}
+xformEditor.prototype.constructor = xformEditor;
+xformEditor.prototype.config = null;
+xformEditor.prototype.graph = null;
+xformEditor.prototype.toolbar = null;
+xformEditor.prototype.templates = null;
+xformEditor.prototype.createGraph=function(container){
+	return new xformGraph(container,this);
+};
+xformEditor.prototype.decodeTemplates = function(config) {
+	if(!config)return;
+	var tpls = {};
+	for(var key in config.ui){
+		var item = config.ui[key];
+		item.name = key;
+		tpls[key] = item;
+	}
+	return tpls;
+};
+xformEditor.prototype.createToolbar=function(config){
+	var toolbar = new xformToolbar(config.container,this);
+	var controls = this.templates;
+	for(var name in controls){
+		var item = controls[name];
+		item.isTool!==false && toolbar.addItem(controls[name]);
+	}
+	return toolbar;
+};
+
+
+function xformToolbar(container,editor){
+	this.ownerCt = container;
+	this.container = container.body;
+	this.editor = editor;
+}
+xformToolbar.prototype.constructor = xformToolbar;
+xformToolbar.prototype.editor = null;
+xformToolbar.prototype.container = null;
+xformToolbar.prototype.ownerCt = null;
+xformToolbar.prototype.buttonTpl= new Ext.XTemplate('<img class="xformToolbarMode" width="16" height="16" src="{icon}" title="关于" /><span>{text}</span>');
+xformToolbar.prototype.addItem = function(item){
+	var html = this.buttonTpl.applyTemplate({
+		icon:item.icon||'../res/js/ext2/resources/images/default/grid/group-by.gif',
+		text:item.tip
+	});
+	var itemEl = this.container.createChild({
+		tag:'div',
+		title:item.text,
+		cls:'controlItem',
+		html:html
+	});
+	itemEl.template = item;
+	this.bindDragEvent(itemEl);
+};
+xformToolbar.prototype.bindDragEvent = function(el){
+	var prox = new Ext.dd.DragSource(el,{
+		group:'xformEditorGroup'
+	});
+	prox.afterDragEnter = function(target,e){
+		//this.deltaX = 28 ;//todo
+		//this.deltaY = 20;
+	};
+	prox.afterDragDrop = this.drop.createDelegate(this,[el.template],true);
+};
+xformToolbar.prototype.drop = function(target, e, id,template) {
+	if (target.id != id) return; 
+	var graph = this.editor.graph;
+	var ownerCt = graph.formPanelCell.control;
+	var cell = graph.createCell(template.name,ownerCt,template);
+};
+
+
+function xformGraph(container,editor) {
+	this.container = container;
+	this.editor = editor;
+	this.init();
+}
+xformGraph.prototype.constructor = xformGraph;
+xformGraph.prototype.cellCollection = null;
+xformGraph.prototype.container = null;
+xformGraph.prototype.formPanelCell = null;
+xformGraph.prototype.init = function(){
+	//创建formPanel
+	this.formPanelCell = this.createFormPanel();
+	
+	this.bindEvents();
+};
+xformGraph.prototype.createFormPanel = function(){
+	//创建formPanel
+	var c = this.container;
+	var cell = new xformFormCell("FormPanel",this.container,this,null);
+	return cell;
+};
+//创建元素,包括控件、容器
+xformGraph.prototype.createCell = function(name,ownerCt,config){
+	var cell = new xformControlCell(name,ownerCt,this,config);
+};
+xformGraph.prototype.bindEvents = function(){
+	new Ext.dd.DDTarget(this.formPanelCell.control.body, 'xformEditorGroup');
+};
+
+
+
+function xformCell(name,ownerCt,graph,config){
+
+}
+xformCell.prototype.constructor = xformCell;
+xformCell.prototype.name = null;
+xformCell.prototype.config = null;
+xformCell.prototype.graph = null;
+xformCell.prototype.ownerCt = null;
+xformCell.prototype.objectIdentity = null;
+
+xformCell.prototype.render = function(){
+	
+};
+xformCell.prototype.getTemplate = function(){
+	return this.graph.editor.templates[this.name];
+}
+
+function xformFormCell(name,ownerCt,graph,config){
+	this.name = name;
+	this.config = config;
+	this.graph = graph;
+	this.ownerCt = ownerCt;
+	
+	if(config && typeof config.cellConfig.id !=="undefined"){
+		this.objectIdentity = cfg.cellConfig.id;
+		if(this.objectIdentity>=ccObjectIdentity.counter){
+			ccObjectIdentity.counter = this.objectIdentity + 1;
+		}
+	}else{
+		this.objectIdentity = ccObjectIdentity.get();
+	}
+	
+	this.init();
+}
+xformFormCell.prototype = new xformCell;
+xformFormCell.prototype.constructor = xformFormCell;
+xformFormCell.prototype.init = function(){
+	this.control = this.render();
+};
+xformFormCell.prototype.render = function(){
+	var template = this.getTemplate();
+	var dName = template.design.name;
+	var ui = template.design.ui;
+	this.config && Ext.applyDeep(ui,this.config.ui);
+	ui.items=[{
+		xtype:'portal',
+		region:'center',
+		margins:'35 5 5 0',
+		items:[{
+			columnWidth:1,
+			style:'padding:5px',
+			items:[{
+				title:'控件容器1',
+				layout:'xform',
+				border:false,
+				cls:'design',
+				items:[{
+					fieldLabel:'姓名',
+					xtype:'textfield'
+				}]
+			},{
+				title:'控件容器2',
+				layout:'xform',
+				border:false,
+				cls:'design',
+				items:[{
+					fieldLabel:'地址',
+					xtype:'textfield'
+				}]
+			}]
+		}]
+	}];
+	ui.layout="fit";
+	
+	eval('var newObj = new '+ dName +'(ui)');	
+	this.ownerCt.add(newObj);
+	this.ownerCt.doLayout();
+	return newObj;
+};
+
+function xformControlCell(name,ownerCt,graph,config){
+	this.name = name;
+	this.config = config;
+	this.graph = graph;
+	this.ownerCt = ownerCt;
+}
+xformControlCell.prototype = new xformCell;
+xformControlCell.prototype.constructor = xformControlCell;
+var ccObjectIdentity = {
+	counter: 0,
+	get: function() {
+		return ccObjectIdentity.counter++
+	}
+};
+</script>	
+
+<script type="text/javascript">
+Ext.BLANK_IMAGE_URL = "../res/js/ext2/resources/images/default/s.gif";
+Ext.onReady(function(){
+	var viewport = new Ext.Viewport({
+		layout:'fit',
+		items:[{
+			xtype:'panel',
+			layout:'border',
+			tbar:[
+			{
+				text:'通过JSON导入'
+			},
+			{
+				text: '导出为JSON'
+			},
+			{
+				text: '保存(S)',
+				tooltip :'支持快捷键Ctrl+S'
+			}
+			],
+			items:[
+			{
+				xtype: 'panel',
+				id:'controls-panel',
+				title: '控件库',
+				region:'west',
+				split:true,
+				width: 200,
+				minSize: 100,
+				maxSize: 350,
+				collapsible: true,
+				//autoScroll:true
+				bodyStyle:'overflow-x:hidden;overflow-y:auto;'
+
+			},
+			{
+				xtype:'panel',
+				id:'graph-panel',
+				title: '控件面板',
+				region:'center',
+				autoScroll:true
+			},
+			{
+				xtype: 'panel',
+				id:'property-panel',
+				title: '属性配置',
+				region: 'east',
+				width: 300,
+				minSize: 200,
+				maxSize: 400,
+				split: true,
+				collapsible: true
+			}],
+			bbar: [{
+				xtype:'textfield',
+				width:300,
+				readOnly:true,
+				style:'border: 1px inset rgb(169, 191, 211); background: none repeat scroll 0% 0% transparent; width: 292px;'
+			}]
+		}]
+	});
+	mxApplication();
+});
+
+</script>		
+
+
+</body>
+</html>

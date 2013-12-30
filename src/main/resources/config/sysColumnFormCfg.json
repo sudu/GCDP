@@ -1,0 +1,24 @@
+{
+	"listConfig" : [ {
+		"listId" : 391,
+		"formId" : 277,
+		"name" : "栏目系统表单",
+		"config" : "{\"txtTitle\":\"栏目系统表单\",\"sourceType\":\"url\",\"url\":\"../runtime/xadapter!columnListData.jhtml\",\"neededFields\":\"id,name,path\",\"template\":\"listTemplate_url_1\",\"pagesize\":22,\"autoPagesize\":true,\"headInject\":\"\",\"bodyInject\":\"\",\"extOnReadyJs\":\"\",\"isWidthFreeRow\":-1,\"myTemplate\":\"\",\"buttons\":{\"ext\":[]},\"columns\":[{\"title\":\"ID\",\"tpl\":\"{id}\",\"field\":\"\",\"tipTpl\":\"\",\"isView\":true,\"isWidthFree\":\"\"},{\"title\":\"名称\",\"tpl\":\"{name}\",\"field\":\"\",\"tipTpl\":\"\",\"isView\":true,\"isWidthFree\":\"\"},{\"title\":\"栏目path\",\"tpl\":\"{path}\",\"field\":\"\",\"tipTpl\":\"\",\"isView\":true,\"isWidthFree\":\"\"}],\"enableSearchSvr\":true,\"searchSvr\":[{\"field\":\"id\",\"title\":\"ID\",\"enable\":true,\"dataSourceType\":\"\",\"ctrl\":\"\",\"width\":\"\",\"dataSource\":\"\"},{\"field\":\"name\",\"title\":\"名称\",\"enable\":true,\"dataSourceType\":\"\",\"ctrl\":\"\",\"width\":\"\",\"dataSource\":\"\"},{\"field\":\"\",\"title\":\"\",\"enable\":true,\"dataSourceType\":\"\",\"ctrl\":\"\",\"width\":\"\",\"dataSource\":\"\"},{\"field\":\"\",\"title\":\"\",\"enable\":true,\"dataSourceType\":\"\",\"ctrl\":\"\",\"width\":\"\",\"dataSource\":\"\"},{\"field\":\"\",\"title\":\"\",\"enable\":true,\"dataSourceType\":\"\",\"ctrl\":\"\",\"width\":\"\",\"dataSource\":\"\"},{\"field\":\"\",\"title\":\"\",\"enable\":true,\"dataSourceType\":\"\",\"ctrl\":\"\",\"width\":\"\",\"dataSource\":\"\"}]}"
+	} ],
+	"formConfig" : {
+		"formId" : 277,
+		"tableName" : "frm_277",
+		"name" : "栏目系统表单",
+		"config" : "{\"fieldsConfig\":{\"fieldsConfig\":[{\"f_name\":\"uuid\",\"f_title\":\"栏目唯一ID，例：finance-16-1-11-\",\"f_type\":\"VARCHAR\",\"f_length\":40,\"f_saveType\":2,\"f_allowNull\":false,\"l_allowSearch\":false,\"l_allowSort\":false,\"indexType\":1},{\"f_name\":\"cmpp\",\"f_title\":\"CMPP源host\",\"f_type\":\"VARCHAR\",\"f_length\":255,\"f_saveType\":2,\"f_allowNull\":true,\"l_allowSearch\":false,\"l_allowSort\":false,\"indexType\":1},{\"f_name\":\"nodeId\",\"f_title\":\"CMPP源nodeId\",\"f_type\":\"VARCHAR\",\"f_length\":255,\"f_saveType\":2,\"f_allowNull\":true,\"l_allowSearch\":false,\"l_allowSort\":false,\"indexType\":1},{\"f_name\":\"oid\",\"f_title\":\"原系统栏目Id\",\"f_type\":\"INT\",\"f_length\":11,\"f_saveType\":2,\"f_allowNull\":true,\"l_allowSearch\":false,\"l_allowSort\":false,\"indexType\":1},{\"f_name\":\"name\",\"f_title\":\"栏目名称\",\"f_type\":\"VARCHAR\",\"f_length\":255,\"f_saveType\":2,\"f_allowNull\":true,\"l_allowSearch\":false,\"l_allowSort\":false,\"indexType\":1},{\"f_name\":\"path\",\"f_title\":\"栏目Path\",\"f_type\":\"VARCHAR\",\"f_length\":255,\"f_saveType\":2,\"f_allowNull\":true,\"l_allowSearch\":false,\"l_allowSort\":false,\"indexType\":1},{\"f_name\":\"host\",\"f_title\":\"栏目域名\",\"f_type\":\"VARCHAR\",\"f_length\":255,\"f_saveType\":2,\"f_allowNull\":true,\"l_allowSearch\":false,\"l_allowSort\":false,\"indexType\":1},{\"f_name\":\"puuid\",\"f_title\":\"父栏目UUID，格式同UUID\",\"f_type\":\"VARCHAR\",\"f_length\":40,\"f_saveType\":2,\"f_allowNull\":true,\"l_allowSearch\":false,\"l_allowSort\":false,\"indexType\":1}],\"sortable\":[],\"searchable\":[],\"fields\":[[\"uuid\",\"栏目唯一ID，例：finance-16-1-11-\",\"VARCHAR\"],[\"cmpp\",\"CMPP源host\",\"VARCHAR\"],[\"nodeId\",\"CMPP源nodeId\",\"VARCHAR\"],[\"oid\",\"原系统栏目Id\",\"INT\"],[\"name\",\"栏目名称\",\"VARCHAR\"],[\"path\",\"栏目Path\",\"VARCHAR\"],[\"host\",\"栏目域名\",\"VARCHAR\"],[\"puuid\",\"父栏目UUID，格式同UUID\",\"VARCHAR\"]]},\"searchConfig\":{\"sortable\":[],\"searchable\":[\"uuid\",\"cmpp\",\"nodeId\",\"oid\",\"name\",\"path\",\"host\",\"puuid\"]},\"tableBak\":{\"enableBak\":false,\"recordCount\":2000000,\"dateFieldName\":\"\"}}",
+		"isSysForm" : 2,
+		"powerPath" : "",
+		"nodeid" : 11
+	},
+	"viewConfig" : [ {
+		"formId" : 277,
+		"name" : "栏目系统表单",
+		"config" : "{\"form\":{\"ui\":{\"id\":\"FormPanel_1\",\"noteWidth\":0,\"title\":\"栏目系统表单\",\"labelWidth\":100,\"hideNotes\":false,\"hideLabels\":false},\"template\":{\"defaultTpl\":\"template_1\",\"customedTpl\":\"\",\"bodyInject\":\"\",\"headInject\":\"\"},\"controls\":[],\"name\":\"Ext.form.FormPanel\",\"buttons\":{\"b_saveAndAdd\":true,\"b_preview\":true,\"b_close\":true,\"b_saveAndClose\":true,\"b_save\":true},\"script\":{\"s_savedJs\":\"\",\"s_powerScript\":\"\",\"s_afterJs\":\"\",\"s_onloadJs\":\"\",\"s_powerRegex\":\"\",\"s_beforeJs\":\"\"}},\"relyCSS\":[],\"relyJS\":[]}",
+		"viewId" : 447
+	} ]
+}
+}

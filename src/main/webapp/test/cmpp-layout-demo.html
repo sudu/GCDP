@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<title>cmpp-layout-Demo</title>
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/ext-all.css" />
+	<link rel="stylesheet" type="text/css" href="../res/js/ext2/resources/css/patch.css" />
+	<link rel="stylesheet" type="text/css" href="../res/css/runTime.css" />
+	
+ 	<script type="text/javascript" src="../res/js/ext2/adapter/ext/ext-base.js"></script>
+	<script type="text/javascript" src="../res/js/ext2/ext-all-debug.js"></script>	
+	<script type="text/javascript" src="../res/js/ext2/ext-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../res/js/ext_base_extension.js"></script>
+</head>
+<body>
+<script>
+Ext.onReady(function(){
+	Ext.BLANK_IMAGE_URL = "../res/js/ext2/resources/images/default/s.gif";
+	Ext.lOADING_IMAGE_URL= "../res/js/ext2/resources/images/default/grid/wait.gif"; //resources\images\default\grid
+	Ext.QuickTips.init();
+	Ext.form.Field.prototype.msgTarget = 'qtip';
+	
+	new Ext.Viewport({
+		layout:"fit",
+		defaults:{
+			border:false,
+			frame:false
+		},
+		items:[{
+			xtype:"form",
+			layout:"xform2",
+			id:'myForm',
+			autoHeight:true,
+			labelAlign: 'right',
+			labelWidth: 85,
+			autoScroll:true,
+			defaultType: 'textfield',
+			defaults:{
+				border:false,
+				frame:false
+			},
+			items: [{
+				fieldLabel: 'First Name',
+				name: 'first',
+				width:190
+			}, {
+				fieldLabel: 'Last Name',
+				name: 'last',
+				width:190
+			}, {
+				fieldLabel: 'Company',
+				name: 'company',
+				width:190
+			}, {
+				fieldLabel: 'Email',
+				name: 'email',
+				vtype:'email',
+				width:190
+			},{
+				xtype:'panel',
+				border:false,
+				autoHeight:true,
+				layout :'column',
+				defaults:{
+					border:false,
+					frame:false,
+					autoHeight:true
+				},
+				items : [{
+					xtype:'panel',
+					layout:"xform",
+					labelAlign: 'right',
+					labelWidth: 85,	
+					columnWidth:.2,		
+					items:[{
+						fieldLabel: 'Company',
+						xtype:'textfield',
+						name:'Company2',
+						hideLabel: false,
+						hideNote: false,
+						width:190,
+						anchor:'100%',
+						fieldNote:'dsdsdd'
+						
+					},{
+						fieldLabel: 'Email',
+						vtype:'email',
+						xtype:'textfield',
+						anchor:'100%',
+						width:190
+					}]
+				}, {
+					xtype:'panel',
+					layout:"xform",
+					labelAlign: 'right',
+					labelWidth: 85,		
+					columnWidth:.3,						
+					items:[{
+						anchor:'100%',
+						fieldLabel: 'Company',
+						xtype:'textfield',
+						width:190
+					}]
+				}, {
+					xtype:'panel',
+					layout:"xform",
+					labelAlign: 'right',
+					labelWidth: 85,	
+					columnWidth:.5,						
+					items:[{
+						fieldLabel: 'Company',
+						xtype:'textfield',
+						anchor:'100%',
+						width:190
+					}]
+				}, {
+					xtype:'panel',
+					layout:"xform2",
+					labelAlign: 'right',
+					labelWidth: 85,					
+					items:[{
+						fieldLabel: 'Company',
+						xtype:'textfield',
+						width:190
+					}]
+				}, {
+					xtype:'panel',
+					layout:"xform2",
+					labelAlign: 'right',
+					labelWidth: 85,					
+					items:[{
+						fieldLabel: 'Company',
+						xtype:'textfield',
+						width:190
+					}]
+				}]
+			}]
+		}]
+	});
+	
+});
+	
+</script>
+</body>
+</html>

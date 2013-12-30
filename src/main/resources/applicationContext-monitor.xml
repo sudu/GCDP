@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-3.0.xsd">
+
+	<!--Redis检查定时任务-->	
+	<bean id="redisCheckTaskDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.me.GCDP.task.monitor.RedisCheckTask" />
+	</bean>
+
+	<!--触发器-->
+	<!--Redis检查触发器-->
+	<bean id="redisTaskCheckTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="JobDetail" ref="redisCheckTaskDetail" />
+		<property name="startDelay" value="1000"/>
+		<property name="repeatInterval" value="600000" />
+		<property name="repeatCount" value="-1" />
+	</bean>
+	
+	<!--/Redis检查定时任务-->
+	
+	
+	<!--CmppDB检查定时任务-->
+	<bean id="cmppDBCheckTaskDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.me.GCDP.task.monitor.CmppDBCheckTask" />
+	</bean>
+	<!--触发器-->
+	<bean id="cmppDBCheckTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="JobDetail" ref="cmppDBCheckTaskDetail" />
+		<property name="startDelay" value="2000"/>
+		<property name="repeatInterval" value="600000" />
+		<property name="repeatCount" value="-1" />
+	</bean>
+	<!--/CmppDB检查定时任务-->
+
+	<!--DB检查定时任务-->
+	<bean id="dBCheckTaskDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.me.GCDP.task.monitor.DBCheckTask" />
+	</bean>
+	<!--触发器-->
+	<!--DB检查触发器-->
+	<bean id="dBTaskCheckTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="JobDetail" ref="dBCheckTaskDetail" />
+		<property name="startDelay" value="3000"/>
+		<property name="repeatInterval" value="600000" />
+		<property name="repeatCount" value="-1" />
+	</bean>
+	
+	<!--/DB检查定时任务-->
+	
+	<!--search检查定时任务-->
+	<bean id="searchCheckTaskDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.me.GCDP.task.monitor.SearchCheckTask" />
+	</bean>
+	
+	<!--触发器-->
+	<bean id="searchCheckTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="JobDetail" ref="searchCheckTaskDetail" />
+		<property name="startDelay" value="6000"/>
+		<property name="repeatInterval" value="600000" />
+		<property name="repeatCount" value="-1" />
+	</bean>
+	<!--/search检查定时任务-->
+	
+	<!--queue检查定时任务-->
+	<bean id="queueCheckTaskDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.me.GCDP.task.monitor.QueueCheckTask" />
+	</bean>
+	
+	<!--触发器-->
+	<bean id="queueTaskCheckTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="JobDetail" ref="queueCheckTaskDetail" />
+		<property name="startDelay" value="9000"/>
+		<property name="repeatInterval" value="600000" />
+		<property name="repeatCount" value="-1" />
+	</bean>
+	
+	<!--/queue检查定时任务-->
+	
+	<!--dynStatusUpdate定时任务-->
+	<bean id="dynStatusUpdateTaskDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.me.GCDP.task.monitor.DynStatusUpdateTask" />
+	</bean>
+	
+	<!--触发器-->
+	<bean id="dynStatusUpdateTaskTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="JobDetail" ref="dynStatusUpdateTaskDetail" />
+		<property name="startDelay" value="11000"/>
+		<property name="repeatInterval" value="600000" />
+		<property name="repeatCount" value="-1" />
+	</bean>
+
+	<!--logClean定时任务-->
+	<bean id="logCleanTaskDetail" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.me.GCDP.task.monitor.MonitorLogCleanTask" />
+		<property name="jobDataAsMap">
+			<map>
+				<!-- 日志有效时间 以天计算 -->
+				<entry key="logLiveTime" value="30"></entry>
+			</map>
+		</property>
+	</bean>
+	
+	<!--触发器-->
+	<bean id="logCleanTaskTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="JobDetail" ref="logCleanTaskDetail" />
+		<property name="startDelay" value="5000"/>
+		<property name="cronExpression">
+            <value>0 5 2 * * ?</value>  
+        </property> 
+	</bean>
+	
+	<!-- 读取流程定义文件并且更新内存中流程定义信息的定时任务 -->
+	<bean id="updateProcessDefinitionFromFileTask" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.me.GCDP.task.monitor.ProcessDefinitionFileMonitorTask"/>
+	</bean>
+	
+	<!-- 定期清理流程实例及流程运行状态数据 -->
+	<bean id="legacyProcessContextCleanerTask" class="org.springframework.scheduling.quartz.JobDetailBean">
+		<property name="jobClass" value="com.me.GCDP.task.monitor.LegacyProcessContextCleanerTask"/>
+	</bean>
+	
+	<bean id="updateProcessDefinitionFromFileTrigger" class="org.springframework.scheduling.quartz.SimpleTriggerBean">
+		<property name="JobDetail" ref="updateProcessDefinitionFromFileTask"/>
+		<property name="startDelay" value="30000"/>
+		<property name="repeatInterval" value="10000" />
+		<property name="repeatCount" value="-1" />
+	</bean>
+	
+	<bean id="legacyProcessContextCleanerTrigger" class="org.springframework.scheduling.quartz.CronTriggerBean">
+		<property name="JobDetail" ref="legacyProcessContextCleanerTask"/>
+		<property name="startDelay" value="5000"/>
+		<property name="cronExpression">
+            <value>0 0 1 * * ?</value>  
+        </property> 
+	</bean>
+	
+	<!--/queue检查定时任务-->
+	
+	<!--调度器-->
+	<bean id="monitorScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
+		<property name="triggers">
+			<list>
+				 
+				<ref bean="legacyProcessContextCleanerTrigger"/>
+				
+				<ref bean="updateProcessDefinitionFromFileTrigger"/>
+				<!--
+				<ref bean="dBTaskCheckTrigger" />
+				<ref bean="sendFileTaskCheckTrigger" />
+				<ref bean="imageTaskCheckTrigger"></ref>
+				<ref bean="cmppDBCheckTrigger"></ref>
+				<ref bean="textCheckTrigger"></ref>
+				<ref bean="searchCheckTrigger"/>
+				<ref bean="redisTaskCheckTrigger" />
+				<ref bean="queueTaskCheckTrigger" />
+				<ref bean="logCleanTaskTrigger"/>
+				<ref bean="dynStatusUpdateTaskTrigger" />
+				-->
+			</list>
+		</property>
+	</bean>
+</beans>
