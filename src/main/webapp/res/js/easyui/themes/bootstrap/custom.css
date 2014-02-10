@@ -1,0 +1,28 @@
+/****textarea2 begin****/
+.textarea2{}
+.textarea2-text{}
+.textarea2-prompt-ct{
+	font-size:12px;
+}
+.textarea2-prompt-suffix .textarea2-prompt-prefix{
+
+}
+.textarea2-prompt{
+	font-family:Constantia, Georgia;
+	font-size : 22px;
+}
+.textarea2-warnCharCount{
+	font-family:Constantia, Georgia;
+	font-size : 22px;
+	color:#808080
+}
+.prompt-info{
+	color:#808080
+}
+.prompt-warn{
+	color:#E44443
+}
+/****textarea2 end****/
+
+
+

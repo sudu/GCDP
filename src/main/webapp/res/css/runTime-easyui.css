@@ -1,0 +1,22 @@
+/*
+checkboxgroup
+*/
+.checkboxgroup-item  {
+	display: inline-block;
+    margin-right: 1em;
+}
+.checkboxgroup-item  * {
+    vertical-align: middle;
+}
+
+/*
+radiogroup
+*/
+.radiogroup-item {
+	display: inline-block;
+    margin-right: 1em;
+}
+.radiogroup-item  * {
+    vertical-align: middle;
+}
+

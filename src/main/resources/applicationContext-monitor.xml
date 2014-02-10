@@ -145,11 +145,11 @@
 	<bean id="monitorScheduler" class="org.springframework.scheduling.quartz.SchedulerFactoryBean">
 		<property name="triggers">
 			<list>
-				 
+			 	<!--
 				<ref bean="legacyProcessContextCleanerTrigger"/>
 				
 				<ref bean="updateProcessDefinitionFromFileTrigger"/>
-				<!--
+				
 				<ref bean="dBTaskCheckTrigger" />
 				<ref bean="sendFileTaskCheckTrigger" />
 				<ref bean="imageTaskCheckTrigger"></ref>

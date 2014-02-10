@@ -42,8 +42,10 @@ Designer = {
     events: ['onBlur', 'onChange', 'onFocus', 'onKeyDown', 'onKeyPress', 'onKeyUp', 'onClick', 'onMouseMove', 'onMouseOver', 'onMouseOut', 'onDblClick'],
     customEditors: {//可共用的属性编辑器
         TextArea: new Ext.grid.GridEditor(new Ext.form.TextArea({})),
+		NumberField: new Ext.grid.GridEditor(new Ext.form.NumberField({})),
 		CustomEditors_TextField_alphanum: new Ext.grid.GridEditor(new Ext.form.TextField({vtype:'alphanum'})),
         CustomEditors_TextArea: new Ext.ux.CustomEditors.TextArea({}),
+		"function":new Ext.ux.CustomEditors.TextArea({}),
         CustomEditors_TextArea_cb: new Ext.ux.CustomEditors.TextArea({ callback: "Designer.setJsFunction" }),
         JsonEditor:new Ext.ux.JsonEditor({}),
         //TextFieldReadonly: new Ext.grid.GridEditor(new Ext.form.TextField({
@@ -695,8 +697,8 @@ Designer = {
         var ui = de.controls.ui[uitype];
 		var relyJS =ui.relyJS ;
 		var relyCSS =ui.relyCSS ;
-        var ctrName = ui.design.rtName;
-        var ct = { name: ctrName};
+        var rtName = ui.design.rtName;
+        var ct = { name: rtName,ctrlName:uitype};
 		if(relyJS) {
 			for(var i=0;i<relyJS.length;i++){
 				this.relyJSJSON[relyJS[i]] = 1;
@@ -712,20 +714,25 @@ Designer = {
 
         var fc = props;
 		delete fc.ui.value.helpHtml;
+		
         for (var g in fc) {
-            ct[g] = {};
+            ct[g] = {"function":{}};
             var val=fc[g].value;
             for (var k in val) {
-                var oriProp = ui.property[g].value[k].value;
-                var value = fc[g].value[k].value;
-                if (oriProp&&oriProp.type == 'ComboBox') {
-                    var arr = oriProp.store.join(',').split(',');
+				var item = fc[g].value[k];
+                var value = item.value;
+                if (item&&item.type == 'ComboBox') {
+                    var arr = item.store.join(',').split(',');
                     var pos = arr.indexOf(value);
                     if (pos % 2 == 1) {
                         value = arr[pos - 1];
                     }
                 }
-                ct[g][k] = value;
+				if(item&&item.type == 'function') {//如果配置为function，就需要单独提取到上一级function里，在表单渲染时再eval
+					ct[g]["function"][k] = value;
+				}else{
+					ct[g][k] = value;
+				}
             }
         }
         return ct;
@@ -751,10 +758,10 @@ Designer.controls = {
 		for(var item in ui){
 			var cfg=ui[item];
 			cfg.property.ui.value.id = { value: "", lan: '(id)', readOnly:true };
+			cfg.id = item;
 			if(cfg.isTool!=false){
 				var o={};			
-				o.cfg=cfg;
-				o.index=cfg.text;			
+				o.cfg=cfg;		
 				arr.push(o);
 			}
 		}
@@ -765,7 +772,8 @@ Designer.controls = {
 		var len=arr.length;
 		for(var i=0;i<len;i++){
 			var cfg=arr[i].cfg;
-			html+='<div class="controlItem" title="'+cfg.text+'" id="ctrl_'+ cfg.text +'"><img title="关于" id="about_'+ cfg.text + '" src="'+(cfg.icon||this.baseIcon)+'" /><span id="proxy_'+ cfg.text +'">'+ cfg.tip +'</span></div>';
+			var id= cfg.id;
+			html+='<div class="controlItem" title="'+cfg.text+'" id="ctrl_'+ id +'"><img title="关于" id="about_'+ id + '" src="'+(cfg.icon||this.baseIcon)+'" /><span id="proxy_'+ id +'">'+ cfg.tip +'</span></div>';
 			if(!cfg.design.ui.isContainer){
 				var tmp={};
 				Ext.applyDeep(tmp,Designer.controls.commonProperty);
@@ -909,7 +917,7 @@ Designer.objFunction={
 	},
 	createUI: function (uitype,config) {
 
-		eval('var cfg=Designer.controls.ui.'+uitype+'.design');
+		var cfg=Designer.controls.ui[uitype].design;
 		var oriCfg={};
 		Ext.applyDeep(oriCfg,cfg);
 		var ui=oriCfg.ui;
