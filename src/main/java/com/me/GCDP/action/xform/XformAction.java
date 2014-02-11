@@ -13,6 +13,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.struts2.ServletActionContext;
 
+import com.me.GCDP.action.xform.XformAction;
 import com.me.GCDP.freemarker.FreeMarkerHelper;
 import com.me.GCDP.mapper.VersionMapper;
 import com.me.GCDP.model.Permission;
@@ -191,6 +192,9 @@ public class XformAction extends ActionSupport {
 			
 			Map<String, Object> dataPool = formService.save(fc, id, xform, injection);
 			id = (Integer) dataPool.get("dataId");
+			// 保存历史版本
+			setVersionData(AuthorzationUtil.getUserName() + "[" + AuthorzationUtil.getUserId() + "]", id, xform);
+						
 			boolean verify = (Boolean) dataPool.get("verify");
 			if (!verify) {
 				hasError = true;
@@ -198,8 +202,6 @@ public class XformAction extends ActionSupport {
 				return rtn;
 			}
 			
-			// 保存历史版本
-			setVersionData(AuthorzationUtil.getUserName() + "[" + AuthorzationUtil.getUserId() + "]", id, xform);
 			ext = (dataPool.containsKey("data") ? dataPool.get("data").toString() : "");
 			msg = (dataPool.containsKey("msg") ? dataPool.get("msg").toString() : "");
 		} catch (FormSaveException e) {
@@ -269,6 +271,8 @@ public class XformAction extends ActionSupport {
 					renderMap.put("dataSource",this.getDataSource());
 					renderMap.put("relyJSList",this.getRelyJSList());
 					renderMap.put("relyCSSList",this.getRelyCSSList());
+					renderMap.put("headInject",this.getHeadInject());
+					renderMap.put("bodyInject",this.getBodyInject());
 					this.customedTpl  = FreeMarkerHelper.process2(cusTpl, renderMap);
 					return "renderTpl";
 				}
@@ -287,7 +291,7 @@ public class XformAction extends ActionSupport {
 	 */
 	public String getRecordData() throws JSONException, SQLException {
 		if (id == 0) {
-			return "''";
+			return null;
 		}
 		FormService formService = (FormService) SpringContextUtil.getBean("formService");
 		return new JSONObject(formService.getData(getFc(), id)).toString();
@@ -307,9 +311,10 @@ public class XformAction extends ActionSupport {
 			ViewConfig vc = viewConfig;
 			Vector<BaseControl> ctrs = vc.getControl();
 			JSONObject config = new JSONObject();
-			
+			HttpServletRequest request=ServletActionContext.getRequest();
+			String requestUrl = request.getScheme() + "://" + request.getHeader("Host") +request.getRequestURI().replaceFirst(request.getServletPath(), "");
 			for (int i = 0; i < ctrs.size(); i++) {
-				String[][] render = ctrs.get(i).renderDataSource();
+				String[][] render = ctrs.get(i).renderDataSource(requestUrl);
 				ControlId = ctrs.get(i).getControlId();
 				if (render != null) {
 					config.put(ControlId, render);

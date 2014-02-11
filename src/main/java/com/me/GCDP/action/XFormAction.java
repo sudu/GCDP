@@ -11,6 +11,7 @@ import java.net.URLEncoder;
 import java.sql.SQLException;
 import java.util.Vector;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.activemq.util.ByteArrayInputStream;
@@ -135,8 +136,10 @@ public class XFormAction extends ActionSupport {
 			ViewConfig vc = ViewConfig.getInstance(viewId);
 			Vector<BaseControl> ctrs = vc.getControl();
 			JSONObject config = new JSONObject();
+			HttpServletRequest request=ServletActionContext.getRequest();
+			String requestUrl = request.getScheme() + "://" + request.getHeader("Host") +request.getRequestURI().replaceFirst(request.getServletPath(), "");
 			for (int i = 0; i < ctrs.size(); i++) {
-				String[][] render = ctrs.get(i).renderDataSource();
+				String[][] render = ctrs.get(i).renderDataSource(requestUrl);
 				if (render != null) {
 					config.put(ctrs.get(i).getControlId(), render);
 				}

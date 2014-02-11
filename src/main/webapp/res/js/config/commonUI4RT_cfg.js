@@ -1,5 +1,5 @@
-Ext.namespace('Designer.controls');
-
+Designer = typeof Designer == "object" ?Designer: {};
+Designer.controls = Designer.controls || {};
 Designer.controls.ui={
 	FormPanel:{
 		runtime:{
@@ -64,6 +64,44 @@ Designer.controls.ui={
 				//fontFamilies : ["宋体","黑体","楷体"]
 			}
 		}
+	},
+	TextArea2:{
+		runtime:{
+			ui:{
+			
+			},
+			inputTemplate:'<input id="{{= id}}" type="text" name="{{= name}}"/>'
+		}
+	},
+	NumberSpinner:{
+		runtime:{
+			ui:{},
+			inputTemplate:'<input id="{{= id}}" type="text" name="{{= name}}" class="easyui-numberspinner" style="width:80px;"></input>'
+		}
+	},
+	NumberBox:{
+		runtime:{
+			ui:{},
+			inputTemplate:'<input id="{{= id}}" type="text" name="{{= name}}" class="easyui-numberbox" style="width:80px;"></input>'
+		}
+	},
+	Hidden:{
+		runtime:{
+			ui:{},
+			inputTemplate:'<input id="{{= id}}" type="hidden" name="{{= name}}"></input>',
+			formItemTemplate4HideLabel:'',//控件容器模板
+			formItemTemplate:''
+		}
+	},
+	DataBox:{
+		runtime:{
+			ui:{
+				currentText:"今天",
+				closeText:"关闭",
+				okText:"OK",
+			}
+		}
 	}
 	 
 }
+	
