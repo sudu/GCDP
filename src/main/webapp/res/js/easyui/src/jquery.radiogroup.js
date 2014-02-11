@@ -51,7 +51,7 @@
 		var opts = state.options;
 		var input = state.radiogroup.find('hidden');
 		input.val(opts.value);
-		if(opts.value){
+		if(typeof opts.value !=="undefined"){
 			var valueTpl = opts.value;
 			var radios = state.radiogroup.find('input[type="radio"]');
 			for(var i = 0;i<radios.length;i++){

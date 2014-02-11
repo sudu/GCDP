@@ -9,7 +9,7 @@
 
     <script type="text/javascript" src="../res/js/easyui/jquery.min.js"></script>
 	<script type="text/javascript" src="../res/js/jquery/jquery.tmpl.min.js"></script>
-	
+	<script type="text/javascript" src="../res/js/jquery/jquery.extension.js"></script>
     <script type="text/javascript" src="../res/js/easyui/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="../res/js/easyui/locale/easyui-lang-zh_CN.js"></script>
 	<script type="text/javascript" src="../res/js/config/commonUI4RT_cfg.js?20140101"></script>  
@@ -56,12 +56,18 @@
 	};
 	formConfig__.recordData = formConfig__.recordData?JSON.parse(formConfig__.recordData):{};	
 	</script>
+<script>	
+function closePage(){
+	//todo
+	alert("todo...");
+}
+</script>	
 <!-- headInject注入  -->
 	${headInject!""}
 <!-- headInject注入 end -->	
 </head>
 <body class="easyui-layout">  
-    <form id="form1" style="height:100%; border:green 0px solid;" region="center">  
+    <form id="form1" method="post" style="height:100%; border:green 0px solid;" region="center">  
     <div region="center">
 		<div class="easyui-panel" title="请填写表单" style="" data-options="fit:true,border:true">
 			<div style="padding:10px 0 10px 10px">
@@ -71,17 +77,114 @@
 	</div>  
 	<div style="height:50px;" region="south">
 		<div style="text-align:center;padding:5px">
-            <a href="javascript:void(0)" class="easyui-linkbutton">保存</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton">保存并添加</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton">保存并关闭</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton">预览</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton">关闭</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="btnSave">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btnSaveAndAdd">保存并添加</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="btnSaveAndClose">保存并关闭</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btnPreview">预览</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btnClose">关闭</a>
         </div>
 	</div>  
     </form>  
 	 	
 <script type="text/javascript">
+/*
+* @description:表单运行时公共函数
+* @author:chengds
+× @date:2014/02/11
+*/
+var saveHandler = function(callback,isContinueAdd){
+	var cfg = formConfig__;
+	var cb = callback;
+	var isContinue = isContinueAdd;
+	return function(){
+		var form = RunTime.formPanel;
+		if(!$("#form1").form("validate")){
+			$.messager.alert('提示',"输入未完成或验证不通过",'error');
+			return;
+		}
+
+		var formValues = form.formRender("getFieldValues");
+		var params = $.extend({formId:cfg.formId,viewId:cfg.viewId,id:cfg.id,nodeId:cfg.nodeId},formValues);
+		var ret = true;
+		if(typeof(hanler_b)=='function'){//执行保存前脚本
+			ret = hanler_b.call(params);//保存前脚本可修改post的数据
+		}
+		if(ret!=false){		
+			//Ext.getBody().mask("正在提交中...");
+			$.messager.progress({ 
+				title: '请等待', 
+				msg: '正在提交...', 
+				//text: 'PROCESSING.......' 
+			});
+			$.post(RunTime.postUrl,params,function(data){
+				$.messager.progress("close");
+				var ret = data;
+				var afterSaveJsReturn = true;
+				if(typeof(hanler_a)=='function'){//执行保存后脚本
+					var options={
+						id:ret.Id||formConfig__.id,
+						ret:ret,
+						cb:cb,
+						isContinue:isContinue
+					};
+					afterSaveJsReturn = hanler_a(options,function(opts_){
+						var opts = opts_;
+						return function(){
+							if(typeof(opts.cb)=='function') opts.cb();//执行回调函数
+							if(opts.isContinue){
+								RunTime.redirect(0);
+							}else{
+								RunTime.redirect(opts.id);
+							}
+						}
+					}(options));
+				}
+				if(afterSaveJsReturn==false) return;//如果保存后脚本返回false，则终止后面的提示性处理
+				if(ret.success){		
+					$.messager.show({
+						title:'提示',
+						msg:'提交成功！',
+						timeout:2000,
+						showType:'fade',
+						style:{
+							right:'',
+							top:document.body.scrollTop+document.documentElement.scrollTop,
+							bottom:''
+						}
+					}).delay(2000).queue(function(){
+						if(typeof(cb)=='function') {
+							cb();//执行回调函数
+							return;
+						}
+						if(isContinue){
+							RunTime.redirect(0);
+						}else{
+							RunTime.redirect(ret.Id||formConfig__.id);
+						}
+					});
+
+				}else{
+					var _msg = '';
+					if(ret){
+						var errorStep = ret.errorStep || '';
+						if(errorStep == '' || errorStep == '保存前脚本'){
+							_msg = "保存出错，请重试！";
+						}else{
+							_msg = "保存出错！";
+						}
+						errorStep != '' && ( _msg += "<br>出错步骤："+errorStep );
+						_msg += "<br>出错信息："+ret.message.replace(/\r/,'').replace(/\n/,'<br>');
+					}
+					$.messager.alert('保存不成功',_msg,'error');						
+				}
+					
+			}, "json");
+		}
+	};
+};
+
 (function ($) {
+	var controlItems=[];
 	function init(target){
 		return $(target);
 	}
@@ -198,8 +301,7 @@
 				}else if(item.mod[inputType]==4){
 					continue;
 				}	
-				
-				
+
 				var ctrl = appendChildCtrl(opts,item,parentCtrl);
 			}
 		}
@@ -209,8 +311,7 @@
 		ui.labelWidth = opts.labelWidth;
 		if(opts.hideLabels) ui.hideLabel = true;
 		if(opts.hideNotes) ui.hideNote = true;
-		
-		
+
 		var itemTpl = ui.hideLabel?ui.formItemTemplate4HideLabel:ui.formItemTemplate;
 		var inputTemplate = ui.inputTemplate;
 		if(itemTpl){
@@ -229,11 +330,15 @@
 					//ui[k]= onloadJsFunction[item.events[k]] ;
 			}
 		}
-			
-				
-				
+		
 		//编译
 		$('#' + ui.id)[item.name](ui);
+		controlItems.push({
+			id:ui.id,
+			name:ui.name,
+			ctrlName:item.name,
+			ctrl:$('#' + ui.id)
+		});
 		return ctrl;
 	}
 	
@@ -261,10 +366,14 @@
 	};
 	
 	$.fn.formRender.methods = {
-		submit: function(jq, options){
-			return jq.each(function(){
-				//ajaxSubmit(this, $.extend({}, $.fn.form.defaults, options||{}));
-			});
+		getFieldValues: function(jq, options){
+			var data={};
+			for(var i=0;i<controlItems.length;i++){
+				var item = controlItems[i];
+				var value = item.ctrl[item.ctrlName]("getValue");
+				data[item.name] = value;
+			}
+			return data;
 		}
 	};
 	
@@ -292,8 +401,13 @@
 		"hideNotes" : false
     };
 })(jQuery);
-</script>
 
+
+</script>
+<!-- 提交 -->
+<script type="text/javascript">
+
+</script>
 
 <script type="text/javascript">
 var hanler_b,hanler_a;
@@ -301,7 +415,12 @@ var onloadJsFunction={};
 var formPanel;
 RunTime = {
 	postUrl:'../runtime/xform!saveData.jhtml',
-	hanler_onload:null
+	hanler_onload:null,
+	redirect:function(id){
+		var params = $.parseQuery();
+		params.id = id;
+		location.href = '../runtime/xform!render.jhtml?' + $.getQueryString(params);
+	}
 }
 //表单渲染
 RunTime.Render=function(cfg){
@@ -325,8 +444,16 @@ RunTime.Render=function(cfg){
 			;
 		}
 	}
-
-	$('#formTable').formRender({
+	
+	//按钮
+	$("#btnSave").click(saveHandler());
+	$("#btnSaveAndAdd").click(saveHandler(null,true));
+	$("#btnSaveAndClose").click(saveHandler(closePage));
+	//$("#btnPreview").click(saveHandler());
+	$("#btnClose").click(closePage);
+	
+	var formPanel = $('#formTable');
+	formPanel.formRender({
 		controlsConfig:frm.controls,
 		"labelWidth" : frm.ui.labelWidth,
 		"hideLabels" : frm.ui.hideLabels,
