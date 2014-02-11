@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /*
 checkboxgroup
 */
@@ -20,3 +21,27 @@ radiogroup
     vertical-align: middle;
 }
 
+=======
+/*
+checkboxgroup
+*/
+.checkboxgroup-item  {
+	display: inline-block;
+    margin-right: 1em;
+}
+.checkboxgroup-item  * {
+    vertical-align: middle;
+}
+
+/*
+radiogroup
+*/
+.radiogroup-item {
+	display: inline-block;
+    margin-right: 1em;
+}
+.radiogroup-item  * {
+    vertical-align: middle;
+}
+
+>>>>>>> 2bc3b6021afb4e6e01b52e3e266049ff763910c3

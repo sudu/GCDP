@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html>
 <head>
@@ -313,4 +314,321 @@ $("#numberspinner_1").numberspinner({
 </script>	
 	
 </body>  
+=======
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Load Form Data - jQuery EasyUI Demo</title>
+    <title>easyUI-demo</title>
+    <link rel="stylesheet" type="text/css" href="../res/js/easyui/themes/bootstrap/easyui.css">
+    <link rel="stylesheet" type="text/css" href="../res/js/easyui/themes/bootstrap/custom.css">
+	<link rel="stylesheet" type="text/css" href="../res/css/runTime-easyui.css">
+    <script type="text/javascript" src="../res/js/easyui/jquery.min.js"></script>
+    <script type="text/javascript" src="../res/js/easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="../res/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../res/js/easyui/src/jquery.textarea2.js"></script>
+	<script type="text/javascript" src="../res/js/easyui/src/jquery.textarea.js"></script>
+	<script type="text/javascript" src="../res/js/easyui/src/jquery.textfield.js"></script>
+	<script type="text/javascript" src="../res/js/easyui/src/jquery.checkboxgroup.js"></script>	
+	<script type="text/javascript" src="../res/js/easyui/src/jquery.radiogroup.js"></script>
+	<script type="text/javascript" src="../res/js/easyui/src/jquery.hidden.js"></script>		
+	<style type="text/css">  
+    html,body  
+    {  
+        height:100%;  
+        margin:0 auto;  
+    }  
+</style> 
+</head>
+<body class="easyui-layout">  
+    <form id="form1" style="height:100%; border:green 0px solid;" region="center">  
+    <div region="center">
+		<div class="easyui-panel" title="请填写表单" style="" data-options="fit:true,border:true">
+			<div style="padding:10px 0 10px 60px">
+				<table style="width: 100%;">
+					<tr>
+						<td></td>
+						<td><input type="hidden" id="Hidden_1"  name="myName"></input></td>
+					</tr>
+					<tr>
+						<td>性别:</td>
+						<td><input id="RadioGroup_1"  name="sex"></input></td>
+					</tr>
+					<tr>
+						<td>爱好:</td>
+						<td><input id="CheckboxGroup_1"  name="favorite"></input></td>
+					</tr>
+					<tr>
+						<td>Name:</td>
+						<td><input id="TextField_1"  class="easyui-validatebox" type="search" name="name" data-options="required:true,validType:'search'"></input></td>
+					</tr>
+					<tr>
+						<td>Email:</td>
+						<td><input id="TextField_2"  class="easyui-validatebox" type="text" name="email" data-options="required:true,validType:'email'"></input></td>
+					</tr>
+					<tr>
+						<td>Subject:</td>
+						<td><input id="numberspinner_1" class="easyui-numberspinner" value="1000" data-options="increment:100" style="width:120px;"></input></td>
+					</tr>
+					<tr>
+						<td>Message:</td>
+						<td><textarea name="message" style="height:60px;width:300px"></textarea>
+						<span>输入提示说明输入提示说明输入提示说明输入提示说明输入提示说明输入提示说明输入提示说明输入提示说明输入提示说明</span></td>
+					</tr>
+					<tr>
+						<td>Language:</td>
+						<td>
+							<input id="ComboBox_1" name="language" value=""> 
+						</td>
+					</tr>
+					<tr>
+						<td>树型下拉框:</td>
+						<td>
+							<input id="ComboTree_1" name="comboxTree" value=""> 
+						</td>
+					</tr>
+					<tr>
+						<td>DateBox:</td>
+						<td>
+							<input id="DateBox_1" name="DateBox" value=""> 
+						</td>
+					</tr>
+					<tr>
+						<td>textarea2:</td>
+						<td>
+							<input id="TextArea2_1" name="textarea2" value="ddd"> <span>输入提示</span>
+						</td>
+					</tr>					
+					<tr>
+						<td>textarea:</td>
+						<td>
+							<input id="TextArea_1" name="textarea" value="ddd"> <span>输入提示dd</span>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>  
+	<div style="height:40px;" region="south">
+		<div style="text-align:center;padding:5px">
+            <a href="javascript:void(0)" class="easyui-linkbutton">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton">保存并添加</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton">保存并关闭</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton">预览</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton">关闭</a>
+        </div>
+	</div>  
+    </form>  
+<script>
+$('#Hidden_1').hidden({
+	value:"cds"
+});
+
+$('#RadioGroup_1').radiogroup({
+	data:[{
+		text:'篮球',
+		value:'lanqiu'
+	},{
+		text:'足球',
+		value:'zuqiu'
+	},{
+		text:'音乐',
+		value:'yinyue'
+	},{
+		text:'旅行',
+		value:'lvxing'
+	},{
+		text:'体育体育',
+		value:'tiyu'
+	},{
+		text:'电影',
+		value:'dianying'
+	}],
+	width:150,
+	value:"yinyue",
+	onChange:function(){
+		//alert("change")
+	}
+});
+$('#CheckboxGroup_1').checkboxgroup({
+	data:[{
+		text:'篮球',
+		value:'lanqiu'
+	},{
+		text:'足球',
+		value:'zuqiu'
+	},{
+		text:'音乐',
+		value:'yinyue'
+	},{
+		text:'旅行',
+		value:'lvxing'
+	},{
+		text:'体育',
+		value:'tiyu'
+	},{
+		text:'电影',
+		value:'dianying'
+	}],
+	width:150,
+	value:JSON.stringify(['lanqiu','yinyue']),
+	onChange:function(){
+		//alert("change")
+	}
+});
+
+$('#TextField_1').textfield({  
+	width:300,
+	disabled:false,
+	readOnly:false,
+	required:true,
+	value:'default',
+	vtype:'search',
+	onChange:function(){
+		alert("change")
+	}
+});
+$('#TextField_2').textfield({  
+	width:200,
+	disabled:false,
+	readOnly:false,
+	required:true,
+	validType:"email",
+	value:'yy@sina.com'
+});
+$('#ComboBox_1').combobox({   
+	valueField:'id',   
+	textField:'text',
+	required:true,
+	value:3,
+	data :[{
+		"id":1,
+		"text":"text1"
+	},{
+		"id":2,
+		"text":"text2"
+	},{
+		"id":3,
+		"text":"text3",
+		//"selected":true
+	},{
+		"id":4,
+		"text":"text4"
+	},{
+		"id":5,
+		"text":"text5"
+	}]	
+});
+
+$('#ComboTree_1').combotree({
+    required: true,
+	data:[{
+		id: 1,
+		text: 'Languages',
+		children: [{
+			id: 11,
+			text: 'Java'
+		},{
+			id: 12,
+			text: 'C++'
+		}]
+	},{
+		id: 2,
+		text: 'user',
+		children: [{
+			id: 21,
+			text: 'cds'
+		},{
+			id: 22,
+			text: 'ddd'
+		}]
+	}]
+});
+
+$('#ComboGrid_1').combogrid({
+	width:200,
+    panelWidth: 500,
+	idField: 'itemid',
+	textField: 'productname',
+	//url: 'datagrid_data1.json',
+	value:'Iguana',
+	data:{"total":28,"rows":[
+		{"productid":"FI-SW-01","productname":"Koi","unitcost":10.00,"status":"P","listprice":36.50,"attr1":"Large","itemid":"EST-1"},
+		{"productid":"K9-DL-01","productname":"Dalmation","unitcost":12.00,"status":"P","listprice":18.50,"attr1":"Spotted Adult Female","itemid":"EST-10"},
+		{"productid":"RP-SN-01","productname":"Rattlesnake","unitcost":12.00,"status":"P","listprice":38.50,"attr1":"Venomless","itemid":"EST-11"},
+		{"productid":"RP-SN-01","productname":"Rattlesnake","unitcost":12.00,"status":"P","listprice":26.50,"attr1":"Rattleless","itemid":"EST-12"},
+		{"productid":"RP-LI-02","productname":"Iguana","unitcost":12.00,"status":"P","listprice":35.50,"attr1":"Green Adult","itemid":"EST-13"},
+		{"productid":"FL-DSH-01","productname":"Manx","unitcost":12.00,"status":"P","listprice":158.50,"attr1":"Tailless","itemid":"EST-14"},
+		{"productid":"FL-DSH-01","productname":"Manx","unitcost":12.00,"status":"P","listprice":83.50,"attr1":"With tail","itemid":"EST-15"},
+		{"productid":"FL-DLH-02","productname":"Persian","unitcost":12.00,"status":"P","listprice":23.50,"attr1":"Adult Female","itemid":"EST-16"},
+		{"productid":"FL-DLH-02","productname":"Persian","unitcost":12.00,"status":"P","listprice":89.50,"attr1":"Adult Male","itemid":"EST-17"},
+		{"productid":"AV-CB-01","productname":"Amazon Parrot","unitcost":92.00,"status":"P","listprice":63.50,"attr1":"Adult Male","itemid":"EST-18"}
+	]},
+	method: 'get',
+	columns: [[
+		{field:'itemid',title:'Item ID',width:80},
+		{field:'productname',title:'Product',width:120},
+		{field:'listprice',title:'List Price',width:80,align:'right'},
+		{field:'unitcost',title:'Unit Cost',width:80,align:'right'},
+		{field:'attr1',title:'Attribute',width:200},
+		{field:'status',title:'Status',width:60,align:'center'}
+	]],
+	fitColumns: true
+});
+
+$("#DateBox_1").datebox({
+	currentText:"今天",
+	closeText:"关闭",
+	disabled:false,
+	value:'2003-03-13',
+	parser:function(s){
+		var t = Date.parse(s);
+		if (!isNaN(t)){
+			return new Date(t);
+		} else {
+			return new Date();
+		}
+	},
+	formatter:function(date){
+		var y = date.getFullYear();
+		var m = date.getMonth()+1;
+		var d = date.getDate();
+		return y+'-'+m+'-'+d;
+	},
+	onSelect: function(date){
+		alert(date.getFullYear()+":"+(date.getMonth()+1)+":"+date.getDate());
+	}
+});
+
+$("#TextArea2_1").textarea2({
+	width:300,
+	height:120,
+	disabled:false,
+	warnCharCount:10,
+	required:true,
+	onChange:function(e){
+		
+	}
+}).textarea2("setValue","调度算法孙菲菲打算");
+
+$("#TextArea_1").textarea({
+	width:400,
+	height:120,
+	disabled:false,
+	onChange:function(e){
+		alert("change")
+	}
+});
+
+$("#numberspinner_1").numberspinner({
+	max:100,
+	min:0,
+	increment:1
+});
+
+</script>	
+	
+</body>  
+>>>>>>> 2bc3b6021afb4e6e01b52e3e266049ff763910c3
 </html>
