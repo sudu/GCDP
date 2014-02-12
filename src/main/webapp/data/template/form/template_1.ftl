@@ -58,51 +58,8 @@
 	</script>
 <script>	
 function closePage(){
-
-	//优先判断是否该页面是否包含在弹出的window里，若是则关闭该window
-	try{
-		var parentMsg = $.parseQuery().postMessage__;
-		if(parentMsg){
-			var parentMsgJson = JSON.parse(decodeURIComponent(parentMsg));
-			if(parentMsgJson.containerId){
-				parentMsgJson.handler = '(function(receiveData,realData){\
-					if(typeof receiveData==="string"){\
-						receiveData = JSON.parse(decodeURIComponent(receiveData));\
-					}\
-					eval("var win =" + receiveData.containerId);\
-					if(typeof win==="string") win = $("#" + win);\
-					win.fadeOut("fast",function(){\
-					   $(this).hide();\
-					});\
-				})';
-				
-				var postData = {
-					data:{containerId:parentMsgJson.containerId},
-					options: encodeURIComponent(JSON.stringify(parentMsgJson)) //从URL接收到的数据
-				};
-				var sender;
-				if(parentMsgJson.sender){
-					eval('0,' + 'sender = ' + decodeURIComponent(parentMsgJson.sender));
-				}else if(!window.opener && parentMsgJson.hostFrameId){//Ext的tabPanel页签之间的通讯
-					sender = window.parent.$("#" + parentMsgJson.hostFrameId)[0].contentWindow;
-				}else{
-					sender = window.opener;
-				}
-				sender && sender.postMessage(JSON.stringify(postData), '*'); 
-				return ;
-			}
-		}
-		
-	}catch(ex){}
-
-	if(top.centerTabPanel){
-		if(conflictMgr && formConfig__.id>0)conflictMgr.remove();//移除正在编辑状态
-		var tab = top.centerTabPanel.getActiveTab();
-		top.centerTabPanel.remove(tab);
-	}else{
-		top.open('','_self','');
-		top.close();
-	}
+	//todo
+	alert("todo...");
 }
 </script>	
 <!-- headInject注入  -->
@@ -118,9 +75,13 @@ function closePage(){
 			</div>
 		</div>
 	</div>  
-	<div style="height:38px;" region="south">
-		<div style="text-align:center;padding:5px" id="bottomToolbar">
-
+	<div style="height:50px;" region="south">
+		<div style="text-align:center;padding:5px">
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="btnSave">保存</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btnSaveAndAdd">保存并添加</a>
+            <a href="javascript:void(0)" class="easyui-linkbutton" id="btnSaveAndClose">保存并关闭</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btnPreview">预览</a>
+			<a href="javascript:void(0)" class="easyui-linkbutton" id="btnClose">关闭</a>
         </div>
 	</div>  
     </form>  
@@ -221,34 +182,6 @@ var saveHandler = function(callback,isContinueAdd){
 		}
 	};
 };
-
-function previewHandler(){
-	var form = RunTime.formPanel;
-	var cfg = formConfig__;
-	if(!$("#form1").form("validate")){
-		$.messager.alert('提示',"输入未完成或验证不通过",'error');
-		return;
-	}
-
-	var formValues = form.formRender("getFieldValues");
-	var params = $.extend({formId:cfg.formId,viewId:cfg.viewId,id:cfg.id,nodeId:cfg.nodeId},formValues);
-	var ret = true;
-	if(typeof(hanler_b)=='function'){//执行保存前脚本
-		ret = hanler_b.call(params);//保存前脚本可修改post的数据
-	}
-	if(ret!=false){		
-		//Ext.getBody().mask("正在提交中...");
-		$.messager.progress({ 
-			title: '请等待', 
-			msg: '正在提交预览...'
-		});
-		$.post("../runtime/template!preview.jhtml",params,function(response){
-			$.messager.progress("close");
-			var previewWin =window.open();
-			previewWin.document.write(response);	
-		}, "text");
-	}
-}
 
 (function ($) {
 	var controlItems=[];
@@ -513,27 +446,12 @@ RunTime.Render=function(cfg){
 	}
 	
 	//按钮
-	var buttons = [
-		{id:"b_save",text:"保存",handler:saveHandler()},
-		{id:"b_saveAndAdd",text:"保存并添加",handler:saveHandler(null,true)},
-		{id:"b_saveAndClose",text:"保存并关闭",handler:saveHandler(closePage)},
-		{id:"b_preview",text:"预览",handler:previewHandler},
-		{id:"b_close",text:"关闭",handler:closePage}];
-		
-	var bottomToolbar = $("#bottomToolbar");
-	for(var i=0;i<buttons.length;i++){
-		var btn = buttons[i];
-		if(formConfig__.config.form.buttons[btn.id]){
-			bottomToolbar.append('<a href="javascript:void(0)" class="easyui-linkbutton '+ btn.id +'" id="'+ btn.id +'">'+ btn.text +'</a>');
-		}
-	}
-	for(var i=0;i<buttons.length;i++){
-		var btn = buttons[i];
-		$("#" + btn.id).bind("click",btn.handler);
-	}
+	$("#btnSave").click(saveHandler());
+	$("#btnSaveAndAdd").click(saveHandler(null,true));
+	$("#btnSaveAndClose").click(saveHandler(closePage));
+	//$("#btnPreview").click(saveHandler());
+	$("#btnClose").click(closePage);
 	
-	
-	//渲染表单
 	var formPanel = $('#formTable');
 	formPanel.formRender({
 		controlsConfig:frm.controls,
