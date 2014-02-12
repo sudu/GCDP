@@ -13,6 +13,10 @@
     <script type="text/javascript" src="../res/js/easyui/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="../res/js/easyui/locale/easyui-lang-zh_CN.js"></script>
 	<script type="text/javascript" src="../res/js/config/commonUI4RT_cfg.js?20140101"></script>  
+	
+	<script type="text/javascript" src="../res/js/conflictMgr.js?20120507"></script>		<!--冲突管理 -->
+	<script src="../data/template/form/FormRenderPackage.js??20130909"></script>	
+	
 	<style type="text/css">  
     html,body  
     {  
@@ -56,55 +60,7 @@
 	};
 	formConfig__.recordData = formConfig__.recordData?JSON.parse(formConfig__.recordData):{};	
 	</script>
-<script>	
-function closePage(){
 
-	//优先判断是否该页面是否包含在弹出的window里，若是则关闭该window
-	try{
-		var parentMsg = $.parseQuery().postMessage__;
-		if(parentMsg){
-			var parentMsgJson = JSON.parse(decodeURIComponent(parentMsg));
-			if(parentMsgJson.containerId){
-				parentMsgJson.handler = '(function(receiveData,realData){\
-					if(typeof receiveData==="string"){\
-						receiveData = JSON.parse(decodeURIComponent(receiveData));\
-					}\
-					eval("var win =" + receiveData.containerId);\
-					if(typeof win==="string") win = $("#" + win);\
-					win.fadeOut("fast",function(){\
-					   $(this).hide();\
-					});\
-				})';
-				
-				var postData = {
-					data:{containerId:parentMsgJson.containerId},
-					options: encodeURIComponent(JSON.stringify(parentMsgJson)) //从URL接收到的数据
-				};
-				var sender;
-				if(parentMsgJson.sender){
-					eval('0,' + 'sender = ' + decodeURIComponent(parentMsgJson.sender));
-				}else if(!window.opener && parentMsgJson.hostFrameId){//Ext的tabPanel页签之间的通讯
-					sender = window.parent.$("#" + parentMsgJson.hostFrameId)[0].contentWindow;
-				}else{
-					sender = window.opener;
-				}
-				sender && sender.postMessage(JSON.stringify(postData), '*'); 
-				return ;
-			}
-		}
-		
-	}catch(ex){}
-
-	if(top.centerTabPanel){
-		if(conflictMgr && formConfig__.id>0)conflictMgr.remove();//移除正在编辑状态
-		var tab = top.centerTabPanel.getActiveTab();
-		top.centerTabPanel.remove(tab);
-	}else{
-		top.open('','_self','');
-		top.close();
-	}
-}
-</script>	
 <!-- headInject注入  -->
 	${headInject!""}
 <!-- headInject注入 end -->	
@@ -112,7 +68,7 @@ function closePage(){
 <body class="easyui-layout">  
     <form id="form1" method="post" style="height:100%; border:green 0px solid;" region="center">  
     <div region="center">
-		<div class="easyui-panel" title="请填写表单" style="" data-options="fit:true,border:true">
+		<div class="easyui-panel" id="header" title="表单视图" style="" data-options="fit:true,border:true">
 			<div style="padding:10px 0 10px 10px">
 				<table id="formTable" style="width: 100%;"></table>
 			</div>
@@ -552,7 +508,17 @@ try{
 		RunTime.hanler_onload();
 	}
 }catch(ex){
-	
+	$.messager.alert('提示',"加载后脚本执行出错。ex:"+ ex,'error');
+}
+if(formConfig__.id>0){
+	//历史记录
+	/*
+	hisListMgr.formPanel = RunTime.formPanel;
+	hisListMgr.versionKey= formConfig__.nodeId+'_'+formConfig__.formId+'_'+formConfig__.viewId+'_'+formConfig__.id;
+	initHistory();
+	*/
+	//编辑冲突检查
+	conflictMgr.init('.panel-title','editform_' + 'formId' + formConfig__.formId  + '_' + 'viewId' + formConfig__.viewId + '_' + 'id' + formConfig__.id + '_' + 'nodeId' + formConfig__.nodeId);
 }
 
 </script>
