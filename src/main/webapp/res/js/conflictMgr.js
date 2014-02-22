@@ -24,35 +24,18 @@ var conflictMgr = {
 	},
 	callback:function(response,opts){
 		try{
-			var ret = Ext.util.JSON.decode(response.responseText);
+			var ret = eval("(" + response + ")");
 			conflictMgr.showDetail(ret);
 		}catch(ex){
 			console.info(ex);
 		}
 	},
 	check:function(){
-		Ext.Ajax.request({  
-			url:this.interfaceUrl,
-			method:'post',	
-			params:{url:this.key},
-			success:this.callback
-		});
+		$.post(this.interfaceUrl,{url:this.key},this.callback, "text");
 	},
 	//移除当前用户的编辑状态
 	remove:function(){
-		Ext.Ajax.request({  
-			url:conflictMgr.interfaceUrl,
-			method:'post',	
-			params:{url:conflictMgr.key,remove:true},
-			success:function(response,opts){
-				try{
-					var ret = Ext.util.JSON.decode(response.responseText);
-
-				}catch(ex){
-					console.debug(ex);
-				}
-			}
-		});
+		$.post(conflictMgr.interfaceUrl,{url:conflictMgr.key,remove:true});
 	},
 	showDetail:function(users){
 		var html = ''
@@ -68,17 +51,15 @@ var conflictMgr = {
 		}
 		if(conflictMgr.containerEl){
 			if(html!=''){
-				this.conflictBox.el.setStyle({
+				$(this.conflictBox).css({
 					border:'1px inset red',
 					color:'red'
-				});
-				this.conflictBox.setValue('【重要提示】正在编辑该页面的还有：' + html);
+				}).html('【请注意】正在编辑该数据的还有：' + html);
 			}else{
-				this.conflictBox.el.setStyle({
-					border:'1px inset #A9BFD3',
+				$(this.conflictBox).css({
+					//border:'1px inset #A9BFD3',
 					color:'#000'
-				});
-				this.conflictBox.setValue('');
+				}).html('');
 			}
 		}
 	}

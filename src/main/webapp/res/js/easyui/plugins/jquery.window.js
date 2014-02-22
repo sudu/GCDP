@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿/**
  * jQuery EasyUI 1.3.5
  * 
@@ -10,19 +9,6 @@
  * http://www.jeasyui.com/license_commercial.php
  *
  */
-=======
-﻿/**
- * jQuery EasyUI 1.3.5
- * 
- * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
- *
- * Licensed under the GPL or commercial licenses
- * To use it on other terms please contact us: info@jeasyui.com
- * http://www.gnu.org/licenses/gpl.txt
- * http://www.jeasyui.com/license_commercial.php
- *
- */
->>>>>>> 2bc3b6021afb4e6e01b52e3e266049ff763910c3
 (function($){
 function _1(_2,_3){
 var _4=$.data(_2,"window").options;
@@ -288,8 +274,4 @@ return $.extend({},$.fn.panel.parseOptions(_29),$.parser.parseOptions(_29,[{drag
 };
 $.fn.window.defaults=$.extend({},$.fn.panel.defaults,{zIndex:9000,draggable:true,resizable:true,shadow:true,modal:false,inline:false,title:"New Window",collapsible:true,minimizable:true,maximizable:true,closable:true,closed:false});
 })(jQuery);
-<<<<<<< HEAD
 
-=======
-
->>>>>>> 2bc3b6021afb4e6e01b52e3e266049ff763910c3

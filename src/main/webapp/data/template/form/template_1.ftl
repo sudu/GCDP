@@ -13,6 +13,10 @@
     <script type="text/javascript" src="../res/js/easyui/jquery.easyui.min.js"></script>
 	<script type="text/javascript" src="../res/js/easyui/locale/easyui-lang-zh_CN.js"></script>
 	<script type="text/javascript" src="../res/js/config/commonUI4RT_cfg.js?20140101"></script>  
+	
+	<script type="text/javascript" src="../res/js/conflictMgr.js?20120507"></script>		<!--冲突管理 -->
+	<script src="../data/template/form/FormRenderPackage.js??20130909"></script>	
+	
 	<style type="text/css">  
     html,body  
     {  
@@ -56,12 +60,7 @@
 	};
 	formConfig__.recordData = formConfig__.recordData?JSON.parse(formConfig__.recordData):{};	
 	</script>
-<script>	
-function closePage(){
-	//todo
-	alert("todo...");
-}
-</script>	
+
 <!-- headInject注入  -->
 	${headInject!""}
 <!-- headInject注入 end -->	
@@ -69,19 +68,15 @@ function closePage(){
 <body class="easyui-layout">  
     <form id="form1" method="post" style="height:100%; border:green 0px solid;" region="center">  
     <div region="center">
-		<div class="easyui-panel" title="请填写表单" style="" data-options="fit:true,border:true">
+		<div class="easyui-panel" id="header" title="表单视图" style="" data-options="fit:true,border:true">
 			<div style="padding:10px 0 10px 10px">
 				<table id="formTable" style="width: 100%;"></table>
 			</div>
 		</div>
 	</div>  
-	<div style="height:50px;" region="south">
-		<div style="text-align:center;padding:5px">
-            <a href="javascript:void(0)" class="easyui-linkbutton" id="btnSave">保存</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" id="btnSaveAndAdd">保存并添加</a>
-            <a href="javascript:void(0)" class="easyui-linkbutton" id="btnSaveAndClose">保存并关闭</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" id="btnPreview">预览</a>
-			<a href="javascript:void(0)" class="easyui-linkbutton" id="btnClose">关闭</a>
+	<div style="height:38px;" region="south">
+		<div style="text-align:center;padding:5px" id="bottomToolbar">
+
         </div>
 	</div>  
     </form>  
@@ -182,6 +177,34 @@ var saveHandler = function(callback,isContinueAdd){
 		}
 	};
 };
+
+function previewHandler(){
+	var form = RunTime.formPanel;
+	var cfg = formConfig__;
+	if(!$("#form1").form("validate")){
+		$.messager.alert('提示',"输入未完成或验证不通过",'error');
+		return;
+	}
+
+	var formValues = form.formRender("getFieldValues");
+	var params = $.extend({formId:cfg.formId,viewId:cfg.viewId,id:cfg.id,nodeId:cfg.nodeId},formValues);
+	var ret = true;
+	if(typeof(hanler_b)=='function'){//执行保存前脚本
+		ret = hanler_b.call(params);//保存前脚本可修改post的数据
+	}
+	if(ret!=false){		
+		//Ext.getBody().mask("正在提交中...");
+		$.messager.progress({ 
+			title: '请等待', 
+			msg: '正在提交预览...'
+		});
+		$.post("../runtime/template!preview.jhtml",params,function(response){
+			$.messager.progress("close");
+			var previewWin =window.open();
+			previewWin.document.write(response);	
+		}, "text");
+	}
+}
 
 (function ($) {
 	var controlItems=[];
@@ -446,12 +469,27 @@ RunTime.Render=function(cfg){
 	}
 	
 	//按钮
-	$("#btnSave").click(saveHandler());
-	$("#btnSaveAndAdd").click(saveHandler(null,true));
-	$("#btnSaveAndClose").click(saveHandler(closePage));
-	//$("#btnPreview").click(saveHandler());
-	$("#btnClose").click(closePage);
+	var buttons = [
+		{id:"b_save",text:"保存",handler:saveHandler()},
+		{id:"b_saveAndAdd",text:"保存并添加",handler:saveHandler(null,true)},
+		{id:"b_saveAndClose",text:"保存并关闭",handler:saveHandler(closePage)},
+		{id:"b_preview",text:"预览",handler:previewHandler},
+		{id:"b_close",text:"关闭",handler:closePage}];
+		
+	var bottomToolbar = $("#bottomToolbar");
+	for(var i=0;i<buttons.length;i++){
+		var btn = buttons[i];
+		if(formConfig__.config.form.buttons[btn.id]){
+			bottomToolbar.append('<a href="javascript:void(0)" class="easyui-linkbutton '+ btn.id +'" id="'+ btn.id +'">'+ btn.text +'</a>');
+		}
+	}
+	for(var i=0;i<buttons.length;i++){
+		var btn = buttons[i];
+		$("#" + btn.id).bind("click",btn.handler);
+	}
 	
+	
+	//渲染表单
 	var formPanel = $('#formTable');
 	formPanel.formRender({
 		controlsConfig:frm.controls,
@@ -470,7 +508,17 @@ try{
 		RunTime.hanler_onload();
 	}
 }catch(ex){
-	
+	$.messager.alert('提示',"加载后脚本执行出错。ex:"+ ex,'error');
+}
+if(formConfig__.id>0){
+	//历史记录
+	/*
+	hisListMgr.formPanel = RunTime.formPanel;
+	hisListMgr.versionKey= formConfig__.nodeId+'_'+formConfig__.formId+'_'+formConfig__.viewId+'_'+formConfig__.id;
+	initHistory();
+	*/
+	//编辑冲突检查
+	conflictMgr.init('.panel-title','editform_' + 'formId' + formConfig__.formId  + '_' + 'viewId' + formConfig__.viewId + '_' + 'id' + formConfig__.id + '_' + 'nodeId' + formConfig__.nodeId);
 }
 
 </script>

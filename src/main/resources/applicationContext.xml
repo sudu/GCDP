@@ -151,11 +151,11 @@
         </property>
         <property name="mappingResources">
             <list>
-                <value>com/me/GCDP/workflow/workflow.hbm.xml</value>
-                <value>com/me/GCDP/workflow/model/PluginStatus.hbm.xml</value>
-                <value>com/me/GCDP/workflow/model/CmppProcessDef.hbm.xml</value>
-                <value>com/me/GCDP/workflow/model/CmppActivityDef.hbm.xml</value>
-                <value>com/me/GCDP/workflow/model/CmppPluginDef.hbm.xml</value>
+                <value>workflow/workflow.hbm.xml</value>
+                <value>workflow/PluginStatus.hbm.xml</value>
+                <value>workflow/CmppProcessDef.hbm.xml</value>
+                <value>workflow/CmppActivityDef.hbm.xml</value>
+                <value>workflow/CmppPluginDef.hbm.xml</value>
             </list>
         </property>
     </bean>

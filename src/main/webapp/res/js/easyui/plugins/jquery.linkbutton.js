@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ﻿/**
  * jQuery EasyUI 1.3.5
  * 
@@ -10,19 +9,6 @@
  * http://www.jeasyui.com/license_commercial.php
  *
  */
-=======
-﻿/**
- * jQuery EasyUI 1.3.5
- * 
- * Copyright (c) 2009-2013 www.jeasyui.com. All rights reserved.
- *
- * Licensed under the GPL or commercial licenses
- * To use it on other terms please contact us: info@jeasyui.com
- * http://www.gnu.org/licenses/gpl.txt
- * http://www.jeasyui.com/license_commercial.php
- *
- */
->>>>>>> 2bc3b6021afb4e6e01b52e3e266049ff763910c3
 (function($){
 function _1(_2){
 var _3=$.data(_2,"linkbutton").options;
@@ -155,8 +141,4 @@ return $.extend({},$.parser.parseOptions(_11,["id","iconCls","iconAlign","group"
 };
 $.fn.linkbutton.defaults={id:null,disabled:false,toggle:false,selected:false,group:null,plain:false,text:"",iconCls:null,iconAlign:"left"};
 })(jQuery);
-<<<<<<< HEAD
 
-=======
-
->>>>>>> 2bc3b6021afb4e6e01b52e3e266049ff763910c3
