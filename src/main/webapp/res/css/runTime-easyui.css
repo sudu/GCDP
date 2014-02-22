@@ -16,7 +16,4 @@ radiogroup
 	display: inline-block;
     margin-right: 1em;
 }
-.radiogroup-item  * {
-    vertical-align: middle;
-}
 

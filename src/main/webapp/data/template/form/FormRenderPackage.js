@@ -79,7 +79,7 @@ var saveHandler = function(callback,isContinueAdd){
 					if(ret){
 						var errorStep = ret.errorStep || '';
 						if(errorStep == '' || errorStep == '保存前脚本'){
-							_msg = "保存出错，请重试！";
+							_msg = "保存不成功！";
 						}else{
 							_msg = "保存出错！";
 						}
