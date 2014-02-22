@@ -1,66 +1,29 @@
- <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
+<html>
 <head>
     <title>列表</title>
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <link rel="stylesheet" type="text/css" href="../res/js/easyui/themes/bootstrap/easyui.css">
+	<link rel="stylesheet" type="text/css" href="../res/css/runTime-easyui.css">
+	<link rel="stylesheet" type="text/css" href="../res/js/easyui/themes/icon.css">
+    <script type="text/javascript" src="../res/js/easyui/jquery.min.js"></script>
+	<script type="text/javascript" src="../res/js/jquery/jquery.tmpl.min.js"></script>
+	<script type="text/javascript" src="../res/js/jquery/jquery.extension.js"></script>
+    <script type="text/javascript" src="../res/js/easyui/jquery.easyui.min.js"></script>
+	<script type="text/javascript" src="../res/js/easyui/locale/easyui-lang-zh_CN.js"></script>
+	<script type="text/javascript" src="../res/js/lib/juicer-min.js"></script>
+	<script type="text/javascript" src="../res/js/easyui/src/jquery.textfield.js"></script>
+	<script type="text/javascript" src="../res/js/easyui/src/jquery.radiogroup.js"></script>
 
-	<link rel="stylesheet" type="text/css" href="./../res/js/ext2/resources/css/ext-all.css" />
-	<link rel="stylesheet" type="text/css" href="./../res/js/ext2/resources/css/patch.css" />
 	<style>
-		body{font-size:12px;}
-		.blank{clear:both;height:18px}
-		.blank2{clear:both;height:10px;line-height:0;font-size:0}
-		
-		/*按钮*/
-		.addField{background:url("../res/js/ext2/resources/images/default/dd/drop-add.gif") left  no-repeat !important;}
-		.delField{background:url("../res/js/ext2/resources/images/default/my/del-form.gif") left  no-repeat !important;}
-		.modifyField{background:url("../res/js/ext2/resources/images/default/my/modify-view.gif") left  no-repeat !important;}
-		.searchBtn{background:url("../res/img/search.gif") left  no-repeat !important;}
-		
-		.x-grid3-cell-inner, .x-grid3-hd-inner {
-			overflow: hidden;
-			padding: 5px 3px 5px 5px;
-			text-overflow: ellipsis;/*ellipsis clip*/
-			white-space: nowrap;
+		.list-search-panel{
+			padding:10px;
+			height:auto;
 		}
-
-		.x-toolbar .x-btn-menu-arrow-wrap .x-btn-center button {
-			background: url("../res/js/ext2/resources/images/default/toolbar/btn-arrow.gif") no-repeat scroll 0 3px transparent;
-			width: 12px;
-			visibility:hidden;
+		.search-item{
+			padding:7px 5px 7px 0;margin:0 5px;border:1px dotted
 		}
-		.x-toolbar .x-btn-over .x-btn-menu-arrow-wrap .x-btn-center button {
-			background-position: 0 -47px;
-			visibility:visible;
-		}	
-		
-		/***menu的样式***/
-		.x-menu-list {
-			background: none repeat scroll 0 0 transparent;
-			border: 0 none;
-			max-height:320px;overflow:auto;
-		}
-		
-		/*******************************************/
-		/******** css for Ext.ux.multiSelect *********/
-		/********* by chengds 2012-05-02 **********/
-		/*******************************************/
-		checked{background-image:url(../res/js/ext2/resources/images/default/menu/checked.gif)}
-		.unchecked{background-image:url(../res/js/ext2/resources/images/default/menu/unchecked.gif)}
-		.ux-MultiSelect-icon { width:16px; height:16px; float:left; background-position: -1px -1px ! important; background-repeat:no-repeat ! important; }
-		.ux-MultiSelect-icon-checked { background: transparent url(../res/js/ext2/resources/images/default/menu/checked.gif); }
-		.ux-MultiSelect-icon-unchecked { background: transparent url(../res/js/ext2/resources/images/default/menu/unchecked.gif); } 
 	</style>
- 	<script type="text/javascript" src="../res/js/ext2/adapter/ext/ext-base.js"></script>
-    <script type="text/javascript" src="../res/js/ext2/ext-all-debug.js?20120516"></script>
-	<script type="text/javascript" src="../res/js/ext2/ext-lang-zh_CN.js"></script>
-	<script type="text/javascript" src="../res/js/ext_base_extension.js?20120504"></script>
-	<script type="text/javascript" src="../res/js/controls/Ext.ux.RadioGroup.js"></script>
-	<script type="text/javascript" src="../res/js/controls/Ext.ux.DateFieldExtent.js"></script>
-	<script type="text/javascript" src="../res/js/controls/Ext.ux.MultiSelect.js?20120516"></script>	
-	<script type="text/javascript" src="../res/js/controls/Ext.ux.TreeComboBox.js"></script>	
-	<script type="text/javascript" src="../res/js/CookiesHelper.js"></script>		
-	<script type="text/javascript" src="xlist/list_rt_baseConfig.js?20120904"></script>	
 <script type="text/javascript">
 	var listConfig__= ${listConfig!""};
 	
@@ -95,7 +58,7 @@
 	var queryParams = {};
 	var params__={};
 	(function(){
-		var params = Ext.parseQuery();
+		var params = $.parseQuery();
 		params__ = params;
 		for(var key in params){
 			queryParams['query_' + key] = params[key];
@@ -120,15 +83,209 @@
 	}
 	
 </script>	
+<script>
+var opEnZh__={
+	'=':'=',
+	'like':'包含',
+	'not like':'不包含',
+	'>':'>',
+	'>=':'≥',
+	'<':'<',
+	'<=':'≤ ',
+	'<>':'≠'
+};
+////数据库字段类型与操作符对应表///////////////
+var ftype_op__ = {//[['INT','INT'],['FLOAT','FLOAT'],['DOUBLE','DOUBLE'],['CHAR','CHAR'],['VARCHAR','VARCHAR'],['TEXT','TEXT'],['mediumtext','mediumtext'],['DATETIME','DATETIME']],
+	'int':['=','>','<','>=','<=','<>'],	
+	'varchar':['like','not like','=','<>'],
+	'text':['like','not like'],
+	'char':[],
+	'float':[],
+	'double':[],
+	'datetime':[],
+	'mediumtext':[],
+	'all':['=','like','not like','>','>=','<','<=','<>']
+}
+ftype_op__.float =ftype_op__.double =ftype_op__.datetime= ftype_op__.int;
+ftype_op__.mediumtext = ftype_op__.text;
+ftype_op__.char = ftype_op__.varchar;
+/////////////////////////////
+
+var andorEnZH__ ={
+	'and':'并且','or':'或者'
+}
+
+var controlType__={
+	textfield:'textfield',
+	combo:'combobox',
+	radiogroup:'radiogroup',
+	treecombo:'combotree'
+};
+//搜索值控件的默认配置
+var sValueControlsCfg__ = {
+	combo:{
+		inputTemplate:'<input type="text"/>',
+		valueField:'value',   
+		textField:'text',
+		panelHeight:'auto'
+		
+	},	
+	textfield:{
+		width:100
+	},
+	radiogroup:{
+		//vtype:'radiogroup',
+		width:150
+	},
+	combotree:{
+	
+	}
+}
+</script>
+
+<script>
+/*删除前导空格*/ 
+function leftTrim(ui){ 
+        var notValid=/^\s/; 
+        while(notValid.test(ui)){ 
+                ui=ui.replace(notValid,"");
+        } 
+        return ui;
+}
+function myZhuanyi(str){
+	var ret = str;
+	//ret = ret.replace(/&/g,'&amp;');
+	ret = ret.replace(/"/g,'&quot;');
+	ret = ret.replace(/'/g,'&quot;');
+	ret = ret.replace(/>/g,'&gt;');
+	ret = ret.replace(/</g,'&lt;');
+	return ret;
+}	
+function myUnZhuanyi(str){
+	if(str){
+		var ret = str;
+		ret = ret.replace(/&quot;/g,'"');
+		ret = ret.replace(/&quot;/g,"'");
+		ret = ret.replace(/&gt;/g,'>');
+		ret = ret.replace(/&lt;/g,'<');
+		//ret = ret.replace(/&amp;/g,'&');		
+		return ret;
+	}else{
+		return str;
+	}
+}	
+
+//根据模板渲染内容
+function renderField(coLPCFG){
+	var tpl = leftTrim(coLPCFG.tpl);
+	var tplValue="";
+	var compiled_tpl;
+	try{
+		var tplJson =  eval("(" + tpl + ")");//json格式
+		
+		for(var funcName in tplJson){
+			if(funcName=="tpl"){
+				tplValue = tplJson.tpl;
+			}else{
+				var func =  tplJson[funcName];
+				if(typeof func == "function"){
+					juicer.register(funcName,func);
+				}
+			}
+		}
+	}catch(ex){
+		//alert('模板格式有误。格式:{"tpl":"{=title!func1}",func1:function(value,rowData,rowIndex){return value;}}')
+		tplValue = tpl;
+	}
+	if(tplValue=="") 
+		return null;
+	else
+		compiled_tpl = juicer(tplValue);
+	
+	var isShowTip = coLPCFG.isShowTip;
+	var tipTplValue = "";
+	var compiled_tipTpl = null;
+	coLPCFG.tipTpl = myUnZhuanyi(coLPCFG.tipTpl);
+	coLPCFG.tipTpl = leftTrim(coLPCFG.tipTpl);
+
+	if(coLPCFG.tipTpl) {
+		try{
+			var tipTplJson =  eval("(" + coLPCFG.tipTpl + ")");//json格式
+			for(var funcName in tipTplJson){
+				if(funcName=="tpl"){
+					tipTplValue = tipTplJson.tpl;
+				}else{
+					var func =  tipTplJson[funcName];
+					if(typeof func == "function"){
+						juicer.register(funcName,func);
+					}
+				}
+			}
+		}catch(ex){
+			tipTplValue = coLPCFG.tipTpl;
+		}
+		compiled_tipTpl = juicer(tipTplValue);
+	}
+	return function(value,rowData,rowIndex){
+		$.extend(rowData,queryParams);//合并注入url传入的参数
+		var text = value;
+		if(tplValue) text = compiled_tpl.render(rowData);
+		
+		if(isShowTip){
+			var tip = value;
+			if(compiled_tipTpl){
+				tip = compiled_tipTpl.render(rowData);	
+				//tip = myZhuanyi(tip);
+			}
+			text = '<div class="easyui-tooltip" title="'+ tip +'">'+ text +'</div>';
+		}
+		return text;	
+	}
+}
+	
+
+function setActiveTab(url,tabId,title){
+	if(top&& top.centerTabPanel){
+		top.centerTabPanel.addIframe('tab_' + tabId,title ,url,window);
+	}else{
+		window.open(url);	
+	}
+}
+
+openTab = function(url,title){
+	if(!title) title='';
+	if(top&& top.centerTabPanel){
+		var _url = url;
+		top.centerTabPanel.addIframe('tab_' + (new Date()).valueOf(),title ,_url);
+	}else{
+		window.open(url);	
+	}
+}
+
+</script>
+
 
 ${headInject!""}
 </head>
 <body>	
 
+<body class="easyui-layout">  
+
+<div  id="searchContainer" region="north" style="padding:5px;height:auto;background:#fafafa;min-height:30px;" bodyCls="list-search-panel">
+	<select id="searchFrom" style="width:150px"></select>
+
+</div>
+
+
+<div  id="gridContainer" region="center">
+	<table id="grid" fit="true" data-options="rownumbers:false,singleSelect:true,checkOnSelect:true,selectOnCheck:false,method:'get',striped:true,remoteSort:false"></table>
+</div>	
+
 <script type="text/javascript">
 
 listMgr = {
-	rowHeight:26,//列表页行高
+	rowHeight:22,//列表页行高
+	url:"xlist!data.jhtml",
 	grid:null,
 	column:null,
 	mnuContext:null,//右键菜单
@@ -143,206 +300,17 @@ listMgr = {
 	enableRemenberSearch:false,
 	localSettingSearchSetting:null,
 	init:function(){
+		
 		this.initBase();
+		this.initSearchPanel();
 		
-		//解析本地存储
-		if(window.localStorage && this.enableRemenberSearch){
-			var localSettingStr = localStorage.getItem(Cookies.get('cmpp_cn') + '_listPage_search_' + 'nodeId-' + nodeId__+ 'formId-' + formId__+ 'listId-' + listId__);
-			if(localSettingStr!=''){
-				try{
-					this.localSettingSearchSetting = Ext.decode(localSettingStr);
-				}catch(ex){
-					if(console)console.error(ex);
-				}
-			}
-		}
+		this.setPagesize();
+		this.columns = this.initColumns();
+		this.toolbarArr = this.initToolbar();
+		this.grid = this.initGrid();
 		
-		var toolbarItemsCfgArr = [];
-		var searchItems = [];
-		
-		if(this.localSettingSearchSetting){
-			LPCFG.defaultSearch = this.localSettingSearchSetting.searchType;
-		}
-		var dbChecked = LPCFG.defaultSearch!='service';
-		if(LPCFG.enableSearchDb!=false && dbSearchableArr__.length>0){//数据库搜索启用
-			searchItems.push({
-				text:'从数据库搜索',
-				value:'db',
-				checked:dbChecked
-			});
-			this.searchPanel["bak"] = this.searchPanel["db"] = this.createDbSearchPanel();
-			
-			if(LPCFG.enableSearchHistory!=false){
-				searchItems.push({
-					text:'从历史库搜索',
-					value:'bak',
-					checked:false
-				});
-			}
-		}
-		
-		if(LPCFG.enableSearchSvr!=false && svrSearchableArr__.length>0){
-			searchItems.push({
-				text:'从搜索服务搜索',
-				value:'service',
-				checked:!dbChecked
-			});
-			this.searchPanel["svr"] = this.createSvrSearchPanel();
-		}
-		
-		if(searchItems.length>1){
-			var searchPanelTogle = {
-				xtype:'cycle',
-				id:'btnSearchPanelTogle',
-				showText: true,
-				prependText: '',
-				value:(this.localSettingSearchSetting)?(this.localSettingSearchSetting.searchType):((LPCFG.defaultSearch)?LPCFG.defaultSearch:'db'),
-				iconCls :'btnIconCls',
-				style:'padding:0px 5px 0px 0px;',
-				items: searchItems,
-				changeHandler:function(btn, item){
-					var togle = Ext.getCmp('btnSearchPanelTogle');
-					if((item.value=='db' && togle.value=='bak') ||(togle.value=='db' && item.value=='bak')){
-						togle.value = item.value;
-						return;
-					}
-					togle.value = item.value;
-					if(item.value=='db' || item.value=='bak'){
-						listMgr.searchPanel.svr.el.fadeOut({
-							useDisplay: true,
-							callback:function(){
-								listMgr.searchPanel.db.el.fadeIn({useDisplay: true}); 
-							}
-						}); 
-					}else{
-						listMgr.searchPanel.db.el.fadeOut({
-							useDisplay: true,
-							callback:function(){
-								listMgr.searchPanel.svr.el.fadeIn({useDisplay: true}); 
-							}
-						}); 
-					}
-					if(listMgr.morePanelDb)listMgr.morePanelDb.getEl().setDisplayed(false);
-					if(listMgr.morePanelSvr)listMgr.morePanelSvr.getEl().setDisplayed(false);
-				},
-				listeners :{
-					render:function(obj){
-						var btns = obj.el.query('button');
-						if(btns.length>0)
-							btns[0].style.width = '90px';
-					}
-				}
-
-
-			};
-			toolbarItemsCfgArr.push(searchPanelTogle);
-		}
-		
-		if(this.searchPanel["db"]) toolbarItemsCfgArr.push(this.searchPanel["db"]);
-		if(this.searchPanel["svr"])toolbarItemsCfgArr.push(this.searchPanel["svr"]);
-	
-		
-		var viewPortItemsArr = [];
-		if(toolbarItemsCfgArr.length>0){
-			viewPortItemsArr.push({
-				xtype:'toolbar',
-				region:'north',
-				id:'toolbarBox',
-				style:'border:none;',
-				//style:'padding:1px 5px 0px 5px;',
-				autoHeight:true,
-				//height:38,
-				border:false,
-				frame:false,
-				items:toolbarItemsCfgArr
-			});
-		}
-		viewPortItemsArr.push({
-			xtype:'panel',
-			region:'center',
-			layout:'anchor',
-			//style:'padding:1px 5px 0px 5px;',
-			frame:false,
-			header :false,
-			id:'datagridPanel',
-			items:[{
-				xtype:'panel',
-				anchor:'100%',
-				autoHeight:true,
-				frame:false,
-				border:false,
-				header :false,	
-				layout:'anchor',	
-				id:'placeholder'
-			}],
-			listeners:{
-				resize:function(obj,adjWidth,adjHeight,rawWidth,rawHeight ) {
-					if(listMgr.grid) listMgr.grid.setHeight(adjHeight);//确保表格自适应
-					if(listMgr.datagridPanel) listMgr.setPagesize();
-				}
-			}
-		});
-		
-		//主界面
-		new Ext.Viewport({
-			layout:"border",
-			border:false,
-			frame:false,
-			items:viewPortItemsArr
-		});
-		
-		this.datagridPanel = Ext.getCmp('datagridPanel');	
-		
-		this.initToolbar();
-		this.initPageBar();
-		this.initColumn();
-		this.initMnuContext();//初始化右键菜单
-		this.initGrid();
-		this.setPagesize();	
-		this.loadData();
-		
-		if(LPCFG.defaultSearch=="service"){
-			this.searchPanel["svr"].el.setVisible(true);
-			this.searchPanel["svr"].el.setDisplayed(true);	
-			this.searchPanel["db"].el.setDisplayed(false);				
-		}else{
-			if(this.searchPanel["svr"] && this.searchPanel["db"]) this.searchPanel["svr"].el.setVisible(false);
-		}
-		this.listenerKeybord();//绑定键盘事件
 	},
 	initBase:function(){
-		this.store=new Ext.data.Store({ 
-			url : 'xlist!data.jhtml',
-			reader : new Ext.data.JsonReader({
-				autoLoad:true,
-				root : "data",
-				totalProperty : "totalCount",
-				successProperty : 'success',
-				fields: LPCFG.mustReturnFields
-			}),
-			remoteSort: false,
-			successProperty : 'success',
-			listeners: { 
-				"loadexception":function(obj, options, response) {
-					try{
-						var ret = Ext.util.JSON.decode(response.responseText);
-					}catch(ex){
-						
-					}					
-					console.info('store loadexception, arguments:', arguments);
-					if(ret) var msg = ret.message;
-					Ext.Msg.show({
-						   title:'错误提示',
-						   msg:msg?msg:response.statusText,
-						   buttons: Ext.Msg.OK,
-						   animEl: 'elId',
-						   minWidth:420,
-						   icon: Ext.MessageBox.ERROR 
-					});
-				}
-			}
-		});
-	
 		try{
 			if(params__.where) {
 				this.dbFilter = Ext.decode(params__.where);
@@ -354,26 +322,321 @@ listMgr = {
 				this.sort = Ext.decode(params__.sort);
 			}
 		}catch(ex){
-			Ext.Msg.show({
-			   title:'错误提示',
-			   msg: "来自url的参数解析出错。请检查参数格式是否正确。",
-			   buttons: Ext.Msg.OK,
-			   animEl: 'elId',
-			   minWidth:420,
-			   icon: Ext.MessageBox.ERROR  
-			});
+			$.messager.alert('提示',"来自url的参数解析出错。请检查参数格式是否正确。",'error');
 		}
 		
 	},
+	initSearchPanel:function(){
+		this.initSearchFrom();
+		this.initSearchItem();
+		this.initSearchButton("db");
+	},
+	//初始化搜索方式选择
+	initSearchFrom:function(){
+		var searchFromItems=[];
+		var dbChecked = LPCFG.defaultSearch!='service';
+		if(LPCFG.enableSearchDb!=false && dbSearchableArr__.length>0){//数据库搜索启用
+			searchFromItems.push({
+				"text":"从数据库搜",
+				"value":"db",
+				checked:dbChecked?'checked':null
+			});
+			if(LPCFG.enableSearchHistory!=false){
+				searchFromItems.push({
+					text:'从历史库搜',
+					value:'bak',
+					checked:false
+				});
+			}
+		}
+		if(LPCFG.enableSearchSvr!=false && svrSearchableArr__.length>0){
+			searchFromItems.push({
+				text:'从搜索引擎搜',
+				value:'service',
+				checked:!dbChecked
+			});
+		}
+		if(searchFromItems.length>1){
+			var searchFrom = $("#searchFrom");
+			this.searchFromSelect = searchFrom;
+			searchFrom.combo({
+                editable:false,
+				width:100,
+				panelWidth:120,
+				panelHeight:95
+            });
+			if(dbChecked){
+				searchFrom.combo('setValue', "db").combo('setText', "从数据库搜");
+			}else{
+				searchFrom.combo('setValue', "service").combo('setText', "从搜索引擎搜");
+			}
+			var searchPanelListTpl = [
+				'<div>',
+					'<div style="color:#99BBE8;background:#fafafa;padding:5px;">请选择数据来源</div>',
+					'{@each items as item}',
+						'<input type="radio" name="from" value="{=item.value}" {@if item.checked}checked="checked"{@/if}><span>{=item.text}</span><br/>',
+					'{@/each}',
+				'</div>'
+			].join("");
+			var searchPanelListHtml = juicer(searchPanelListTpl,{items:searchFromItems});
+			var searchPanelList = $(searchPanelListHtml).after(searchFrom).appendTo(searchFrom.combo('panel'));
+			searchPanelList.find('input[type="radio"]').click(function(){
+                var v = $(this).val();
+				listMgr.from = v;
+                var s = $(this).next('span').text();
+                listMgr.searchFromSelect.combo('setValue', v).combo('setText', s).combo('hidePanel');
+            });
+		}else{
+			$("#searchFrom").hide();
+		}
+		
+	},
+	searchControls:[],
+	//初始化搜索项
+	initSearchItem:function(){
+		var container = $("#searchContainer");
+		var fieldMenuTpl=[
+			'<div>',
+				'{@each items as item}',
+					'<div class="search-item-field-item" data-value="{=item.field}">{=item.title}</div>',
+				'{@/each}',
+			'</div>'
+		].join("");
+		var fieldMenuHtml = juicer(fieldMenuTpl,{items:dbSearchableArr__});
+
+		for(var i=0;i<LPCFG.search.length;i++){
+			var sItem = LPCFG.search[i];
+			if(sItem.enable!=false){
+				var ct = $('<span class="search-item db">').appendTo(container);
+				var field = $('<a href="javascript:void(0)" data-value="'+ sItem.field +'" data-index="'+ i +'" class="search-item-field">'+ (sItem.title||'选择搜索项') +'</a>').appendTo(ct);
+				var fieldMenu = $(fieldMenuHtml).appendTo(ct);
+				field.splitbutton({
+					menu: fieldMenu
+				});
+				fieldMenu.find(".search-item-field-item").click($.proxy(function(e){
+					var oldFieldName = this.data().value;
+					var index = this.data().index;
+					listMgr._splitMenuHandler.call(this,e);
+					
+					//更新op控件
+					var newFieldName = this.data().value;
+					if(newFieldName==oldFieldName) return;
+					var oldOps = listMgr.getOpsByFType(oldFieldName);
+					var newOps = listMgr.getOpsByFType(newFieldName);
+					
+					var controlItem = listMgr.searchControls[index];
+					var opCtrl = controlItem.op;
+					if(oldOps!=newOps){
+						opCtrl.splitbutton("destroy");
+						opCtrl = listMgr.createOp(this.parent(),{field:newFieldName});
+						this.after(opCtrl);
+						listMgr.searchControls[index].op = opCtrl;
+					}
+					//更新valueCtrl
+					var valueCtrl = controlItem.value;
+					var ctrlClassName = listMgr.getCtrlClassName(listMgr.getCtrlName(oldFieldName));
+					valueCtrl[ctrlClassName]("destroy");
+					valueCtrl = listMgr.createValueCtrl(this.parent(),{field:newFieldName});
+					opCtrl.after(valueCtrl);
+					listMgr.searchControls[index].value = valueCtrl;
+					
+				},field));
+				var opCtrl = this.createOp(ct,sItem);
+				var valueCtrl = this.createValueCtrl(ct,sItem);	
+				this.searchControls.push({
+					field:field,
+					op:opCtrl,
+					value:valueCtrl
+				});
+			}
+		}
+	},
+	createOp:function(ct,sItem){//创建操作符控件
+		var opText = sItem.op?opEnZh__[sItem.op]:'=';
+		var opValue = sItem.op?sItem.op:'=';
+		var ops = this.getOpsByFType(sItem.field);
+		var opMenus=[];
+		for(var i=0;i<ops.length;i++){
+			var op = ops[i];
+			opMenus.push({
+				text         : opEnZh__[op]||'从',
+				value        : op
+			});
+		}
+		var menuTpl=[
+			'<div>',
+				'{@each items as item}',
+					'<div class="search-item-op-item" data-value="{=item.value}">{=item.text}</div>',
+				'{@/each}',
+			'</div>'
+		].join("");
+		
+		var menuHtml = juicer(menuTpl,{items:opMenus});
+		var opMenu = $(menuHtml).appendTo(ct);
+		var opCtrl = $('<a href="javascript:void(0)" class="search-item-op" data-value="' + opValue +'">'+ opText +'</a>').appendTo(ct);
+		opCtrl.splitbutton({
+			menu: opMenu[0]
+		});
+				
+		opMenu.find(".search-item-op-item").click($.proxy(this._splitMenuHandler,opCtrl));
+		return opCtrl;
+	},
+	
+	changeOp:function(opCtrl,field){
+		var opMenu = opCtrl.splitbutton("options").menu;
+		opMenu.remove();
+		var ct = opCtrl.parent();
+		opCtrl.replaceWith
+		
+		this.createOp(ct,{field:field,})
+	},
+	_splitMenuHandler:function(e){
+		var target = $(e.currentTarget);
+		var value = target.data().value;
+		this.find('.l-btn-text')[0].firstChild.textContent=target.text();
+		this.data("value",value);
+	},
+	getOpsByFType:function(field){
+		var ops= ftype_op__.all;
+		if(field){
+			var ftype = LPCFG.searchableFields[field].f_type;
+			if(ftype) ftype=ftype.toLowerCase();
+			if(ftype && ftype_op__[ftype]) 
+				ops = ftype_op__[ftype];
+		}
+		return ops;
+	},
+	getCtrlName:function(field){
+		var fldCtrlItem = LPCFG.searchableFields[field];
+		var ctrl = fldCtrlItem && fldCtrlItem.ctrl?fldCtrlItem.ctrl:'textfield';
+		return ctrl;
+	},
+	getCtrlClassName:function(ctrl){
+		return controlType__[ctrl];
+	},
+	//创建值控件
+	createValueCtrl:function(ct,sItem){//创建值控件
+		var ctrl = this.getCtrlName(sItem.field);
+		var ctrlClassName = this.getCtrlClassName(ctrl);
+		var fldCtrlItem = LPCFG.searchableFields[sItem.field];
+		var ctrlCfg = {};
+		$.extend(ctrlCfg,sValueControlsCfg__[ctrl]);
+		if(fldCtrlItem && fldCtrlItem.width) ctrlCfg.width=fldCtrlItem.width;
+		
+		if(fldCtrlItem && fldCtrlItem.dataSource){
+			if(fldCtrlItem.dataSourceType=='url'){
+				ctrlCfg.url = fldCtrlItem.dataSource;
+			}else{//json sql
+				var dataSource = fldCtrlItem.dataSource;
+				try{
+					if(dataSource!='') dataSource = eval("(" + (dataSource) + ")");
+					ctrlCfg.data = dataSource;
+				}catch(ex){
+					console.log(ex);
+					alert("数据源数据格式有误");
+				}
+			}
+		}
+		var inputTpl = ctrlCfg.inputTemplate || '<input type="text"/>';
+		var valueCtrl = $.tmpl(inputTpl, ctrlCfg).appendTo(ct);
+		valueCtrl.attr("name",sItem.field + "_value");
+		valueCtrl[ctrlClassName](ctrlCfg);
+		return valueCtrl;
+	},
+	
+	//初始化搜索按钮
+	initSearchButton:function(from){
+		if(from=="service"){
+		
+		}else{
+			var orderMenuItems=[];
+			for(var i=0;i<dbSortableArr__.length;i++){  
+				var fldCfg = {
+					text         : '按<b>' + dbSortableArr__[i].title + '</b>顺序查询',
+					field		 : dbSortableArr__[i].field,
+					order        : "asc"
+				};
+				orderMenuItems.push(fldCfg);
+				var fldCfg = {
+					text         : '按<b>' + dbSortableArr__[i].title + '</b>倒序查询',
+					field		 : dbSortableArr__[i].field,
+					order        : "desc"
+				};
+				orderMenuItems.push(fldCfg);			
+			}
+			
+			var ct = $("#searchContainer");
+			if(orderMenuItems.length==0){
+				var btnSearch = $('<a href="javascript:void(0)" id="btn" iconCls="icon-search">搜索</a>').appendTo(ct);
+				btnSearch.linkbutton({   
+					plain:true  
+				}).click(function(){
+					listMgr.doSearch_db();
+				});
+			}else{
+				var btnSearch = $('<a href="javascript:void(0)" id="btn" class="easyui-splitbutton db"  iconCls="icon-search">搜索</a>').appendTo(ct);
+				var menuTpl=[
+					'<div>',
+						'{@each items as item}',
+							'<div class="search-order-item" data-field="{=item.field}" data-sort="{=item.sort}">{=item.text}</div>',
+						'{@/each}',
+					'</div>'
+				].join("");
+				var menuHtml = juicer(menuTpl,{items:orderMenuItems});
+				
+				var menu = $(menuHtml).appendTo(ct);
+				btnSearch.splitbutton({
+					menu: menu
+				});	
+				menu.find(".search-order-item").click(function(e){
+					var data = $(this).data();
+					var field = data.field;
+					var sort = data.sort;
+					var value = {field:field,sort:sort};
+					listMgr.doSearch_db(JSON.stringify(value));
+				});
+				
+			}
+		}
+	},
+	
+	//初始化列
+	initColumns:function(){
+		var colunms=[];
+		if(LPCFG.checkbox!==false){
+			colunms.push({
+				field:"ck",
+				checkbox:true
+			});
+		}
+		for(var i=0;i<LPCFG.columns.length;i++){
+			var col = LPCFG.columns[i];
+			if(col.isView!=false){
+				var o = {
+					title : col.title, 
+					sortable : true, 
+					field: col.field?col.field:'',
+					align:col.align,
+					fixed:LPCFG.isWidthFreeRow==i,
+					resizable:true,
+					formatter:renderField(col)
+				};
+				if(col.width)o.width = col.width;
+				colunms.push(o);
+			}		
+		}
+		return colunms;
+	},
+	
 	//根据grid高度计算pagesize
 	setPagesize:function(){
 		if(LPCFG.autoPagesize){
-			this.pagesize = Math.floor((listMgr.grid.body.getHeight()-26)/listMgr.rowHeight);
+			var gridBody= $('#gridContainer');
+			this.pageSize = Math.floor((gridBody.innerHeight()-60-24)/this.rowHeight);
 		}else{
-			this.pagesize =LPCFG.pagesize;
+			this.pagesize = LPCFG.pagesize;
 		}
-		listMgr.pagerBar.store.baseParams.limit	= this.pagesize;
-		listMgr.pagerBar.pageSize = this.pagesize;
+		
 	},
 	//绑定键盘事件
 	listenerKeybord:function(){
@@ -402,665 +665,34 @@ listMgr = {
 			}
 		}		
 	},
-	createDbSearchPanel:function(){//创建DB搜索panel
-		var panel= new Ext.Panel({
-			layout:'table',
-			id:'searchPanel_db',
-			autoHeight:true,
-			frame:true,
-			border:false,
-			autoScroll:true,
-			items:this.initDbSearchPanel()
-		});
-		return panel;
-	},
-	createSearchItem:function(sItem,groupId){
-		var lcsss =this.localSettingSearchSetting ;
-		if(lcsss && 'service'!=lcsss.searchType){
-			var searchSets = lcsss.searchSetting[groupId];
-			Ext.apply(sItem,searchSets);
-		}
-		var btnText = sItem.title?sItem.title:'选择搜索项';
-		var btnSelFld=new Ext.Toolbar.SplitButton({
-			text:btnText,
-			fieldName:sItem.field
-		});
-		var menuItems=[];
-		for(var i=0;i<dbSearchableArr__.length;i++){
-			var item = dbSearchableArr__[i];
-			menuItems.push({
-				text         : item.title,
-				value        : item.field,
-				checked      : sItem.field==item.field,
-				group		 : 'sitem_' + groupId
-			});
-		}
-		
-		btnSelFld.menu = new Ext.menu.Menu({
-			items :menuItems,
-			listeners:{
-				scope:{groupId:groupId},
-				'itemclick':function(item,e){					
-					var button = listMgr.seachItemsArr[this.groupId][0];
-					var oldFieldName = button.fieldName;
-					var btnOp=listMgr.seachItemsArr[this.groupId][1];
-					button.setText(item.text);
-					button.fieldName = item.value;
-					
-					//更新op和valueCtrl控件
-					var oldOps = listMgr.getOpsByFType(oldFieldName);
-					var newOps = listMgr.getOpsByFType(item.value);
-					if(oldOps!=newOps){
-						listMgr.changeOp(btnOp,{field:item.value},this.groupId);
-					}
-					
-					var oldValueCtrl = listMgr.seachItemsArr[this.groupId][2];				
-					var dbPanel = oldValueCtrl.ownerCt;
-					var newValueCtrl = listMgr.createValueCtrl({field:item.value},groupId);
-
-					oldValueCtrl.el.fadeOut({
-						endOpacity: 0, 
-						easing: 'easeOut',
-						duration: .5,
-						scope:this,
-						callback:function(){
-							dbPanel.remove(oldValueCtrl,true);	
-							dbPanel.body.update('');					
-							dbPanel.add(newValueCtrl);	
-							listMgr.seachItemsArr[this.groupId][2] = newValueCtrl;					
-							dbPanel.doLayout();
-							//绑定回车事件									
-							new Ext.KeyMap(newValueCtrl.el, {
-								key: Ext.EventObject.ENTER,
-								fn: function(){
-									this.doSearch_db();
-								},
-								scope: listMgr
-							});
-		
-						}
-					});
-
-				}
-			}
-		});	
-		
-		///初始操作符///
-		var btnOp=this.createOp(sItem,groupId);
-		
-		/////初始化值控件////
-		var valueCtrl=this.createValueCtrl(sItem,groupId);
-		var valueCtrlContainer = new Ext.Panel({
-			layout:'fit',
-			autoHeight:true,
-			style:'margin-right:5px;',
-			items:[valueCtrl]
-		})
-		
-		this.seachItemsArr[groupId] = [btnSelFld,btnOp,valueCtrl];
-		return [btnSelFld,btnOp,valueCtrlContainer] ;
-	},
-	createValueCtrl:function(sItem,groupId){//创建值控件
-		var fldCtrlItem = LPCFG.searchableFields[sItem.field];
-		var ctrl =  sItem.field=='' || !fldCtrlItem.ctrl?'textfield':fldCtrlItem.ctrl;
-		var ctrlClassName = controlType__[ctrl];
-		var ctrlCfg = {};
-		Ext.applyDeep(ctrlCfg,sValueControlsCfg__[ctrl]);
-		if(fldCtrlItem && fldCtrlItem.width) ctrlCfg.width=fldCtrlItem.width;
-		if(this.localSettingSearchSetting && this.localSettingSearchSetting.searchSetting[groupId] && this.localSettingSearchSetting.searchSetting[groupId].field==sItem.field){//设置本地配置值
-			ctrlCfg.value = this.localSettingSearchSetting.searchSetting[groupId].value;
-		}
-		
-		if(fldCtrlItem && fldCtrlItem.dataSource){
-			if(fldCtrlItem.dataSourceType=='url'){
-				if(ctrlClassName==="Ext.ux.TreeComboBox"){
-					ctrlCfg.dataUrl = fldCtrlItem.dataSource;
-				}else{
-					ctrlCfg.mode="remote";
-					ctrlCfg.store=new Ext.data.SimpleStore({　
-						fields:['value','text'],
-						url:fldCtrlItem.dataSource
-					});
-				}
-			}else{//json sql
-				var dataSource = fldCtrlItem.dataSource;
-				try{
-					if(dataSource!='') dataSource = Ext.decode(dataSource);
-				}catch(ex){
-					console.log(ex);
-				}
-				Ext.applyDeep(ctrlCfg,{dataSource:dataSource,data:dataSource});
-			}
-		}
-		eval('var valueCtrl = new ' + ctrlClassName + '(ctrlCfg)');
-
-		return valueCtrl;
-	},
-	createOp:function(sItem,groupId){//创建操作符控件
-		var fldCtrlItem = LPCFG.searchableFields[sItem.field];
-		var ctrl =  sItem.field=='' || !fldCtrlItem.ctrl?'textfield':fldCtrlItem.ctrl;
-		var xtype = sValueControlsCfg__[ctrl].xtype;
-		var opText = sItem.op?opEnZh__[sItem.op]:'=';
-		var opValue = sItem.op?sItem.op:'=';
-		
-		if(this.localSettingSearchSetting && 'service'!=this.localSettingSearchSetting.searchType && this.localSettingSearchSetting.searchSetting[groupId]&&this.localSettingSearchSetting.searchSetting[groupId].field==sItem.field){//设置本地配置值
-			opValue = this.localSettingSearchSetting.searchSetting[groupId].op;
-		}
-		
-		if(xtype=='datefieldextent') {
-			opText="从";
-			opValue="from";
-		}
-		var btnOp= new Ext.Toolbar.SplitButton({
-			text:opText,
-			value:opValue
-		});
-		var ops = this.getOpsByFType(sItem.field);
-		if(xtype=='datefieldextent'){
-			ops=['from'];
-		}
-		
-		var group ='createMBtnOp' + groupId;
-		var opMenus=[];
-		for(var i=0;i<ops.length;i++){
-			var op = ops[i];
-			opMenus.push({
-				text         : opEnZh__[op]||'从',
-				value        : op,
-				checked      : i==0,
-				group		 :group
-			});
-		}
-		btnOp.menu = new Ext.menu.Menu({
-			items :opMenus,
-			listeners:{
-				scope:{groupId:groupId},
-				'itemclick':function(item,e){
-					var button = listMgr.seachItemsArr[this.groupId][1];
-					button.setText(item.text);
-					button.value = item.value;
-				}
-			}
-		});
-		return btnOp;
-	},
-	getOpsByFType:function(field){
-		var ops= ftype_op__.all;
-		if(field){
-			var ftype = LPCFG.searchableFields[field].f_type;
-			if(ftype) ftype=ftype.toLowerCase();
-			if(ftype && ftype_op__[ftype]) 
-				ops = ftype_op__[ftype];
-		}
-		return ops;
-	},
-	changeOp:function(btnOp,sItem,groupId){
-		var fldCtrlItem = LPCFG.searchableFields[sItem.field];
-		var ctrl =  sItem.field=='' || !fldCtrlItem.ctrl?'textfield':fldCtrlItem.ctrl;
-		var xtype = sValueControlsCfg__[ctrl].xtype;
-		var ops = listMgr.getOpsByFType(sItem.field);
-		if(xtype=='datefieldextent') {
-			ops=['from'];
-		}
-		
-		
-		btnOp.menu.removeAll();
-		var group ='createMBtnOp' + groupId;
-		for(var i=0;i<ops.length;i++){
-			var op = ops[i];
-			var menuCfg = {
-				text         : opEnZh__[op]||'从',
-				value        : op,
-				checked      : i==0,
-				group		 :group
-			};
-			btnOp.menu.add(menuCfg);
-		}
-		
-		
-		if(this.localSettingSearchSetting && 'service'!=this.localSettingSearchSetting.searchType && this.localSettingSearchSetting.searchSetting[groupId]&&this.localSettingSearchSetting.searchSetting[groupId].field==sItem.field){//设置本地配置值
-			btnOp.value = this.localSettingSearchSetting.searchSetting[groupId].op;
-			btnOp.setText(opEnZh__[btnOp.value]||'从');
-		}else{
-			btnOp.value=ops[0]||'=';
-			btnOp.setText(opEnZh__[ops[0]]||'从');
-		}
-		return btnOp;
-	},
-	moreSearchItem:function(sItemsMore){//创建更多搜索项
-		var sItems = sItemsMore;
-		return function(obj,e){		
-			if(!listMgr.morePanelDb){
-				var dbPanel = listMgr.searchPanel['db'];
-				var position = dbPanel.getPosition();
-				var size = dbPanel.getSize();
-				//var right = Ext.getBody().getWidth()-(obj.el.getLeft()+ obj.el.getWidth() );	
-				var left = position[0];
-				var style = 'position:absolute;left:' + left + 'px;top:' + (position[1]+size.height) + 'px';
-				
-				var sItemsArr =[];
-				for(var i=0;i<sItems.length;i++){
-					var sItem = sItems[i];
-					var sItemCtrls = listMgr.createSearchItem(sItem,listMgr.seachItemsArr.length);
-					sItemsArr.push(sItemCtrls[0]);
-					sItemsArr.push(sItemCtrls[1]);
-					sItemsArr.push(sItemCtrls[2]);
-				}
-								
-				//收起按钮
-				var btnMin = new Ext.Button({
-					text:'收起︽',//︽
-					scope:obj,
-					handler:function(){
-						listMgr.morePanelDb.getEl().fadeOut({useDisplay:true});
-					}
-				});
-				sItemsArr.push(btnMin);
-				
-				var panel = new Ext.Toolbar({
-					autoHeight:true,
-					border:false,
-					frame:false,
-					items:[{
-						xtype:'panel',
-						layout:'table',
-						autoHeight:true,
-						frame:true,
-						border:false,
-						autoScroll:true,
-						style:style,
-						items:sItemsArr
-					}]
-				});
-
-				panel.render(Ext.getBody());
-				panel.getEl().setVisible(true);
-				panel.getEl().setDisplayed(false);
-				panel.getEl().fadeIn({useDisplay:true});
-				listMgr.morePanelDb = panel;
-			}else{
-				var panel = listMgr.morePanelDb;
-				var el = panel.getEl();
-				if(!el.isDisplayed()){
-					el.fadeIn({	
-						endOpacity: 1, 
-						easing: 'easeIn',
-						duration: .5,
-						useDisplay:true
-					});
-				}else{
-					el.fadeOut({useDisplay:true});
-				}
-			}
-		}
-	},	
-	moreSearchItemSvr:function(sItemsMore){//创建更多搜索项-for-搜索服务
-		var sItems = sItemsMore;
-		return function(obj,e){		
-			if(!listMgr.morePanelSvr){
-				var dbPanel = listMgr.searchPanel['svr'];
-				var position = dbPanel.getPosition();
-				var size = dbPanel.getSize();
-				//var right = Ext.getBody().getWidth()-(obj.el.getLeft()+ obj.el.getWidth() );	
-				var left = position[0];
-				var style = 'position:absolute;left:' + left + 'px;top:' + (position[1]+size.height) + 'px';
-				var sItemsArr =[];
-				
-				for(var i=0;i<sItems.length;i++){
-					var sItem = sItems[i];
-					var sItemCtrls = listMgr.createSearchItemSvr(sItem,listMgr.seachSvrItemsArr.length);
-					sItemsArr.push(sItemCtrls[0]);
-					sItemsArr.push(sItemCtrls[1]);
-				}
-				
-				//收起按钮
-				var btnMin = new Ext.Button({
-					text:'收起︽',//︽
-					scope:obj,
-					handler:function(){
-						listMgr.morePanelSvr.getEl().fadeOut({useDisplay:true});
-					}
-				});
-				sItemsArr.push(btnMin);
-				
-				var panel = new Ext.Toolbar({
-					autoHeight:true,
-					border:false,
-					frame:false,
-					items:[{
-						xtype:'panel',
-						layout:'table',
-						autoHeight:true,
-						frame:true,
-						border:false,
-						autoScroll:true,
-						style:style,
-						items:sItemsArr
-					}]
-				});
-
-				panel.render(Ext.getBody());
-				listMgr.morePanelSvr = panel;
-			}else{
-				var panel = listMgr.morePanelSvr;
-				var el = panel.getEl();
-				if(!el.isDisplayed()){
-					el.fadeIn({	
-						endOpacity: 1, 
-						easing: 'easeIn',
-						duration: .5,
-						useDisplay:true
-					});
-				}
-			}
-		}
-	},	
-	initDbSearchPanel:function(){
-		var sItems = [];
-		var sItemsMore = [];
-		for(var i=0;i<LPCFG.search.length;i++){
-			var sItem = LPCFG.search[i];
-			if(sItem.enable!=false){
-				if(sItems.length/3>=3) {
-					 sItemsMore.push(sItem);	
-				}else{
-					var sItemCtrls = this.createSearchItem(sItem,this.seachItemsArr.length);
-					sItems.push(sItemCtrls[0]);
-					sItems.push(sItemCtrls[1]);
-					sItems.push(sItemCtrls[2]);
-				}
-			}
-		}
-		if(sItemsMore.length>0){
-			var btnMore = new Ext.Button({
-				text:'更多︾',//︽
-				scope:this,
-				handler:this.moreSearchItem(sItemsMore)
-			});
-			sItems.push(btnMore);
-		}
-		//////////////////搜索按钮///////////////////////
-		if(dbSortableArr__.length>0){
-			var mbtnSearch = new Ext.Toolbar.MenuButton({
-				text     : '搜索',
-				iconCls  :'searchBtn',
-				value 	 :'',
-				style:'padding:0px 0px 0px 5px;',
-				handler:function(){
-					listMgr.doSearch_db();
-				}
-				
-			});
-			
-			var orderMenuItems=[];
-			for(var i=0;i<dbSortableArr__.length;i++){  
-				var fldCfg = {
-					text         : '按<font color="green">' + dbSortableArr__[i].title + '</font>顺序查询',
-					value        : {"field":dbSortableArr__[i].field,"order":"asc"},
-					checked      : false,
-					group		 :'mbtnSearch'
-				};
-				orderMenuItems.push(fldCfg);
-				var fldCfg = {
-					text         : '按<font color="green">' + dbSortableArr__[i].title + '</font>倒序查询',
-					value        : {"field":dbSortableArr__[i].field,"order":"desc"},
-					checked      : false,
-					group		 :'mbtnSearch'
-				};
-				orderMenuItems.push(fldCfg);			
-			}
-			mbtnSearch.menu = new Ext.menu.Menu({
-				items :orderMenuItems,
-				listeners:{
-					scope:this,
-					'itemclick':function(item,e){
-						this.doSearch_db(item.value);
-					}	
-				}
-			});
-			
-			sItems.push(mbtnSearch);
-		}else{
-			sItems.push({
-				xtype:'tbbutton',
-				text:'搜索',
-				iconCls  :'searchBtn',
-				style:'padding:0px 0px 0px 5px;',
-				handler:function(){
-					listMgr.doSearch_db();
-				}
-			});	
-		}
-		//清空按钮
-		sItems.push({
-			xtype:'tbbutton',
-			text:'清空',
-			style:'padding:0px 5px 0px 5px;',
-			scope:this,
-			handler:function(){
-				var items = this.seachItemsArr;
-				for(var i=0;i<items.length;i++){
-					if(!items[i]) continue;
-					var vCtrl = items[i][2];
-					vCtrl.setValue('');
-				}
-			}
-		});
-		return sItems;
-	},
-	createSvrSearchPanel:function(){//创建Svr搜索panel
-		var panel= new Ext.Panel({
-			layout:'table',
-			id:'searchPanel_Svr',
-			autoHeight:true,
-			frame:true,
-			border:false,
-			autoScroll:true,
-			items:this.initSvrSearchPanel()
-		});
-		return panel;
-	},
-	createSearchItemSvr:function(sItem,groupId){
-		var lcsss =this.localSettingSearchSetting ;
-		if(lcsss && 'service'==lcsss.searchType){
-			var searchSets = lcsss.searchSetting[groupId];
-			Ext.apply(sItem,searchSets);
-		}
-	
-		var btnText = sItem.title?sItem.title + ":":'选择搜索项';
-		var btnSelFld=new Ext.Toolbar.SplitButton({
-			text:btnText,
-			fieldName:sItem.field
-		});
-		
-		var menuItems=[];
-		for(var i=0;i<svrSearchableArr__.length;i++){
-			var item = svrSearchableArr__[i];
-			menuItems.push({
-				text         : item.title,
-				value        : item.field,
-				checked      : sItem.field==item.field,
-				group		 : 'sitem_svr_' + groupId
-			});
-		}
-		btnSelFld.menu = new Ext.menu.Menu({
-			items :menuItems,
-			listeners:{
-				scope:{groupId:groupId},
-				'itemclick':function(item,e){					
-					var button = listMgr.seachSvrItemsArr[this.groupId][0];
-					var oldFieldName = button.fieldName;
-					button.setText(item.text + ":");
-					button.fieldName = item.value;
-					
-					var oldField = LPCFG.searchableFields[oldFieldName].field;
-					var newField = LPCFG.searchableFields[item.value].field;
-					if(newField!=oldField){
-						var oldValueCtrl = listMgr.seachSvrItemsArr[this.groupId][1];
-											
-						var dbPanel = oldValueCtrl.ownerCt;
-						var newValueCtrl = listMgr.createValueCtrl({field:item.value},groupId);
-						oldValueCtrl.el.fadeOut({
-							endOpacity: 0, 
-							easing: 'easeOut',
-							duration: .5,
-							scope:this,
-							callback:function(){
-								dbPanel.remove(oldValueCtrl,true);	
-								dbPanel.body.update('');									
-								dbPanel.add(newValueCtrl);	
-								listMgr.seachSvrItemsArr[this.groupId][1] = newValueCtrl;					
-								dbPanel.doLayout();
-								//绑定回车事件									
-								new Ext.KeyMap(newValueCtrl.el, {
-									key: Ext.EventObject.ENTER,
-									fn: function(){
-										this.doSearch_svr();
-									},
-									scope: listMgr
-								});
-							}
-						});
-
-					}
-				}
-			}
-		});	
-		
-		/////初始化值控件////
-		var valueCtrl=this.createValueCtrl(sItem,groupId);
-		var valueCtrlContainer = new Ext.Panel({
-			layout:'fit',
-			autoHeight:true,
-			autoWidth:true,
-			style:'margin-right:10px;',
-			items:[valueCtrl]
-		});
-		
-		this.seachSvrItemsArr[groupId] = [btnSelFld,valueCtrl];
-		return [btnSelFld,valueCtrlContainer] ;
-	},
-	
-	//初始化服务搜索panel
-	initSvrSearchPanel:function(){
-		var sItems = [];
-		var sItemsMore = [];
-		for(var i=0;i<LPCFG.searchSvr.length;i++){
-			var sItem = LPCFG.searchSvr[i];
-			if(sItem.enable!=false){
-				if(sItems.length/2>=3) {
-					 sItemsMore.push(sItem);	
-				}else{
-					var sItemCtrls = this.createSearchItemSvr(sItem,this.seachSvrItemsArr.length);
-					sItems.push(sItemCtrls[0]);
-					sItems.push(sItemCtrls[1]);
-				}
-			}
-		}
-		if(sItemsMore.length>0){
-			var btnMore = new Ext.Button({
-				text:'更多︾',//︽
-				scope:this,
-				handler:this.moreSearchItemSvr(sItemsMore)
-			});
-			sItems.push(btnMore);
-		}
-		//////////////////搜索按钮///////////////////////
-		if(svrSortableArr__.length>0){
-			var mbtnSearch = new Ext.Toolbar.MenuButton({
-				text     : '搜索',
-				iconCls  :'searchBtn',
-				value 	 :'',
-				//tooltip	 :'',
-				style:'padding:0px 5px 0px 5px;',
-				menu     : [],
-				//minWidth :110,
-				handler:function(){
-					listMgr.doSearch_svr();
-				}
-				
-			});
-
-			for(var i=0;i<svrSortableArr__.length;i++){  
-				var fldCfg = {
-					text         : '按<font color="green">' + svrSortableArr__[i].title + '</font>顺序查询',
-					value        : {"field":svrSortableArr__[i].field,"order":"asc"},
-					checked      : false,
-					group		 :'mbtnSearchSvr',
-					handler:function(obj,e){
-						listMgr.doSearch_svr(this.value);
-					}
-				};
-				mbtnSearch.menu.add(fldCfg);
-				var fldCfg = {
-					text         : '按<font color="green">' + svrSortableArr__[i].title + '</font>倒序查询',
-					value        : {"field":svrSortableArr__[i].field,"order":"desc"},
-					checked      : false,
-					group		 :'mbtnSearchSvr',
-					handler:function(obj,e){
-						listMgr.doSearch_svr(this.value);
-					}
-				};
-				mbtnSearch.menu.add(fldCfg);			
-			}
-			sItems.push(mbtnSearch);
-		}else{
-			sItems.push({
-				xtype:'tbbutton',
-				text:'搜索',
-				iconCls  :'searchBtn',
-				style:'padding:0px 5px 0px 5px;',
-				handler:function(){
-					listMgr.doSearch_svr();
-				}
-			});	
-		}
-		//清空按钮
-		sItems.push({
-			xtype:'tbbutton',
-			text:'清空',
-			style:'padding:0px 5px 0px 5px;',
-			scope:this,
-			handler:function(){
-				var items = this.seachSvrItemsArr;
-				for(var i=0;i<items.length;i++){
-					if(!items[i]) continue;
-					var vCtrl = items[i][1];
-					vCtrl.setValue('');
-				}
-			}
-		});
-		
-		return sItems;
-	},	
 	initToolbar:function(){
 		//初始化按钮
-		this.toolbarArr = [];
+		var toolbarArr = [];
 		if(LPCFG.buttons.add){
-			this.toolbarArr.push({ 
+			toolbarArr.push({ 
 				text : "增加", 
-				iconCls : 'addField', 
+				iconCls:'icon-add',
 				handler : this.addRecord 
 
 			});
 		}
 		if(LPCFG.buttons.modify){
-			this.toolbarArr.push({ 
+			toolbarArr.push({ 
 				text : "修改", 
-				iconCls : 'modifyField', 
+				iconCls : 'icon-edit', 
 				handler : this.updateRecord 
 			});
 		}
 		if(LPCFG.buttons.delete){
-			this.toolbarArr.push({ 
+			toolbarArr.push({ 
 				text : "删除", 
-				iconCls : 'delField', 
+				iconCls : 'icon-remove', 
 				handler : this.deleteRecord 
 			});
 		}	
 		for(var i=0;i<LPCFG.buttons.ext.length;i++){
 			var btnItem = LPCFG.buttons.ext[i];
-			this.toolbarArr.push({ 
+			toolbarArr.push({ 
 				text : btnItem.text, 
 				iconCls : btnItem.iconCls, 
 				id:'extBtn_' + btnItem.id,
@@ -1068,68 +700,7 @@ listMgr = {
 				handler : this.getCustomBtnHandler(btnItem)
 			});
 		}
-
-	},
-	initPageBar:function(){
-		this.pagerBar = new Ext.PagingToolbar({ 
-			pageSize : this.pagesize, 
-			store : this.store, 
-			displayMsg : '显示第 {0} 条到 {1} 条记录,共 {2} 条记录',
-			emptyMsg:"对不起，没有查询到数据", 
-			firstText : "首页",
-			prevText : "前一页",
-			nextText : "下一页",
-			lastText : "尾页",
-			refreshText : "刷新",
-			displayInfo : true 
-		});
-	},
-	initMnuContext:function(){
-		var menuItemsArr=[];
-		if(LPCFG.menus.add){
-			menuItemsArr.push({
-				text:'添加',
-				iconCls:'addField',
-				handler:listMgr.addRecord
-			});
-		}
-		if(LPCFG.menus.modify){
-			menuItemsArr.push({
-				text:'修改',
-				iconCls:'modifyField',
-				handler:listMgr.updateRecord
-			});
-		}	 
-		if(LPCFG.menus.delete){
-			menuItemsArr.push({
-				text:'删除',
-				iconCls:'delField',
-				handler:listMgr.deleteRecord
-			});
-		}
-
-		var menuItemsArr2=[];
-		if(LPCFG.buttons.ext){
-			for(var i=0;i<LPCFG.buttons.ext.length;i++){
-				var btn= LPCFG.buttons.ext[i];
-				if(btn.isMenuItem){
-					menuItemsArr2.push({
-						text:btn.text,
-						iconCls:btn.iconCls,
-						handler:listMgr.getCustomBtnHandler(btn)
-					});
-				}
-			}
-		}
-		if(menuItemsArr.length>0 && menuItemsArr2.length>0){
-			menuItemsArr.push('-');
-		}
-		menuItemsArr= menuItemsArr.concat(menuItemsArr2);
-		if(menuItemsArr.length>0){	
-			this.mnuContext = new Ext.menu.Menu({
-				items: menuItemsArr
-			});
-		}
+		return toolbarArr;
 	},
 	getCustomBtnHandler:function(btn){
 		var myBtn = btn;
@@ -1147,84 +718,6 @@ listMgr = {
 		}
 	},
 	initGrid:function(){
-		var gridCfg = {
-			renderTo:'placeholder',
-			store: this.store,
-			cm: this.column,
-			trackMouseOver:true,
-			anchor:'100%',
-			stripeRows: true,//行交替颜色显示 斑马线效果
-			sm: new Ext.grid.CheckboxSelectionModel(),
-			loadMask:{ 
-				msg:"数据正在加载中...." 
-			}, 
-			autoSizeColumns : true,
-			autoScroll:true, 
-			enableColumnHide:false,
-			enableHdMenu: false,
-			emptyText: "<div>无数据</div>", 
-			autoExpandColumn:LPCFG.isWidthFreeRow!=-1?'columns-'+LPCFG.isWidthFreeRow:null,
-			//autoExpandColumn:LPCFG.isWidthFreeRow!=-1?LPCFG.isWidthFreeRow:null,
-			height:this.datagridPanel.body.getHeight(),
-			plugins:Ext.grid.plugins.AutoResize?new Ext.grid.plugins.AutoResize():null,
-			viewConfig: {
-				emptyText: "<div>无数据</div>", 
-				enableRowBody:true,//可以用两行tr来表示一行数据  
-				showPreview:true,//初始显示预览效果,这个是自定义的属性  
-				getRowClass : function(record, rowIndex, p, store){//CSS class name to add to the row.获得一行的css样式  
-					if(this.showPreview){  
-						return 'x-grid3-row-expanded';  
-					}  
-					return 'x-grid3-row-collapsed';  
-				}  
-			},
-			view: new Ext.grid.GridView({  
-                forceFit:false,  
-            }), 
-			iconCls:'icon-grid',
-			frame:false,
-			bbar : listMgr.pagerBar, 
-			listeners　:　{
-	　　　　	'render'　:　function(grid)　{
-					//listMgr.pagerBar.render(grid.bbar);
-					grid.body.setStyle({width:'100%',height:'100%'});
-				},
-				"rowcontextmenu":function(grid, rowIndex, event){
-					/*右键菜单暂时不启用
-					 event.stopEvent();
-					 var selModel = grid.getSelectionModel();
-					 if(!selModel.isSelected(rowIndex)){
-						selModel.selectRow(rowIndex);
-					 }
-					 listMgr.mnuContext.showAt(event.xy);
-					 */
-				}
-			}
-		};
-		if(this.toolbarArr.length>0){
-			gridCfg.tbar =this.toolbarArr;
-		}
-		
-		var grid = new Ext.grid.GridPanel(gridCfg); 
-		this.grid = grid;
-		grid.render();
-	},
-	getSearchFrom:function(){
-		var from="db";
-		if(!this.searchPanel["db"] && this.searchPanel["svr"] ){
-			from="service";
-		}
-		// 如果存在q参数，则从搜索服务搜索
-		if(params__.q){
-			from = "service";
-		}
-		var togle = Ext.getCmp('btnSearchPanelTogle');
-		if(togle) from = togle.value;	
-		return from;
-	},
-	loadData:function(){
-		var from = this.getSearchFrom();
-		//设置url传递的filter
 		var sort;
 		var where = [];
 		for(var i=0;i<this.dbFilter.length;i++){
@@ -1251,7 +744,7 @@ listMgr = {
 		var svrFilter={};
 		if(typeof LPCFG.filter4Svr == "string"){
 			try{
-				svrFilter = Ext.decode(LPCFG.filter4Svr)
+				svrFilter = eval("(" + LPCFG.filter4Svr + ")" );
 			}catch(ex){
 				console.log(ex);
 			}
@@ -1259,7 +752,7 @@ listMgr = {
 			svrFilter = LPCFG.filter4Svr;
 		}
 		if(this.svrFilter){
-			Ext.applyIf(this.svrFilter,svrFilter);
+			this.svrFilter = $.extend(svrFilter,this.svrFilter);
 		}
 		var qArr = [];
 		for(var field in this.svrFilter){
@@ -1268,457 +761,136 @@ listMgr = {
 		}
 		if(qArr.length>0) this.q = qArr.join(',');
 		
-		/*
-		this.store.baseParams.from = from;
-		this.store.baseParams.formId =formId__;
-		this.store.baseParams.listId =listId__;
-		this.store.baseParams.limit = this.pagesize;
-		this.store.baseParams.sort = Ext.encode(this.sort);
-		if(where.length>0) this.store.baseParams.where = Ext.encode(where);	
-		if(qArr.length>0) this.store.baseParams.q = this.q ;
-		
-		this.store.load({
-			params:{start:0,limit:this.pagesize},
-			callback:listMgr.storeLoadCallback
-		});//初次搜索,默认从DB搜索
-		this.grid.getSelectionModel().selectFirstRow();
-		*/
-		
-		
-		if('service'==from){
-			this.doSearch_svr();
-		}else{	
-			this.doSearch_db();
-		}
-		
-	},
-	initColumn:function(){
-		var colModelArr = [new Ext.grid.RowNumberer(),new Ext.grid.CheckboxSelectionModel({width :25,singleSelect:false})]; //new Ext.grid.RowNumberer(),//序号
-		for(var i=0;i<LPCFG.columns.length;i++){
-			var col = LPCFG.columns[i];
-			if(col.isView!=false){
-				var o = {
-					id:'columns-' + i,
-					header : col.title, 
-					sortable : true, 
-					dataIndex : col.field?col.field:'',
-					align:col.align,
-					renderer:renderField(col)
-				};
-				if(col.width)o.width = col.width+8;
-				colModelArr[colModelArr.length]=o;
+		var grid = $('#grid').datagrid({
+			url:this.url,toolbar:this.toolbarArr,pagination:true,"pageSize":this.pageSize,pageList:[this.pageSize],pageNumber:1,
+			fitColumns:LPCFG.isWidthFreeRow!=-1,
+			columns:[this.columns],
+			loader:function(param,success,error){
+				var that = $(this);
+				var opts = that.datagrid("options");
+				var newParam = $.extend({},param);
+				delete newParam.rows;
+				delete newParam.page;
+				newParam.start = (param.page-1) * param.rows;
+				newParam.limit = param.page * param.rows;
+				$.ajax({
+					type : opts.method,
+					url : opts.url,
+					data : newParam,
+					dataType : "text",
+					success : function (data) {//解析成grid控件需要的数据格式
+						data = eval("(" + data + ")");
+						success({
+							total:data.totalCount,
+							rows:data.data
+						});
+					},
+					error : function () {
+						error.apply(this, arguments);
+					}
+				});
+			},
+			onLoadSuccess:function(data){
+				//if(data.total == 0) 
+				console.log("onLoadSuccess");//cds
+			},
+			queryParams:{
+				from:"db",
+				fd:LPCFG.mustReturnFields.join(','),//需要输出的字段
+				where:JSON.stringify(this.where),
+				sort:JSON.stringify(this.sort),
+				formId:formId__,
+				listId:listId__,
+				start:0, 
+				limit:this.pageSize
 			}
-			
-		}
-		var column = new Ext.grid.ColumnModel(colModelArr);
-		this.column = column;
+		});
+		grid.datagrid("getPager").pagination({
+			showPageList:false
+		});
+		return grid;
 	},
+			
 	/*添加 修改 删除*/
 	addRecord:function(){
 		setActiveTab('../runtime/xform!render.jhtml?viewId='+ viewId__ +'&formId=' + formId__ + '&id=0&nodeId=' + nodeId__,'list_add_' + formId__ + '_' + viewId__,'添加');
 	},
 	updateRecord:function(){
-		var selItems = listMgr.grid.getSelectionModel().selections.items;
+		var selItems = listMgr.grid.datagrid("getChecked");
 		if(selItems.length==1){
-			setActiveTab('../runtime/xform!render.jhtml?viewId='+ viewId__ +'&formId=' + formId__ + '&id=' + selItems[0].data.id + '&nodeId=' + nodeId__,'list_add_' + formId__ + '_' + viewId__ + '_' + selItems[0].data.id,'修改');
+			setActiveTab('../runtime/xform!render.jhtml?viewId='+ viewId__ +'&formId=' + formId__ + '&id=' + selItems[0].id + '&nodeId=' + nodeId__,'list_add_' + formId__ + '_' + viewId__ + '_' + selItems[0].id,'修改');
 		}else{
-			Ext.Msg.show({
-			   title:'操作提示',
-			   msg: "请选择一条记录",
-			   buttons: Ext.Msg.OK,
-			   animEl: 'elId',
-			   minWidth:420,
-			   icon: Ext.MessageBox.INFO  
+			$.messager.show({
+				title:'提示',
+				msg:'请选择一条记录',
+				timeout:1000,
+				showType:'fade',
+				style:{
+					right:'',
+					top:document.body.scrollTop+document.documentElement.scrollTop,
+					bottom:''
+				}
+			}).delay(1000).queue(function(){
+				$(this).panel("close");
 			});
 		}
 	},
 	deleteRecord:function(){
-		var selItems = listMgr.grid.getSelectionModel().selections.items;
+		var selItems = listMgr.grid.datagrid("getChecked");
 		if(selItems.length>0){
-			Ext.MessageBox.confirm("提示","确定删除吗？", 
-				function(button,text){   
-					if(button=='yes'){
-						var ids=[];
-						for(var i=0;i<selItems.length;i++){
-							ids.push(selItems[i].data.id);
-						}
-						
-						Ext.Ajax.request({  
-							url:'xlist!delete.jhtml?nodeId=' + nodeId__ + '&viewId='+ viewId__ +'&formId=' + formId__ + '&ids=' + ids.join(','), 
-							method:"get",
-							waitTitle : "请稍候",  
-							waitMsg : "正在处理中，请稍候......",  
-							success:function(response,opts){
-								var ret = Ext.util.JSON.decode(response.responseText);
-								if(ret.success){
-									Ext.Toast.show('删除成功',{
-										title:'提示',
-									    buttons: Ext.Msg.OK,
-									    animEl: 'elId',
-									    icon: Ext.MessageBox.INFO,  
-										time:1000,
-										minWidth:420
-									});
+			$.messager.confirm('提示', '确定删除吗？', function(r){
+				if (r){
+					var ids=[];
+					for(var i=0;i<selItems.length;i++){
+						ids.push(selItems[i].id);
+					}
+					$.ajax({  
+						url:'xlist!delete.jhtml?nodeId=' + nodeId__ + '&viewId='+ viewId__ +'&formId=' + formId__ + '&ids=' + ids.join(','), 
+						method:"get",
+						dataType:"json",						
+						success:function(response){
+							var ret = eval("(" + response + ")");
+							if(ret.success){
+								$.messager.show({
+									title:'提示',
+									msg:'删除成功',
+									timeout:1000,
+									showType:'fade',
+									style:{
+										right:'',
+										top:document.body.scrollTop+document.documentElement.scrollTop,
+										bottom:''
+									}
+								}).delay(1000).queue(function(){
+									$(this).panel("close");
 									listMgr.doSearch();
-								}else{
-									Ext.Msg.show({
-									   title:'错误提示',
-									   msg: decodeURIComponent(ret.message),
-									   buttons: Ext.Msg.OK,
-									   animEl: 'elId',
-									   minWidth:420,
-									   icon: Ext.MessageBox.ERROR  
-									});
-								}
-							},
-							failure:function(response,opts){
-								Ext.Msg.show({
-								   title:'错误提示',
-								   msg: response.statusText,
-								   buttons: Ext.Msg.OK,
-								   animEl: 'elId',
-								   minWidth:420,
-								   icon: Ext.MessageBox.ERROR  
 								});
+							}else{
+								$.messager.alert('错误提示',decodeURIComponent(ret.message),'error');
 							}
-						});
-					}
-				}
-			);
-		}else{
-			Ext.Msg.show({
-			   title:'操作提示',
-			   msg: "请选择记录",
-			   buttons: Ext.Msg.OK,
-			   animEl: 'elId',
-			   minWidth:420,
-			   icon: Ext.MessageBox.INFO  
-			});
-		}
-	},
-	//自定义按钮发起的请求
-	customBtnHandler:function(btn){
-		var btnId=btn.id;
-		var selItems = listMgr.grid.getSelectionModel().selections.items;
-		//if(selItems.length>0){
-			var ids=[];
-			for(var i=0;i<selItems.length;i++){
-				ids.push(selItems[i].data.id);
-			}
-			Ext.getBody().mask("正在处理中，请稍候...");
-			Ext.Ajax.request({  
-				url:listMgr.customBtnHandlerUrl,
-				method:"post",
-				params:{nodeId:nodeId__,formId:formId__,listId:listId__,ids:ids.join(','),scriptKey:btnId},
-				waitTitle : "请稍候",  
-				waitMsg : "正在处理中，请稍候......",  
-				scope:btn,
-				success:function(response,opts){
-					Ext.getBody().unmask();
-					var ret={success:false};
-					try{
-						ret = Ext.util.JSON.decode(response.responseText);
-					}catch(ex){
-						console.log(ex);
-					}
-					if(ret.success){
-						Ext.Toast.show(ret.message?ret.message:'成功',{
-							title:'提示',
-							buttons: Ext.Msg.OK,
-							animEl: 'elId',
-							icon: Ext.MessageBox.INFO,  
-							time:1000,
-							minWidth:420
-						});
-						
-						//提交后脚本
-						try{
-							if(this.afterjs) {
-								var afterjs = eval('0,'+this.afterjs);
-								afterjs.call(listMgr,ret);
-							}	
-						}catch(ex){
-							console.info(ex);
+						},
+						error:function(XMLHttpRequest, textStatus, errorThrown){
+							$.messager.alert('错误提示',errorThrown.message,'error');
 						}
-						if(ret.refresh){	//需要刷新列表
-							listMgr.doSearch();
-						}
-					}else{
-						Ext.Msg.show({
-						   title:"出错",
-						   msg: ret.errorMessage?decodeURIComponent(ret.errorMessage):'出现异常',
-						   buttons: Ext.Msg.OK,
-						   animEl: 'elId',
-						   minWidth:420,
-						   icon: Ext.MessageBox.ERROR  
-						});
-					}
-				},
-				failure:function(response,opts){
-					Ext.getBody().unmask();
-					Ext.Msg.show({
-					   title:'错误提示',
-					   msg: decodeURIComponet(response.responseText),
-					   buttons: Ext.Msg.OK,
-					   animEl: 'elId',
-					   minWidth:420,
-					   icon: Ext.MessageBox.ERROR  
 					});
 				}
 			});
-		
-		//}else{
-			/*
-			Ext.Msg.show({
-			   title:'操作提示',
-			   msg: "请选择记录",
-			   buttons: Ext.Msg.OK,
-			   animEl: 'elId',
-			   minWidth:420,
-			   icon: Ext.MessageBox.INFO  
-			});
-			*/
-		//}
-		
-	},
-	//搜索
-	doSearch_db:function (sortCfg){
-		//搜集搜索条件,以json格式post到服务端解析
-		var filter={where:[],sort:[]};
-		
-		var localSettingWhere=[];
-		
-		for(var i=0;i<this.seachItemsArr.length;i++){
-			localSettingWhere[i]=0;
-			var item = this.seachItemsArr[i];
-			if(!item) continue;
-			var qText = item[2].getValue()+'';
-			var field = item[0].fieldName;
-			var text = item[0].text;
-			var xtype =item[2].xtype; 
-			var op = item[1].value?item[1].value:'=';
-			if(qText!=="" && field!==""){
-				if(window.localStorage && this.enableRemenberSearch){//本地存储
-					localSettingWhere[i]={
-						title:text,
-						field:field,
-						op:op,
-						value:qText
-					};
-				}
-				
-				if(xtype=="datefieldextent"){//日期区间控件
-					var dates = qText.split(',');
-					filter.where.push({
-						field:field,
-						op:'>=',
-						value:dates.length>0?dates[0]:qText,
-						andor:'and'
-					});
-					if(dates.length>1){
-						filter.where.push({
-							field:field,
-							op:'<=',
-							value:dates[1] + " 23:59:59",
-							andor:'and'
-						});
-					}
-				}else{
-					var separator = sValueControlsCfg__.multiselect.separator;
-					if(qText.indexOf(separator)!=-1){//关键词里含有,字符表示需要分割成多个或条件查询
-						var qArr = qText.split(separator);
-						for(var j=0;j<qArr.length;j++){
-							if(qArr[j]!=""){
-								filter.where.push({
-									field:field,
-									op:op,
-									value:qArr[j],
-									andor:'or'
-								});	
-							}
-						}
-					}else{
-						filter.where.push({
-							field:field,
-							op:op,
-							value:qText,
-							andor:'and'
-						});	
-					}
-				}
-			}
-		}
-		var from = this.getSearchFrom();
-		from = from?from:'db';
-		//本地存储用户输入的搜索条件
-		
-		if(window.localStorage && this.enableRemenberSearch){
-			localStorage.setItem(Cookies.get('cmpp_cn') + '_listPage_search_' + 'nodeId-' + nodeId__+ 'formId-' + formId__+ 'listId-' + listId__,Ext.encode({searchType:from,searchSetting:localSettingWhere}))
-		};
-		
-		filter.where = filter.where.concat(this.where );
-		if(this.sort){
-			filter.sort = this.sort.slice(0);
-		}
-		if(sortCfg){
-			filter.sort.unshift({field:sortCfg.field,order:sortCfg.order});
-		}
-		
-		listMgr.store.baseParams ={
-			from:from,
-			where:Ext.util.JSON.encode(filter.where),
-			sort:Ext.util.JSON.encode(filter.sort),
-			formId:formId__,
-			listId:listId__
-		};
-		listMgr.store.load({
-			params:{
-				start:0, 
-				limit:listMgr.pagesize
-			},
-			callback:listMgr.storeLoadCallback
-			
-		});
-	},
-	doSearch_svr:function (sortCfg){
-		//搜集搜索条件,以json格式post到服务端解析
-		var q=[];
-		var localSettingWhere=[];
-		for(var i=0;i<this.seachSvrItemsArr.length;i++){
-			localSettingWhere[i]=0;
-			var item = this.seachSvrItemsArr[i];
-			var qText = item[1].getValue();
-			var field = item[0].fieldName;
-			var text = item[0].text.replace(/:/g,'');
-
-			if(qText!=="" && field!==""){
-				if(item[1].xtype=="datefieldextent"){//日期区间控件
-					var dateExtent = qText.split(',');
-					qText="<[" + dateExtent[0] + "T00:00:00Z TO " + dateExtent[1] + "T23:59:59Z]>"; 
-				}else{
-					//转义qText里的特殊字符(搜索引擎需要)
-					//特殊符号 \ + - && || ! ( ) { } [ ] ^ ” ~ * ? : 
-					var speReg = [/\\/g,/\+/g,/-/g,/&&/g,/\|\|/g,/!/g,/\(/g,/\)/g,/\{/g,/\}/g,/\[/g,/\]/g,/\^/g,/~/g,/\*/g,/\?/g,/:/g];
-					var speChar = ['\\','+','-','&&','||','!','(',')','{','}','[',']','^','~','*','?',':'];
-					for(var c=0;c<speChar.length;c++){
-						qText = qText.replace(speReg[c],'\\' + speChar[c]);
-					}
-					//对*和-的处理：当搜索关键词中*和-用<>包起来时，* 和 -将作为搜索引擎的运算符
-					var exceptionReg = [/<\\\*>/g,/<\\\->/g];
-					var exceptionChar = ['*','-'];
-					for(var c=0;c<exceptionReg.length;c++){
-						qText = qText.replace(exceptionReg[c],exceptionChar[c]);
-					}
-				}
-				qText = escape(qText);//服务端需要反编码
-				q.push(qText + ':' + field);	
-				if(window.localStorage){//本地存储
-					localSettingWhere[i]={
-						title:text,
-						field:field,
-						value:qText
-					};
-				}
-			}
-		}
-		//本地存储用户输入的搜索条件
-		/*
-		if(window.localStorage){
-			localStorage.setItem(Cookies.get('cmpp_cn') + '_listPage_search_' + 'nodeId-' + nodeId__+ 'formId-' + formId__+ 'listId-' + listId__,Ext.encode({searchType:'service',searchSetting:localSettingWhere}))
-		};
-		*/
-		q = q.concat(this.q);
-		var sort=[];
-		
-		if(sortCfg){
-			sort.push({field:sortCfg.field,order:sortCfg.order});
-		}
-		if(this.sort && this.sort.length>0){
-			sort = this.sort;
 		}else{
-			sort.push({field:'id',order:'desc'});
+			$.messager.show({
+				title:'提示',
+				msg:'请至少选择一条记录',
+				timeout:1000,
+				showType:'fade',
+				style:{
+					right:'',
+					top:document.body.scrollTop+document.documentElement.scrollTop,
+					bottom:''
+				}
+			}).delay(1000).queue(function(){
+				$(this).panel("close");
+			});
 		}
-		
-		//http://localhost/search/do.action?type=select&start=0&len=10&fl=id,name&q=10:id,1280335088000-1280421494000:time,ifeng*:name&sort=id asc,date desc&wt=xml
-		listMgr.store.baseParams ={
-			from:'service',
-			fd:LPCFG.mustReturnFields.join(','),//需要输出的字段
-			q:q.join(','),
-			sort:Ext.encode(sort),
-			formId:formId__,
-			listId:listId__
-		};
-		listMgr.store.load({
-			params:{
-				start:0, 
-				limit:listMgr.pagesize
-			},
-			callback:listMgr.storeLoadCallback
-		});
-		
 	},
-	//查询结果处理
-	storeLoadCallback:function(r,options,success){
-		if(success && r.length==0){
-			var gridbody = listMgr.grid.body.child('.x-grid3-body');
-			gridbody.setStyle("height","100%");
-			gridbody.createChild({
-				tag:'div',
-				style:'width:100%;height:100%;background:url(../res/img/nodata.gif) no-repeat center center;'
-			});
-		}
-		
-	},
-	//被外部调用的搜索
-	doSearch:function(baseParams){
-		if(!baseParams){//当前页刷新
-			listMgr.store.load({
-				params:{
-					start:listMgr.pagerBar.cursor, 
-					limit:listMgr.pagesize
-				},
-				callback:listMgr.storeLoadCallback
-			});
-		}else{//按新条件重新查询
-			listMgr.store.baseParams ={
-				from:'db',
-				sort:Ext.util.JSON.encode([{field:'id',order:'desc'}]),
-				formId:formId__,
-				listId:listId__
-			};
-			var where = baseParams.where;
-			if(typeof(where)=='string'){
-				where = Ext.decode(where);
-				where = where.concat(listMgr.where); 
-				baseParams.where = Ext.encode(where);
-			}
-			if(typeof(where)=='object'){
-				where = where.concat(listMgr.where); 
-				baseParams.where = Ext.encode(where);
-			}
-			
-			var q = baseParams.q;
-			if(typeof(q)=='string'){
-				q = Ext.decode(q);
-				if(listMgr.q) q = q.concat(listMgr.q); 
-				baseParams.q = q.join(',');
-			}
-			if(typeof(q)=='object'){
-				if(listMgr.q) q = q.concat(listMgr.q); 
-				baseParams.q =  q.join(',');
-			}			
-			Ext.apply(listMgr.store.baseParams,baseParams);
-			listMgr.store.load({
-				params:{
-					start:0, 
-					limit:listMgr.pagesize
-				},
-				callback:listMgr.storeLoadCallback
-				
-			});
-		}
-	}
-		
 
 }
 /*
@@ -1741,11 +913,8 @@ helper = {
 </script>	
 	
 <script type="text/javascript">
-Ext.onReady(function(){
-	Ext.BLANK_IMAGE_URL = "../res/js/ext2/resources/images/default/s.gif";
-	Ext.QuickTips.init();
-	Ext.form.Field.prototype.msgTarget = 'qtip';
-	
+$(document).ready(function(){
+
 	listMgr.init();	
 
 	///////////注入的JS/////////////	

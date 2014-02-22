@@ -1,126 +1,189 @@
 /*
 * @description:表单运行时公共函数
 * @author:chengds
-× @date:2012/06/20
+× @date:2014/02/11
 */
-	var saveHandler = function(callback,isContinueAdd){
-		var cfg = formConfig__;
-		var cb = callback;
-		var isContinue = isContinueAdd;
-		//var jsHanler_b = hanler_b;
-		//var jsHanler_a = hanler_a;
-		return function(){
-			if(!RunTime.formPanel.form.isValid()){
-				Ext.Toast.show('输入未完成或验证不通过',{
-				   title:'提示',
-				   buttons: Ext.Msg.OK,
-				   animEl: 'elId',
-				   minWidth:420,
-				   icon: Ext.MessageBox.WARNING
-				});
-				return;
-			}
-			var ret = true;
-			if(typeof(hanler_b)=='function'){//执行保存前脚本
-				ret = hanler_b();
-			}
-			if(ret!=false){
-				//记忆历史输入
-				MEMHelper.write();
-				Ext.getBody().mask("正在提交中...");
-				var formValues = RunTime.formPanel.form.getFieldValues(false);
-				var params = Ext.apply({formId:cfg.formId,viewId:cfg.viewId,id:cfg.id,nodeId:cfg.nodeId},formValues);
-				Ext.Ajax.request({  
-					url:formPanel.form.url ? formPanel.form.url:RunTime.postUrl,
-					method:"post",
-					params:params,
-					success:function(response,opts){
-						Ext.getBody().unmask();
-						var ret={success:false};
-						try{
-							ret = Ext.util.JSON.decode(response.responseText);
-						}catch(ex){
-							console.log(ex);
-						}
-						
-						var afterSaveJsReturn = true;
-						if(typeof(hanler_a)=='function'){//执行保存后脚本
-							var options={
-								id:ret.Id||formConfig__.id,
-								ret:ret,
-								cb:cb,
-								isContinue:isContinue
-							};
-							afterSaveJsReturn = hanler_a(options,function(opts_){
-								var opts = opts_;
-								return function(){
-									if(typeof(opts.cb)=='function') opts.cb();//执行回调函数
-									if(opts.isContinue){
-										RunTime.redirect(0);
-									}else{
-										RunTime.redirect(opts.id);
-									}
-								}
-							}(options));
-						}
-						if(afterSaveJsReturn==false) return;//如果保存后脚本返回false，则终止后面的提示性处理
-						if(ret.success){		
-							Ext.Msg.show({
-							   title:'提示',
-							   msg:  '提交成功！',
-							   buttons: Ext.Msg.OK,
-							   animEl: 'elId',
-							   minWidth:420,
-							   icon: Ext.MessageBox.INFO 
-							});
-							
-							if(typeof(cb)=='function') cb();//执行回调函数
-							if(isContinue){
+var saveHandler = function(callback,isContinueAdd){
+	var cfg = formConfig__;
+	var cb = callback;
+	var isContinue = isContinueAdd;
+	return function(){
+		var form = RunTime.formPanel;
+		if(!$("#form1").form("validate")){
+			$.messager.alert('提示',"输入未完成或验证不通过",'error');
+			return;
+		}
+
+		var formValues = form.formRender("getFieldValues");
+		var params = $.extend({formId:cfg.formId,viewId:cfg.viewId,id:cfg.id,nodeId:cfg.nodeId},formValues);
+		var ret = true;
+		if(typeof(hanler_b)=='function'){//执行保存前脚本
+			ret = hanler_b.call(params);//保存前脚本可修改post的数据
+		}
+		if(ret!=false){		
+			//Ext.getBody().mask("正在提交中...");
+			$.messager.progress({ 
+				title: '请等待', 
+				msg: '正在提交...', 
+				//text: 'PROCESSING.......' 
+			});
+			$.post(RunTime.postUrl,params,function(data){
+				$.messager.progress("close");
+				var ret = data;
+				var afterSaveJsReturn = true;
+				if(typeof(hanler_a)=='function'){//执行保存后脚本
+					var options={
+						id:ret.Id||formConfig__.id,
+						ret:ret,
+						cb:cb,
+						isContinue:isContinue
+					};
+					afterSaveJsReturn = hanler_a(options,function(opts_){
+						var opts = opts_;
+						return function(){
+							if(typeof(opts.cb)=='function') opts.cb();//执行回调函数
+							if(opts.isContinue){
 								RunTime.redirect(0);
 							}else{
-								RunTime.redirect(ret.Id||formConfig__.id);
+								RunTime.redirect(opts.id);
 							}
-							
-						}else{
-							var _msg = '';
-							if(ret){
-								var errorStep = ret.errorStep || '';
-								if(errorStep == '' || errorStep == '保存前脚本'){
-									_msg = "保存出错，请重试！";
-								}else{
-									_msg = "保存出错！";
-								}
-								errorStep != '' && ( _msg += "<br>出错步骤："+errorStep );
-								_msg += "<br>出错信息："+ret.message.replace(/\r/,'').replace(/\n/,'<br>');
-							}
-							Ext.Msg.show({
-								title:'保存不成功',
-								msg:  _msg,
-								buttons: Ext.Msg.OK,
-								animEl: 'elId',
-								minWidth:420,
-								icon: Ext.MessageBox.ERROR 
-							});		
 						}
-						
-					},
-					failure:function(response,opts){
-						Ext.getBody().unmask();
-						Ext.Msg.show({
-						   title:'错误提示',
-						   msg: "保存不成功,请重试！",//可能超时
-						   buttons: Ext.Msg.OK,
-						   animEl: 'elId',
-						   minWidth:420,
-						   icon: Ext.MessageBox.ERROR  
-						});
+					}(options));
+				}
+				if(afterSaveJsReturn==false) return;//如果保存后脚本返回false，则终止后面的提示性处理
+				if(ret.success){		
+					$.messager.show({
+						title:'提示',
+						msg:'提交成功！',
+						timeout:2000,
+						showType:'fade',
+						style:{
+							right:'',
+							top:document.body.scrollTop+document.documentElement.scrollTop,
+							bottom:''
+						}
+					}).delay(2000).queue(function(){
+						if(typeof(cb)=='function') {
+							cb();//执行回调函数
+							return;
+						}
+						if(isContinue){
+							RunTime.redirect(0);
+						}else{
+							RunTime.redirect(ret.Id||formConfig__.id);
+						}
+					});
+
+				}else{
+					var _msg = '';
+					if(ret){
+						var errorStep = ret.errorStep || '';
+						if(errorStep == '' || errorStep == '保存前脚本'){
+							_msg = "保存不成功！";
+						}else{
+							_msg = "保存出错！";
+						}
+						errorStep != '' && ( _msg += "<br>出错步骤："+errorStep );
+						_msg += "<br>出错信息："+ret.message.replace(/\r/,'').replace(/\n/,'<br>');
 					}
-				});
-			}
-		};
+					$.messager.alert('保存不成功',_msg,'error');						
+				}
+					
+			}, "json");
+		}
+	};
+};
+
+function previewHandler(){
+	var form = RunTime.formPanel;
+	var cfg = formConfig__;
+	if(!$("#form1").form("validate")){
+		$.messager.alert('提示',"输入未完成或验证不通过",'error');
+		return;
 	}
+
+	var formValues = form.formRender("getFieldValues");
+	var params = $.extend({formId:cfg.formId,viewId:cfg.viewId,id:cfg.id,nodeId:cfg.nodeId},formValues);
+	var ret = true;
+	if(typeof(hanler_b)=='function'){//执行保存前脚本
+		ret = hanler_b.call(params);//保存前脚本可修改post的数据
+	}
+	if(ret!=false){		
+		//Ext.getBody().mask("正在提交中...");
+		$.messager.progress({ 
+			title: '请等待', 
+			msg: '正在提交预览...'
+		});
+		$.post("../runtime/template!preview.jhtml",params,function(response){
+			$.messager.progress("close");
+			var previewWin =window.open();
+			previewWin.document.write(response);	
+		}, "text");
+	}
+}
+
+function closePage(){
+
+	//优先判断是否该页面是否包含在弹出的window里，若是则关闭该window
+	try{
+		var parentMsg = $.parseQuery().postMessage__;
+		if(parentMsg){
+			var parentMsgJson = JSON.parse(decodeURIComponent(parentMsg));
+			if(parentMsgJson.containerId){
+				parentMsgJson.handler = '(function(receiveData,realData){\
+					if(typeof receiveData==="string"){\
+						receiveData = JSON.parse(decodeURIComponent(receiveData));\
+					}\
+					eval("var win =" + receiveData.containerId);\
+					if(typeof win==="string") win = $("#" + win);\
+					win.fadeOut("fast",function(){\
+					   $(this).hide();\
+					});\
+				})';
+				
+				var postData = {
+					data:{containerId:parentMsgJson.containerId},
+					options: encodeURIComponent(JSON.stringify(parentMsgJson)) //从URL接收到的数据
+				};
+				var sender;
+				if(parentMsgJson.sender){
+					eval('0,' + 'sender = ' + decodeURIComponent(parentMsgJson.sender));
+				}else if(!window.opener && parentMsgJson.hostFrameId){//Ext的tabPanel页签之间的通讯
+					sender = window.parent.$("#" + parentMsgJson.hostFrameId)[0].contentWindow;
+				}else{
+					sender = window.opener;
+				}
+				sender && sender.postMessage(JSON.stringify(postData), '*'); 
+				return ;
+			}
+		}
 		
-	var createUI  = function(ctrlCfg,parentCtrl){
+	}catch(ex){}
+
+	if(top.centerTabPanel){
+		if(conflictMgr && formConfig__.id>0)conflictMgr.remove();//移除正在编辑状态
+		var tab = top.centerTabPanel.getActiveTab();
+		top.centerTabPanel.remove(tab);
+	}else{
+		top.open('','_self','');
+		top.close();
+	}
+}
+
+(function ($) {
+	var controlItems=[];
+	function init(target){
+		return $(target);
+	}
+	
+	function render(target){
+		var state = $.data(target, 'formRender');
+		var opts = state.options;
+		var controls = opts.controlsConfig;
+		createUI(controls,state.formRender,opts);
+
+	}
+	function createUI(ctrlCfg,parentCtrl,opts){
 		var cfg = formConfig__;
 		for(var i=0;i<ctrlCfg.length;i++){
 			var item = ctrlCfg[i];
@@ -128,46 +191,57 @@
 				item.ui.rtPostback=item.rtPostback;
 				delete item.rtPostback;
 			}
-			var uiType = getUIType(item.name);
+			var uiType = getUIType(item.ctrlName);
 			var commonUI = Designer.controls.ui[uiType];
+			var inputTemplate=null;
+			var formItemTemplate4HideLabel=null;
+			var formItemTemplate=null;
+	
 			if(commonUI){
-				Ext.applyDeep(item.ui,commonUI.runtime.ui);
+				item.ui = $.extend({},commonUI.runtime.ui,item.ui);
+				inputTemplate= commonUI.runtime.inputTemplate;
+				formItemTemplate4HideLabel = commonUI.runtime.formItemTemplate4HideLabel;
+				formItemTemplate = commonUI.runtime.formItemTemplate;
 			}
-			//清除ui项配置为空字符串项
+			//清除ui项配置为空字符串项 
 			for(var key in item.ui){
 				if(item.ui[key]===""){
 					delete item.ui[key];
 				}
 			}
+			item.ui.inputTemplate = inputTemplate!==null && inputTemplate!==undefined ? inputTemplate : opts.inputTemplate;
+			item.ui.formItemTemplate4HideLabel = formItemTemplate4HideLabel!==null && formItemTemplate4HideLabel!==undefined ? formItemTemplate4HideLabel : opts.formItemTemplate4HideLabel;
+			item.ui.formItemTemplate = formItemTemplate!==null && formItemTemplate!==undefined ? formItemTemplate : opts.formItemTemplate;
+
+			//处理ui配置项类型为function的属性
+			for(var key in item.ui["function"]){
+				var value = item.ui["function"][key];
+				try{item.ui[key] = eval("(" + value + ")");}
+				catch(ex){alert("控件" +item.ctrlName　+ " " + key + "的配置不合法，函数语法有误。")}
+			}
+			delete item.ui["function"];
 			
-			eval('var ctrClass = ' + item.name);
-			if(!ctrClass){
-				Ext.Msg.show({
-				   title:'错误提示',
-				   msg: "缺少控件库" + item.name + "脚本文件",
-				   buttons: Ext.Msg.OK,
-				   animEl: 'elId',
-				   minWidth:420,
-				   icon: Ext.MessageBox.ERROR  
-				});
+			//判断控件包是否存在
+			eval('var ctrClass = $.fn.' + item.name);
+			if(typeof ctrClass=="undefined"){
+				$.messager.alert('控件初始化出错',"缺少控件库" + item.name + "脚本文件",'error');
 				return;
 			}
 			
 			if(item.controls){
-				eval('var obj = new ' + item.name + '(item.ui)');			
-				parentCtrl.add(obj);
-				createUI(item.controls,obj);
+				var ctrl = appendChildCtrl(opts,item,parentCtrl);
+				createUI(item.controls,ctrl,opts);
 			}else{
 				if(item.internalCfg)
 					item.ui.internalCfg=item.internalCfg;
 				if(item.ui.readOnly){
-					item.ui.emptyText="";
-					item.ui.allowBlank =true;		
-				}				
+					item.ui.placeholder="";
+					item.ui.required =false;	
+				}
 				if(item.data && item.data.ext_dataSource_value){
 					if(item.data.ext_dataSource_type=='sql'){
 						var dataSource = formConfig__.dataSource[item.ui.id];
-						if(dataSource) item.ui.dataSource = dataSource;
+						if(dataSource) item.ui.data = dataSource;
 					}else if(item.data.ext_dataSource_type=='url'){
 						item.ui.url = item.data.ext_dataSource_value;
 					}else{
@@ -179,7 +253,7 @@
 								s=[s];	//string
 							}
 						}
-						item.ui.dataSource=s;	
+						item.ui.data=s;	
 					}
 				}
 				if(item.f_name){ 
@@ -205,7 +279,7 @@
 						id:item.ui.id,
 						name:item.f_name?'xform.' + item.f_name:item.ui.id
 					};
-					item.name = 'Ext.form.Hidden';
+					item.name = 'hidden';
 					if(item.f_name && typeof(cfg.recordData[item.f_name])!='undefined')
 						item.ui.value = v;
 				}else if(item.mod[inputType]==1 || item.mod[inputType]==undefined  || item.mod[inputType]==''){
@@ -213,144 +287,105 @@
 						item.ui.value = v;
 				}else if(item.mod[inputType]==4){
 					continue;
-				}
-				eval('obj = new ' + item.name + '(item.ui)');
-				parentCtrl.add(obj);
-				
-				//设置记忆功能
-				if(obj && item.mem){
-					for(var key in item.mem){
-						obj[key] = item.mem[key];
-					}
-				}
-				
-				if(obj && item.events){
-					for(var k in item.events){
-						if(onloadJsFunction[item.events[k]])
-							obj.on(k,onloadJsFunction[item.events[k]]) ;
-					}
-				}
-			}
-		}
-	};
-	var getUIType = function(uiName){
-		var arr = uiName.split('.');
-		if(arr.length>0){
-			return arr[arr.length-1];
-		}else{
-			return '';
-		}
-	};
+				}	
 
-/*
-* 控件输入记忆功能
-*/
-var MEMHelper = {
-	key:'view-memory-' + formConfig__.nodeId + '-' + formConfig__.formId + '-' + formConfig__.viewId, 
-	read:function(){
-		var memDataStr = localStorage[this.key];
-		if(!memDataStr) return;
-		var memData = JSON.parse(memDataStr);
-		RunTime.formPanel.items.each(function(ctrl){
-			if(ctrl.memory_enable){
-				this._initCtrlMemory(ctrl,memData[ctrl.id]);
-			}
-		},this);
-	},
-	write:function(){
-		var memData = {};
-		var memDataStr = localStorage[this.key];
-		if(!memDataStr) 
-			memData={};
-		else
-			memData = JSON.parse(memDataStr);
-		
-		RunTime.formPanel.items.each(function(ctrl){
-			if(ctrl.memory_enable){
-				var maxCount = ctrl.memory_max_count;
-				var oldData = memData[ctrl.id] || [];
-				var value = this._getCtrlValue(ctrl);
-				var text = this._getCtrlText(ctrl);
-				var exsitIndex = -1;
-				if(value!=""){
-					for(var i=0;i<oldData.length;i++){
-						if(oldData[i][0]===value){
-							exsitIndex=i;
-							break;
-						}
-					}
-				}
-				value!="" && text!="" && oldData.push([value,text]);
-				if(exsitIndex!=-1){
-					oldData.splice(exsitIndex,1);
-				}
-				while(oldData.length>maxCount){
-					oldData.shift();
-				}
-				memData[ctrl.id] = oldData;
-			}
-		},this);
-		localStorage.setItem(this.key,JSON.stringify(memData));
-	},
-	_initCtrlMemory:function(ctrl,values){
-		if(values && !ctrl.disabled){
-			var memEl = ctrl.el.parent().createChild({
-				tag:'div',
-				cls:'cmpp-view-memory',
-				html:'最近输入：'
-			});
-			for(var i=values.length-1;i>=0;i--){
-				var item = values[i];
-				var memItem = memEl.createChild({
-					tag:'a',
-					href:'javascript:void(0)',
-					title:'点击输入这个值',
-					html:item[1]
-				});
-				memItem.on('click',function(){
-					this.ctrl.setValue(this.value);
-				},{ctrl:ctrl,value:item[0]});
-			}
-			if(ctrl.memory_must_fill && values.length>0 && ctrl.getValue()==""){
-				ctrl.setValue(values[values.length-1][0]);
+				var ctrl = appendChildCtrl(opts,item,parentCtrl);
 			}
 		}
-
-	},
-	_getCtrlText:function(ctrl){
-		if(typeof ctrl.getText == 'function'){
-			return ctrl.getText();
-		}
-		var xtype = ctrl.constructor.xtype;
-		var ret = '';
-		switch(xtype){
-			case 'combo':
-				ret = ctrl.lastSelectionText;
-				break;
-			case 'datefield':
-				ret = ctrl.value;
-				break;	
-			case 'multiselect':
-				ret = ctrl.el.dom.value;
-				break;	
-			default:
-				ret = ctrl.getValue();
-		}
-		return ret;
-	},
-	_getCtrlValue:function(ctrl){
-		var xtype = ctrl.constructor.xtype;
-		var ret = '';
-		switch(xtype){
-			case 'datefield':
-				ret = ctrl.value;
-				break;
-			default:
-				ret = ctrl.getValue();
-		}
-		return ret;
-
-		return ctrl.getValue();
 	}
-}
+	function appendChildCtrl(opts,item,parentCtrl){
+		var ui = item.ui;
+		ui.labelWidth = opts.labelWidth;
+		if(opts.hideLabels) ui.hideLabel = true;
+		if(opts.hideNotes) ui.hideNote = true;
+
+		var itemTpl = ui.hideLabel?ui.formItemTemplate4HideLabel:ui.formItemTemplate;
+		var inputTemplate = ui.inputTemplate;
+		if(itemTpl){
+			var inputHtml = $.tmpl(inputTemplate,ui);
+			itemTpl = itemTpl.replace(/{{inputTemplate}}/g,inputHtml[0].outerHTML);
+			var ctrl = $.tmpl(itemTpl, ui).appendTo(parentCtrl);
+		}else{
+			var ctrl = $.tmpl(inputTemplate, ui).appendTo(parentCtrl);
+		}
+		//绑定事件		
+		if(item.events){
+			for(var k in item.events){
+				var func = onloadJsFunction[item.events[k]];
+				if(typeof func=="function")
+					ui[k]= jQuery.proxy(func, $('#' + ui.id))
+					//ui[k]= onloadJsFunction[item.events[k]] ;
+			}
+		}
+		
+		//编译
+		$('#' + ui.id)[item.name](ui);
+		controlItems.push({
+			id:ui.id,
+			name:ui.name,
+			ctrlName:item.name,
+			ctrl:$('#' + ui.id)
+		});
+		return ctrl;
+	}
 	
+	function getUIType(controlName){
+		return controlName;
+	}
+    $.fn.formRender = function(options, param){
+		if (typeof options == 'string'){
+			return $.fn.formRender.methods[options](this, param);
+		}
+		
+		options = options || {};
+		return this.each(function(){
+			var state = $.data(this, 'formRender');
+			if (state){
+				$.extend(state.options, options);
+			} else {
+				state = $.data(this, 'formRender', {
+					options: $.extend({}, $.fn.formRender.defaults, options),
+					formRender: init(this)
+				});
+			}
+			render(this);
+		});
+	};
+	
+	$.fn.formRender.methods = {
+		getFieldValues: function(jq, options){
+			var data={};
+			for(var i=0;i<controlItems.length;i++){
+				var item = controlItems[i];
+				var value = item.ctrl[item.ctrlName]("getValue");
+				data[item.name] = value;
+			}
+			return data;
+		}
+	};
+	
+	$.fn.formRender.defaults = {
+		//formContainerTemplate:'<table style="width: 100%;"></table>',
+		formItemTemplate:'\
+			<tr>\
+				<td width="{{= labelWidth}}">{{= fieldLabel}}:</td>\
+				<td>\
+					{{inputTemplate}}\
+					{{if  !hideNote}}<span class="field_note">{{= fieldNote}}</span>{{/if}}\
+				</td>\
+			</tr>',
+		formItemTemplate4HideLabel:'\
+			<tr>\
+				<td colspan="2">\
+					{{inputTemplate}}\
+					{{if  !hideNote}}<span class="field_note">{{= fieldNote}}</span>{{/if}}\
+				</td>\
+			</tr>',
+		inputTemplate:'<input id="{{= id}}" type="text" name="{{= name}}"/>',
+		controlsConfig:[],
+		"labelWidth" : 100,
+		"hideLabels" : false,
+		"hideNotes" : false
+    };
+})(jQuery);
+
