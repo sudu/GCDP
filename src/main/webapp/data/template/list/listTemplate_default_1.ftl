@@ -330,6 +330,8 @@ listMgr = {
 		this.initSearchFrom();
 		this.initSearchItem();
 		this.initSearchButton("db");
+		this.initSearchSvrItem();
+		this.initSearchButton("service");
 	},
 	//初始化搜索方式选择
 	initSearchFrom:function(){
@@ -382,9 +384,24 @@ listMgr = {
 			var searchPanelList = $(searchPanelListHtml).after(searchFrom).appendTo(searchFrom.combo('panel'));
 			searchPanelList.find('input[type="radio"]').click(function(){
                 var v = $(this).val();
+				var oldFrom = listMgr.from;
 				listMgr.from = v;
                 var s = $(this).next('span').text();
                 listMgr.searchFromSelect.combo('setValue', v).combo('setText', s).combo('hidePanel');
+				
+				//显示或隐藏控件
+				if(listMgr.from==oldFrom) return;
+				if((oldFrom=="db" && listMgr.from=="bak") || (oldFrom=="bak" && listMgr.from=="db"))
+					return;
+				
+				var ct = $("#searchContainer");
+				if(listMgr.from=="service"){
+					ct.find(".db").hide();	
+					ct.find(".service").show();	
+				}else{
+					ct.find(".db").show();	
+					ct.find(".service").hide();	
+				}
             });
 		}else{
 			$("#searchFrom").hide();
@@ -392,6 +409,7 @@ listMgr = {
 		
 	},
 	searchControls:[],
+	svrSearchControls:[],
 	//初始化搜索项
 	initSearchItem:function(){
 		var container = $("#searchContainer");
@@ -451,6 +469,54 @@ listMgr = {
 			}
 		}
 	},
+	initSearchSvrItem:function(){
+		var container = $("#searchContainer");
+		var fieldMenuTpl=[
+			'<div>',
+				'{@each items as item}',
+					'<div class="search-item-field-item" data-value="{=item.field}">{=item.title}</div>',
+				'{@/each}',
+			'</div>'
+		].join("");
+		var fieldMenuHtml = juicer(fieldMenuTpl,{items:dbSearchableArr__});
+		
+		for(var i=0;i<LPCFG.searchSvr.length;i++){
+			var sItem = LPCFG.searchSvr[i];
+			if(sItem.enable!=false){
+				var ct = $('<span class="search-item service">').appendTo(container);
+				var field = $('<a href="javascript:void(0)" data-value="'+ sItem.field +'" data-index="'+ i +'" class="search-item-field">'+ (sItem.title||'选择搜索项') +'</a>').appendTo(ct);
+				var fieldMenu = $(fieldMenuHtml).appendTo(ct);
+				field.splitbutton({
+					menu: fieldMenu
+				});
+				fieldMenu.find(".search-item-field-item").click($.proxy(function(e){
+					var oldFieldName = this.data().value;
+					var index = this.data().index;
+					listMgr._splitMenuHandler.call(this,e);
+					
+					//更新op控件
+					var newFieldName = this.data().value;
+					if(newFieldName==oldFieldName) return;
+					var controlItem = listMgr.svrSearchControls[index];
+
+					//更新valueCtrl
+					var valueCtrl = controlItem.value;
+					var ctrlClassName = listMgr.getCtrlClassName(listMgr.getCtrlName(oldFieldName));
+					valueCtrl[ctrlClassName]("destroy");
+					valueCtrl = listMgr.createValueCtrl(this.parent(),{field:newFieldName});
+					controlItem.field.after(valueCtrl);
+					listMgr.svrSearchControls[index].value = valueCtrl;
+					
+				},field));
+				var valueCtrl = this.createValueCtrl(ct,sItem);	
+				this.svrSearchControls.push({
+					field:field,
+					value:valueCtrl
+				});
+			}
+		}
+	},
+	
 	createOp:function(ct,sItem){//创建操作符控件
 		var opText = sItem.op?opEnZh__[sItem.op]:'=';
 		var opValue = sItem.op?sItem.op:'=';
@@ -547,7 +613,54 @@ listMgr = {
 	//初始化搜索按钮
 	initSearchButton:function(from){
 		if(from=="service"){
-		
+			var orderMenuItems=[];
+			for(var i=0;i<svrSortableArr__.length;i++){  
+				var fldCfg = {
+					text         : '按<b>' + svrSortableArr__[i].title + '</b>顺序查询',
+					field		 : svrSortableArr__[i].field,
+					order        : "asc"
+				};
+				orderMenuItems.push(fldCfg);
+				var fldCfg = {
+					text         : '按<b>' + svrSortableArr__[i].title + '</b>倒序查询',
+					field		 : svrSortableArr__[i].field,
+					order        : "desc"
+				};
+				orderMenuItems.push(fldCfg);			
+			}
+			
+			var ct = $("#searchContainer");
+			if(orderMenuItems.length==0){
+				var btnSearch = $('<a href="javascript:void(0)" class="easyui-linkbutton service"  iconCls="icon-search">搜索</a>').appendTo(ct);
+				btnSearch.linkbutton({   
+					plain:false  
+				}).click(function(){
+					listMgr.doSearch_svr();
+				});
+			}else{
+				var btnSearch = $('<a href="javascript:void(0)" class="easyui-splitbutton service"  iconCls="icon-search">搜索</a>').appendTo(ct);
+				var menuTpl=[
+					'<div>',
+						'{@each items as item}',
+							'<div class="search-order-item" data-field="{=item.field}" data-sort="{=item.sort}">{=item.text}</div>',
+						'{@/each}',
+					'</div>'
+				].join("");
+				var menuHtml = juicer(menuTpl,{items:orderMenuItems});
+				
+				var menu = $(menuHtml).appendTo(ct);
+				btnSearch.splitbutton({
+					menu: menu
+				});	
+				menu.find(".search-order-item").click(function(e){
+					var data = $(this).data();
+					var field = data.field;
+					var sort = data.sort;
+					var value = {field:field,sort:sort};
+					listMgr.doSearch_svr(JSON.stringify(value));
+				});
+				
+			}
 		}else{
 			var orderMenuItems=[];
 			for(var i=0;i<dbSortableArr__.length;i++){  
@@ -567,14 +680,14 @@ listMgr = {
 			
 			var ct = $("#searchContainer");
 			if(orderMenuItems.length==0){
-				var btnSearch = $('<a href="javascript:void(0)" id="btn" iconCls="icon-search">搜索</a>').appendTo(ct);
+				var btnSearch = $('<a href="javascript:void(0)" class="easyui-linkbutton db"  iconCls="icon-search">搜索</a>').appendTo(ct);
 				btnSearch.linkbutton({   
-					plain:true  
+					plain:false  
 				}).click(function(){
 					listMgr.doSearch_db();
 				});
 			}else{
-				var btnSearch = $('<a href="javascript:void(0)" id="btn" class="easyui-splitbutton db"  iconCls="icon-search">搜索</a>').appendTo(ct);
+				var btnSearch = $('<a href="javascript:void(0)" class="easyui-splitbutton db"  iconCls="icon-search">搜索</a>').appendTo(ct);
 				var menuTpl=[
 					'<div>',
 						'{@each items as item}',
