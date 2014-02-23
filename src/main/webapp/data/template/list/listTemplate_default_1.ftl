@@ -17,11 +17,18 @@
 
 	<style>
 		.list-search-panel{
-			padding:10px;
+			padding:5px;
 			height:auto;
 		}
 		.search-item{
-			padding:7px 5px 7px 0;margin:0 5px;border:1px dotted
+			padding:0px 5px 5px 0;margin:0 5px;border:0px dotted;display:inline-block
+		}
+		/*覆盖linkbutton的样式*/
+		#buttonsContainer .l-btn{
+			padding-right:10px;
+		}
+		#buttonsContainer .l-btn .l-btn-left{
+			padding-left:10px;
 		}
 	</style>
 <script type="text/javascript">
@@ -271,8 +278,22 @@ ${headInject!""}
 
 <body class="easyui-layout">  
 
-<div  id="searchContainer" region="north" style="padding:5px;height:auto;background:#fafafa;min-height:30px;" bodyCls="list-search-panel">
-	<select id="searchFrom" style="width:150px"></select>
+<div id="northPanel" split="false" region="north" style="height:auto;background:#fafafa;" bodyCls="list-search-panel">
+	<table id="container">
+		<tr>
+		<td valign="top"><select id="searchFrom" style="width:150px;margin:1px;float:left;"></select></td>
+		<td valign="top" width="*">
+		<div id="searchContainer" style="float:left;height:auto;width:*;">
+		
+		</div>
+		</td>
+		<td valign="top" align="right">
+			<div id="buttonsContainer" style="float:left;height:auto;width:135px">
+			
+			</div>
+		</td>		
+		</tr>
+	</table>
 
 </div>
 
@@ -296,19 +317,33 @@ listMgr = {
 	searchPanel:{},
 	customBtnHandlerUrl:'xlist!runScript.jhtml',//自定义按钮脚本处理接口
 	pagerBar:null,
-	toolbarArr :null,
 	enableRemenberSearch:false,
 	localSettingSearchSetting:null,
 	init:function(){
 		
 		this.initBase();
-		this.initSearchPanel();
+		this.initSearchPanel();	
+		this.initClearButton();
+		this.from = LPCFG.enableSearchDb?"db":(LPCFG.enableSearchSvr?"service":"db");	
+		this.initSearchItemDisplay();
+		if(!LPCFG.enableSearchDb && !LPCFG.enableSearchSvr){
+			$("body").layout("remove","north");
+		}
+	
+		this.doLayout();
 		
 		this.setPagesize();
 		this.columns = this.initColumns();
 		this.toolbarArr = this.initToolbar();
 		this.grid = this.initGrid();
 		
+		this.listenerKeybord();
+	},
+	doLayout:function(){
+		
+		var h = $("#container").outerHeight() + 10;
+		$(document.body).layout('panel', 'north').panel('resize',{height:h});
+		$(document.body).layout("resize");
 	},
 	initBase:function(){
 		try{
@@ -326,15 +361,8 @@ listMgr = {
 		}
 		
 	},
-	initSearchPanel:function(){
-		this.initSearchFrom();
-		this.initSearchItem();
-		this.initSearchButton("db");
-		this.initSearchSvrItem();
-		this.initSearchButton("service");
-	},
 	//初始化搜索方式选择
-	initSearchFrom:function(){
+	initSearchPanel:function(){
 		var searchFromItems=[];
 		var dbChecked = LPCFG.defaultSearch!='service';
 		if(LPCFG.enableSearchDb!=false && dbSearchableArr__.length>0){//数据库搜索启用
@@ -350,6 +378,8 @@ listMgr = {
 					checked:false
 				});
 			}
+			this.initSearchItem();
+			this.initSearchButton("db");
 		}
 		if(LPCFG.enableSearchSvr!=false && svrSearchableArr__.length>0){
 			searchFromItems.push({
@@ -357,6 +387,8 @@ listMgr = {
 				value:'service',
 				checked:!dbChecked
 			});
+			this.initSearchSvrItem();
+			this.initSearchButton("service");
 		}
 		if(searchFromItems.length>1){
 			var searchFrom = $("#searchFrom");
@@ -394,19 +426,25 @@ listMgr = {
 				if((oldFrom=="db" && listMgr.from=="bak") || (oldFrom=="bak" && listMgr.from=="db"))
 					return;
 				
-				var ct = $("#searchContainer");
-				if(listMgr.from=="service"){
-					ct.find(".db").hide();	
-					ct.find(".service").show();	
-				}else{
-					ct.find(".db").show();	
-					ct.find(".service").hide();	
-				}
+				listMgr.initSearchItemDisplay();
             });
 		}else{
 			$("#searchFrom").hide();
 		}
-		
+	},
+	//初始化清除按钮
+	initClearButton:function(){
+		var btn = $('<a href="javascript:void(0)">清除</a>').appendTo("#buttonsContainer");
+		btn.linkbutton().click(function(){
+			for(var i=0;i<listMgr.searchControls.length;i++){
+				var item = listMgr.searchControls[i];
+				item.value[item.clsName]("setValue","");
+			}
+			for(var i=0;i<listMgr.svrSearchControls.length;i++){
+				var item = listMgr.svrSearchControls[i];
+				item.value[item.clsName]("setValue","");
+			}
+		});
 	},
 	searchControls:[],
 	svrSearchControls:[],
@@ -448,23 +486,31 @@ listMgr = {
 						opCtrl.splitbutton("destroy");
 						opCtrl = listMgr.createOp(this.parent(),{field:newFieldName});
 						this.after(opCtrl);
-						listMgr.searchControls[index].op = opCtrl;
+						controlItem.op = opCtrl;
 					}
 					//更新valueCtrl
 					var valueCtrl = controlItem.value;
-					var ctrlClassName = listMgr.getCtrlClassName(listMgr.getCtrlName(oldFieldName));
-					valueCtrl[ctrlClassName]("destroy");
+					var oldCtrlClassName = listMgr.getCtrlClassName(listMgr.getCtrlName(oldFieldName));
+					var newCtrlClassName = listMgr.getCtrlClassName(listMgr.getCtrlName(newFieldName));
+					if(newCtrlClassName==oldCtrlClassName) return;
+					valueCtrl[oldCtrlClassName]("destroy");
 					valueCtrl = listMgr.createValueCtrl(this.parent(),{field:newFieldName});
 					opCtrl.after(valueCtrl);
-					listMgr.searchControls[index].value = valueCtrl;
+					controlItem.value = valueCtrl;
+					controlItem.fieldName = newFieldName;
+					controlItem.clsName = newCtrlClassName;
 					
 				},field));
 				var opCtrl = this.createOp(ct,sItem);
 				var valueCtrl = this.createValueCtrl(ct,sItem);	
+				var ctrl = this.getCtrlName(sItem.field);
+				var ctrlClassName = this.getCtrlClassName(ctrl);
 				this.searchControls.push({
 					field:field,
 					op:opCtrl,
-					value:valueCtrl
+					value:valueCtrl,
+					clsName:ctrlClassName,
+					fieldName:sItem.field
 				});
 			}
 		}
@@ -478,7 +524,7 @@ listMgr = {
 				'{@/each}',
 			'</div>'
 		].join("");
-		var fieldMenuHtml = juicer(fieldMenuTpl,{items:dbSearchableArr__});
+		var fieldMenuHtml = juicer(fieldMenuTpl,{items:svrSearchableArr__});
 		
 		for(var i=0;i<LPCFG.searchSvr.length;i++){
 			var sItem = LPCFG.searchSvr[i];
@@ -497,23 +543,43 @@ listMgr = {
 					//更新op控件
 					var newFieldName = this.data().value;
 					if(newFieldName==oldFieldName) return;
+					this.data("value",newFieldName);
 					var controlItem = listMgr.svrSearchControls[index];
 
 					//更新valueCtrl
 					var valueCtrl = controlItem.value;
-					var ctrlClassName = listMgr.getCtrlClassName(listMgr.getCtrlName(oldFieldName));
-					valueCtrl[ctrlClassName]("destroy");
+					var oldCtrlClassName = listMgr.getCtrlClassName(listMgr.getCtrlName(oldFieldName));
+					var newCtrlClassName = listMgr.getCtrlClassName(listMgr.getCtrlName(newFieldName));
+					if(oldCtrlClassName==newCtrlClassName) return;
+					valueCtrl[oldCtrlClassName]("destroy");
 					valueCtrl = listMgr.createValueCtrl(this.parent(),{field:newFieldName});
 					controlItem.field.after(valueCtrl);
-					listMgr.svrSearchControls[index].value = valueCtrl;
+					controlItem.value = valueCtrl;
+					controlItem.fieldName = newFieldName;
+					controlItem.clsName = newCtrlClassName;
 					
 				},field));
 				var valueCtrl = this.createValueCtrl(ct,sItem);	
+				var ctrl = this.getCtrlName(sItem.field);
+				var ctrlClassName = this.getCtrlClassName(ctrl);
 				this.svrSearchControls.push({
 					field:field,
-					value:valueCtrl
+					value:valueCtrl,
+					fieldName:sItem.field,
+					clsName:ctrlClassName
 				});
 			}
+		}
+	},
+	
+	initSearchItemDisplay:function(){
+		var ct = $("#container");
+		if(listMgr.from=="service"){
+			ct.find(".db").hide();	
+			ct.find(".service").show();	
+		}else{
+			ct.find(".db").show();	
+			ct.find(".service").hide();	
 		}
 	},
 	
@@ -612,6 +678,7 @@ listMgr = {
 	
 	//初始化搜索按钮
 	initSearchButton:function(from){
+		var ct = $("#buttonsContainer");
 		if(from=="service"){
 			var orderMenuItems=[];
 			for(var i=0;i<svrSortableArr__.length;i++){  
@@ -628,21 +695,18 @@ listMgr = {
 				};
 				orderMenuItems.push(fldCfg);			
 			}
-			
-			var ct = $("#searchContainer");
+			var btnSearch;
 			if(orderMenuItems.length==0){
-				var btnSearch = $('<a href="javascript:void(0)" class="easyui-linkbutton service"  iconCls="icon-search">搜索</a>').appendTo(ct);
+				btnSearch = $('<a href="javascript:void(0)" class="easyui-linkbutton service"  iconCls="icon-search">搜索</a>').appendTo(ct);
 				btnSearch.linkbutton({   
 					plain:false  
-				}).click(function(){
-					listMgr.doSearch_svr();
 				});
 			}else{
-				var btnSearch = $('<a href="javascript:void(0)" class="easyui-splitbutton service"  iconCls="icon-search">搜索</a>').appendTo(ct);
+				btnSearch = $('<a href="javascript:void(0)" class="easyui-splitbutton service"  iconCls="icon-search">搜索</a>').appendTo(ct);
 				var menuTpl=[
 					'<div>',
 						'{@each items as item}',
-							'<div class="search-order-item" data-field="{=item.field}" data-sort="{=item.sort}">{=item.text}</div>',
+							'<div class="search-order-item" data-field="{=item.field}" data-order="{=item.order}">{=item.text}</div>',
 						'{@/each}',
 					'</div>'
 				].join("");
@@ -650,17 +714,21 @@ listMgr = {
 				
 				var menu = $(menuHtml).appendTo(ct);
 				btnSearch.splitbutton({
+					plain:false,
 					menu: menu
 				});	
 				menu.find(".search-order-item").click(function(e){
 					var data = $(this).data();
 					var field = data.field;
-					var sort = data.sort;
-					var value = {field:field,sort:sort};
-					listMgr.doSearch_svr(JSON.stringify(value));
+					var order = data.order;
+					var value = {field:field,order:order};
+					listMgr.doSearch_svr(value);
 				});
 				
 			}
+			btnSearch.click(function(){
+				listMgr.doSearch_svr();
+			});
 		}else{
 			var orderMenuItems=[];
 			for(var i=0;i<dbSortableArr__.length;i++){  
@@ -677,21 +745,18 @@ listMgr = {
 				};
 				orderMenuItems.push(fldCfg);			
 			}
-			
-			var ct = $("#searchContainer");
+			var btnSearch;
 			if(orderMenuItems.length==0){
-				var btnSearch = $('<a href="javascript:void(0)" class="easyui-linkbutton db"  iconCls="icon-search">搜索</a>').appendTo(ct);
+				btnSearch = $('<a href="javascript:void(0)" class="easyui-linkbutton search db"  iconCls="icon-search">搜索</a>').appendTo(ct);
 				btnSearch.linkbutton({   
 					plain:false  
-				}).click(function(){
-					listMgr.doSearch_db();
-				});
+				})
 			}else{
-				var btnSearch = $('<a href="javascript:void(0)" class="easyui-splitbutton db"  iconCls="icon-search">搜索</a>').appendTo(ct);
+				btnSearch = $('<a href="javascript:void(0)" class="easyui-splitbutton search db"  iconCls="icon-search">搜索</a>').appendTo(ct);
 				var menuTpl=[
 					'<div>',
 						'{@each items as item}',
-							'<div class="search-order-item" data-field="{=item.field}" data-sort="{=item.sort}">{=item.text}</div>',
+							'<div class="search-order-item" data-field="{=item.field}" data-order="{=item.order}">{=item.text}</div>',
 						'{@/each}',
 					'</div>'
 				].join("");
@@ -699,17 +764,21 @@ listMgr = {
 				
 				var menu = $(menuHtml).appendTo(ct);
 				btnSearch.splitbutton({
+					plain:false,
 					menu: menu
 				});	
 				menu.find(".search-order-item").click(function(e){
 					var data = $(this).data();
 					var field = data.field;
-					var sort = data.sort;
-					var value = {field:field,sort:sort};
-					listMgr.doSearch_db(JSON.stringify(value));
+					var order = data.order;
+					var value = {field:field,order:order};
+					listMgr.doSearch_db(value);
 				});
 				
 			}
+			btnSearch.click(function(){
+				listMgr.doSearch_db();
+			});
 		}
 	},
 	
@@ -744,39 +813,30 @@ listMgr = {
 	//根据grid高度计算pagesize
 	setPagesize:function(){
 		if(LPCFG.autoPagesize){
-			var gridBody= $('#gridContainer');
-			this.pageSize = Math.floor((gridBody.innerHeight()-60-24)/this.rowHeight);
+			if(this.grid){
+				var gridBody = this.grid.datagrid("getPanel").panel("body").find(".datagrid-view");
+				this.pagesize = Math.floor((gridBody.innerHeight()-25)/this.rowHeight);
+			}else{
+				var gridBody= $('#gridContainer');
+				this.pagesize = Math.floor((gridBody.innerHeight()-60-30)/this.rowHeight);
+			}
 		}else{
 			this.pagesize = LPCFG.pagesize;
 		}
-		
+		return this.pagesize;
 	},
 	//绑定键盘事件
 	listenerKeybord:function(){
-		if( this.searchPanel.db){
-			for(var i=0;i<this.seachItemsArr.length;i++){
-				if(this.seachItemsArr[i]){
-					new Ext.KeyMap(this.seachItemsArr[i][2].el, {
-						key: Ext.EventObject.ENTER,
-						fn: function(){
-							this.doSearch_db();
-						},
-						scope: this
-					});
-				}
+		$("#searchContainer").find(".db").find("input.validatebox-text").keyup(function(event){
+			if(event.keyCode ==13){
+				listMgr.doSearch_db();
 			}
-		}
-		if( this.searchPanel.svr){
-			for(var i=0;i<this.seachSvrItemsArr.length;i++){
-				new Ext.KeyMap(this.seachSvrItemsArr[i][1].el, {
-					key: Ext.EventObject.ENTER,
-					fn: function(){
-						this.doSearch_svr();
-					},
-					scope: this
-				});
+		});	
+		$("#searchContainer").find(".service").find("input.validatebox-text").keyup(function(event){
+			if(event.keyCode ==13){
+				listMgr.doSearch_svr();
 			}
-		}		
+		});	
 	},
 	initToolbar:function(){
 		//初始化按钮
@@ -875,7 +935,7 @@ listMgr = {
 		if(qArr.length>0) this.q = qArr.join(',');
 		
 		var grid = $('#grid').datagrid({
-			url:this.url,toolbar:this.toolbarArr,pagination:true,"pageSize":this.pageSize,pageList:[this.pageSize],pageNumber:1,
+			url:this.url,toolbar:this.toolbarArr,pagination:true,"pageSize":this.pagesize,pageList:[this.pagesize],pageNumber:1,
 			fitColumns:LPCFG.isWidthFreeRow!=-1,
 			columns:[this.columns],
 			loader:function(param,success,error){
@@ -885,14 +945,18 @@ listMgr = {
 				delete newParam.rows;
 				delete newParam.page;
 				newParam.start = (param.page-1) * param.rows;
-				newParam.limit = param.page * param.rows;
+				newParam.limit = param.limit || param.page * param.rows;
 				$.ajax({
 					type : opts.method,
 					url : opts.url,
 					data : newParam,
 					dataType : "text",
 					success : function (data) {//解析成grid控件需要的数据格式
-						data = eval("(" + data + ")");
+						try{
+							data = eval("(" + data + ")");
+						}catch(ex){
+							error.apply(this, arguments);
+						}
 						success({
 							total:data.totalCount,
 							rows:data.data
@@ -907,15 +971,19 @@ listMgr = {
 				//if(data.total == 0) 
 				console.log("onLoadSuccess");//cds
 			},
+			onLoadError:function(){
+				alert("加载出错");
+				return false;
+			},
 			queryParams:{
-				from:"db",
+				from:!LPCFG.enableSearchDb && LPCFG.enableSearchSvr ? "service": "db",
 				fd:LPCFG.mustReturnFields.join(','),//需要输出的字段
 				where:JSON.stringify(this.where),
 				sort:JSON.stringify(this.sort),
 				formId:formId__,
 				listId:listId__,
 				start:0, 
-				limit:this.pageSize
+				limit:this.pagesize
 			}
 		});
 		grid.datagrid("getPager").pagination({
@@ -923,7 +991,120 @@ listMgr = {
 		});
 		return grid;
 	},
-			
+	
+	//搜索
+	doSearch_db:function (sortCfg){
+		//搜集搜索条件,以json格式post到服务端解析
+		var filter={where:[],sort:[]};
+
+		for(var i=0;i<this.searchControls.length;i++){
+			var item = this.searchControls[i];
+			var qText = item.value[item.clsName]("getValue");
+			var field = item.fieldName;
+			var op = item.op.data().value;
+			if(qText!=="" && field!==""){
+				if(item.clsName=="datefieldextent"){//日期区间控件
+					var dates = qText.split(',');
+					filter.where.push({
+						field:field,
+						op:'>=',
+						value:dates.length>0?dates[0]:qText,
+						andor:'and'
+					});
+					if(dates.length>1){
+						filter.where.push({
+							field:field,
+							op:'<=',
+							value:dates[1] + " 23:59:59",
+							andor:'and'
+						});
+					}
+				}else{
+					filter.where.push({
+						field:field,
+						op:op,
+						value:qText,
+						andor:'and'
+					});	
+				}
+			}
+		}
+		var from = this.from;
+		from = from?from:'db';
+
+		filter.where = filter.where.concat(this.where );
+		if(this.sort){
+			filter.sort = this.sort.slice(0);
+		}
+		if(sortCfg){
+			filter.sort.unshift({field:sortCfg.field,order:sortCfg.order});
+		}
+		
+		this.grid.datagrid('load',{
+			from:this.from,
+			fd:LPCFG.mustReturnFields.join(','),//需要输出的字段
+			formId:formId__,
+			listId:listId__,
+			start: 0,
+			limit: this.pagesize,
+			where:JSON.stringify(filter.where),
+			sort:JSON.stringify(filter.sort)
+		});
+	},
+	doSearch_svr:function (sortCfg){
+		//搜集搜索条件,以json格式post到服务端解析
+		var q=[];
+		for(var i=0;i<this.svrSearchControls.length;i++){
+			var item = this.svrSearchControls[i];
+			var qText = item.value[item.clsName]("getValue");
+			var field = item.fieldName;
+			if(qText!=="" && field!==""){
+				if(item.clsName=="datefieldextent"){//日期区间控件
+					var dateExtent = qText.split(',');
+					qText="<[" + dateExtent[0] + "T00:00:00Z TO " + dateExtent[1] + "T23:59:59Z]>"; 
+				}else{
+					//转义qText里的特殊字符(搜索引擎需要)
+					//特殊符号 \ + - && || ! ( ) { } [ ] ^ ” ~ * ? : 
+					var speReg = [/\\/g,/\+/g,/-/g,/&&/g,/\|\|/g,/!/g,/\(/g,/\)/g,/\{/g,/\}/g,/\[/g,/\]/g,/\^/g,/~/g,/\*/g,/\?/g,/:/g];
+					var speChar = ['\\','+','-','&&','||','!','(',')','{','}','[',']','^','~','*','?',':'];
+					for(var c=0;c<speChar.length;c++){
+						qText = qText.replace(speReg[c],'\\' + speChar[c]);
+					}
+					//对*和-的处理：当搜索关键词中*和-用<>包起来时，* 和 -将作为搜索引擎的运算符
+					var exceptionReg = [/<\\\*>/g,/<\\\->/g];
+					var exceptionChar = ['*','-'];
+					for(var c=0;c<exceptionReg.length;c++){
+						qText = qText.replace(exceptionReg[c],exceptionChar[c]);
+					}
+				}
+				qText = escape(qText);//服务端需要反编码
+				q.push(qText + ':' + field);	
+				
+			}
+		}
+		//本地存储用户输入的搜索条件
+		if(this.q) q = q.concat(this.q);
+		var sort=[];
+		
+		if(sortCfg){
+			sort.push({field:sortCfg.field,order:sortCfg.order});
+		}
+		sort.push({field:'id',order:'desc'});
+		
+		//http://localhost/search/do.action?type=select&start=0&len=10&fl=id,name&q=10:id,1280335088000-1280421494000:time,ifeng*:name&sort=id asc,date desc&wt=xml
+		this.grid.datagrid('load',{
+			from:"service",
+			fd:LPCFG.mustReturnFields.join(','),//需要输出的字段
+			formId:formId__,
+			listId:listId__,
+			start: 0,
+			limit: this.pagesize,
+			q:q.join(','),
+			sort:JSON.stringify(sort)
+		});
+		
+	},
+	
 	/*添加 修改 删除*/
 	addRecord:function(){
 		setActiveTab('../runtime/xform!render.jhtml?viewId='+ viewId__ +'&formId=' + formId__ + '&id=0&nodeId=' + nodeId__,'list_add_' + formId__ + '_' + viewId__,'添加');
@@ -1034,7 +1215,18 @@ $(document).ready(function(){
 	${extOnReadyJs!""}	
 	
 });
-</script>		
+
+$(window).resize(function(){
+	listMgr.doLayout();
+	listMgr.setPagesize();
+	listMgr.grid.datagrid("getPager").pagination({
+		pageSize:listMgr.pagesize,
+		pageList:[listMgr.pagesize]
+	});
+});
+</script>	
+
+	
 ${bodyInject!""}	
 </body>
 </html>	
