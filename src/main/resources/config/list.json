@@ -1,6 +1,6 @@
 [
  {
-	 id:1,
+	 id:"1",
 	 listName:"动态前端页面列表",
 	 tableName:"cmpp_dynamicPage",	 
 	 returnField:"id,name,url,createDateTime,modifyDateTime,author",
@@ -9,7 +9,7 @@
 	 filter:"nodeId={nodeId}"
  },
  {
-	 id:2,
+	 id:"2",
 	 listName:"动态前端列表",
 	 tableName:"cmpp_dynamicConfig",	 
 	 returnField:"id,name",
@@ -18,7 +18,7 @@
 	 filter:"nodeId={nodeId}"
  },
   {
-	 id:3,
+	 id:"3",
 	 listName:"节点表结构列表",
 	 tableName:"cmpp_dynamic_r",	 
 	 returnField:"",
@@ -27,7 +27,7 @@
 	 filter:"r.dynId={dynId}"
  },
   {
-	 id:4,
+	 id:"4",
 	 listName:"节点表单列表",
 	 tableName:"cmpp_dynamic_r",	 
 	 returnField:"",
