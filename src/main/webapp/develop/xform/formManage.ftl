@@ -47,7 +47,7 @@
 	
 	var COMMONDATA = {
 		saveType:[[1,'nosave'],[2,'db'],[3,'nosql']],
-		indexType:[[0,'不检索'],[1,'索引'],[2,'索引+排序'],[3,'索引+分词'],[4,'全文索引'],[5,'特殊符号分词'],[6,'仅存储']],
+		indexType:[[0,'不检索'],[1,'索引'],[2,'索引+排序'],[3,'索引+分词'],[4,'全文索引'],[5,'特殊符号分词'],[6,'仅存储'],[7,'精细分词'],[8,'地理编码(GEO)']],
 		fieldType:[['INT','INT'],['FLOAT','FLOAT'],['DOUBLE','DOUBLE'],['CHAR','CHAR'],['VARCHAR','VARCHAR'],['TEXT','TEXT'],['mediumtext','mediumtext'],['DATETIME','DATETIME']],
 		postUrl:"xform!saveConfig.jhtml"//保存接口地址
 	};
