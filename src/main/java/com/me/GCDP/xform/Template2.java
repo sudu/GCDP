@@ -13,11 +13,11 @@ import org.apache.commons.logging.LogFactory;
 import com.me.GCDP.freemarker.FreeMarkerHelper;
 import com.me.GCDP.mapper.TemplateMapper;
 import com.me.GCDP.model.Template;
+import com.me.GCDP.script.plugin.HtmlPlugin;
+import com.me.GCDP.script.plugin.ScriptPluginFactory;
 import com.me.GCDP.util.HttpUtil;
 import com.me.GCDP.util.SpringContextUtil;
 import com.me.GCDP.util.oscache.OSCache;
-import com.me.GCDP.script.plugin.HtmlPlugin;
-import com.me.GCDP.script.plugin.ScriptPluginFactory;
 import com.me.json.JSONException;
 import com.me.json.JSONObject;
 
@@ -52,7 +52,14 @@ public class Template2 {
 		this.rendertype = renderType;
 		setTemplateString(templateStr);
 	}
-
+	public Template2(FormConfig fc, String templateStr, RenderType renderType,Map<String, String> preTagContent) {
+		this.fc = fc;
+		this.rendertype = renderType;
+		setTemplateString(templateStr);
+		if (preTagContent != null) {
+			this.preTagContent = preTagContent;
+		}
+	}
 	public Template2(FormConfig fc, int tplId, RenderType renderType) {
 		this.fc = fc;
 		this.tplId = tplId;
@@ -351,6 +358,9 @@ public class Template2 {
 
 	public Map<String, String> getPreTagContent() {
 		return preTagContent;
+	}
+	public void setPreTagContent(Map<String, String> preTagContent) {
+		this.preTagContent = preTagContent;
 	}
 
 	public RenderType getRendertype() {

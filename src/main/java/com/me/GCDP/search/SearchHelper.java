@@ -14,10 +14,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import com.me.GCDP.search.util_V2.Page;
 import com.me.GCDP.util.EscapeUnescape;
 import com.me.GCDP.xform.FormConfig;
-import com.me.GCDP.search.SearchService_V2;
-import com.me.GCDP.search.util_V2.Page;
 import com.me.json.JSONArray;
 import com.me.json.JSONException;
 import com.me.json.JSONObject;
@@ -271,6 +270,30 @@ public class SearchHelper {
 		}
 		return svr.searchByPageByQ(page,0,conditionQ,lstFields,sortF,coreName);
 	}
+
+	public Page getDataByParams(Map<String, String> params, String sorts,String fields,int start, int limit) throws JSONException{
+
+		List<String> lstFields = null;
+		Page page = new Page();
+		int pageSize = limit;
+		page.setPageSize(pageSize);
+		page.setStart(start);
+		String coreName = getCoreName();
+		if(!"".equals(fields) && fields != null){
+			lstFields = new ArrayList<String>();
+			String[] r = fields.split(",");
+			for(String rs:r){
+				lstFields.add(rs);
+			}
+		}
+
+		String sortF = "id desc";
+		if(sorts != null && !sorts.equals("")){
+			sortF = sorts;
+		}
+		return svr.searchByPageAndParams(page,0,params,lstFields,sortF,coreName);
+	}
+
 	//查询条件特殊字符处理
 	public Map<String,String> conditionMap2(String condition){
 		String[] c=condition.split(",");

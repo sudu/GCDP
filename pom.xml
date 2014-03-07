@@ -40,6 +40,12 @@
 	<dependencies>
 	
 		<dependency>
+			<groupId>jaxen</groupId>
+			<artifactId>jaxen</artifactId>
+			<version>1.1.6</version>
+		</dependency>
+	
+		<dependency>
 			<groupId>com.ifeng</groupId>
 			<artifactId>ojdbc14</artifactId>
 			<version>10.2.0.4</version>
@@ -131,7 +137,7 @@
 	    <dependency>
 			<groupId>com.me</groupId>
 			<artifactId>gcdp_s</artifactId>
-			<version>1.0.2</version>
+			<version>1.0.3</version>
 		</dependency>
 	    
 		<dependency>

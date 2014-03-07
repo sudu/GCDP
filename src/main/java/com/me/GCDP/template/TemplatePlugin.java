@@ -11,15 +11,19 @@ import org.apache.commons.logging.LogFactory;
 import com.me.GCDP.mapper.TemplateMapper;
 import com.me.GCDP.mapper.VersionMapper;
 import com.me.GCDP.model.Template;
-import com.me.GCDP.xform.FormConfig;
-import com.me.GCDP.xform.FormService;
-import com.me.GCDP.xform.RenderType;
-import com.me.GCDP.xform.TemplateBuilder;
 import com.me.GCDP.script.plugin.ScriptPlugin;
 import com.me.GCDP.script.plugin.annotation.PluginClass;
 import com.me.GCDP.script.plugin.annotation.PluginExample;
 import com.me.GCDP.script.plugin.annotation.PluginIsPublic;
 import com.me.GCDP.script.plugin.annotation.PluginMethod;
+import com.me.GCDP.xform.FormConfig;
+import com.me.GCDP.xform.FormService;
+import com.me.GCDP.xform.RenderType;
+import com.me.GCDP.xform.TemplateBuilder;
+
+/*
+ * @version 1.2 往template注入全页预览时的碎片数据,以实现无需保存的全页预览  by chengds at 2014/3/5
+ */
 
 @PluginClass(author = "yangbo", intro = "模板帮助插件",tag="模板")
 @PluginExample(intro = "提供模板相关操作")
@@ -28,6 +32,8 @@ public class TemplatePlugin extends ScriptPlugin {
 	private FormService formService;
 	private TemplateMapper<Template> templateMapper;
 	private VersionMapper versionMapper;
+	private Map<String,Object> dataPool;
+	
 
 	@Override
 	public void init() {
@@ -38,16 +44,22 @@ public class TemplatePlugin extends ScriptPlugin {
 	// ///////////////////////////////////////////////////////////////////////
 
 	@PluginIsPublic
+	@PluginMethod(intro = "设置模板上下文dataPool", paramIntro = { "当前脚本上下文dataPool"})
+	public void setDataPool(Map<String, Object> dataPool) throws Exception {
+		this.dataPool = dataPool;
+	}
+	
+	@PluginIsPublic
 	@PluginMethod(intro = "执行模板渲染：关联记录Map", paramIntro = { "节点Id", "数据表ID",
 	"模板ID", "记录Map", "渲染类型" }, returnIntro = "返回渲染结果字符串")
 	public String render(int nodeId, int formId, int tplId, Map<String, Object> data, String type) throws Exception {
 		FormConfig fc = FormConfig.getInstance(nodeId, formId);
-		return formService.render(fc, tplId, data, RenderType.valueOf(type));
+		return formService.render(fc, tplId, data, RenderType.valueOf(type),dataPool);
 	}
 
 	public String render(int nodeId, int formId, int tplId, Map<String, Object> data, RenderType type) throws Exception {
 		FormConfig fc = FormConfig.getInstance(nodeId, formId);
-		return formService.render(fc, tplId, data, type);
+		return formService.render(fc, tplId, data, type,this.dataPool);
 	}
 	
 	@PluginIsPublic
@@ -55,12 +67,12 @@ public class TemplatePlugin extends ScriptPlugin {
 	"模板ID", "记录Map", "渲染类型", "SSI碎片路径" }, returnIntro = "返回渲染结果字符串")
 	public String render(int nodeId, int formId, int tplId, Map<String, Object> data, String type, String siteUrl) throws Exception {
 		FormConfig fc = FormConfig.getInstance(nodeId, formId);
-		return formService.render(fc, tplId, data, RenderType.valueOf(type), siteUrl);
+		return formService.render(fc, tplId, data, RenderType.valueOf(type), siteUrl,dataPool);
 	}
 
 	public String render(int nodeId, int formId, int tplId, Map<String, Object> data, RenderType type, String siteUrl) throws Exception {
 		FormConfig fc = FormConfig.getInstance(nodeId, formId);
-		return formService.render(fc, tplId, data, type, siteUrl);
+		return formService.render(fc, tplId, data, type, siteUrl,dataPool);
 	}
 
 	@PluginIsPublic
@@ -85,7 +97,7 @@ public class TemplatePlugin extends ScriptPlugin {
 		} else {
 			data = null;
 		}
-		return formService.render(fc, tplId, data, RenderType.valueOf(type), siteUrl);
+		return formService.render(fc, tplId, data, RenderType.valueOf(type), siteUrl,this.dataPool);
 	}
 
 	public String render(int nodeId, int formId, int tplId, Integer dataId, RenderType type, String siteUrl) throws Exception {
@@ -96,7 +108,7 @@ public class TemplatePlugin extends ScriptPlugin {
 		} else {
 			data = null;
 		}
-		return formService.render(fc, tplId, data, type, siteUrl);
+		return formService.render(fc, tplId, data, type, siteUrl,dataPool);
 	}
 
 	@PluginIsPublic
@@ -118,7 +130,7 @@ public class TemplatePlugin extends ScriptPlugin {
 	public String render(int nodeId, int formId, Map<String, Object> data, String templateStr, String type, String siteUrl)
 			throws Exception {
 		FormConfig fc = FormConfig.getInstance(nodeId, formId);
-		return formService.render(fc, templateStr, data, RenderType.valueOf(type), siteUrl);
+		return formService.render(fc, templateStr, data, RenderType.valueOf(type), siteUrl,dataPool);
 	}
 
 	public String render(int nodeId, int formId, Map<String, Object> data, String templateStr, RenderType type, String siteUrl)

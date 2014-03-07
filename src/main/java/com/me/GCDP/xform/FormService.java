@@ -13,17 +13,17 @@ import org.apache.commons.logging.LogFactory;
 
 import com.me.GCDP.mapper.TemplateMapper;
 import com.me.GCDP.model.Template;
+import com.me.GCDP.script.ScriptService;
+import com.me.GCDP.script.ScriptType;
+import com.me.GCDP.script.plugin.CmppDBPlugin;
+import com.me.GCDP.script.plugin.ScriptPluginFactory;
 import com.me.GCDP.search.SearchHelper;
+import com.me.GCDP.search.SearchService_V2;
 import com.me.GCDP.security.AuthorzationUtil;
 import com.me.GCDP.source.SubscribeService;
 import com.me.GCDP.util.MySQLHelper;
 import com.me.GCDP.util.SpringContextUtil;
 import com.me.GCDP.util.UserLogUtil;
-import com.me.GCDP.script.ScriptService;
-import com.me.GCDP.script.ScriptType;
-import com.me.GCDP.script.plugin.CmppDBPlugin;
-import com.me.GCDP.script.plugin.ScriptPluginFactory;
-import com.me.GCDP.search.SearchService_V2;
 import com.me.json.JSONArray;
 import com.me.json.JSONException;
 import com.me.json.JSONObject;
@@ -32,6 +32,7 @@ import freemarker.template.TemplateException;
 
 /*
  *@version 1.1 将cmppDBService替换成了cmppDBPlugin by chengds at 2013/8/28
+ *@version 1.2 往template注入全页预览时的碎片数据,以实现无需保存的全页预览  by chengds at 2014/3/5
  */
 public class FormService {
 	private static Log log = LogFactory.getLog(FormService.class);
@@ -301,14 +302,22 @@ public class FormService {
 	}
 
 	public String render(FormConfig fc, Integer tplId, Map<String, Object> data, RenderType type) throws Exception {
-		return render(fc, tplId, data, type, null);
+		return render(fc, tplId, data, type, null,null);
 	}
-
+	//cds add
+	public String render(FormConfig fc, Integer tplId, Map<String, Object> data, RenderType type,Map<String,Object> dataPool) throws Exception {
+		return render(fc, tplId, data, type, null,dataPool);
+	}
+	
 	public String render(FormConfig fc, String templateStr, Map<String, Object> data, RenderType type) throws Exception {
 		return render(fc, templateStr, data, type, null);
 	}
 	
 	public String render(FormConfig fc, Integer tplId, Map<String, Object> data, RenderType type, String siteUrl) throws Exception {
+		return render(fc,tplId,data,type,siteUrl,null);
+	}
+	//cds add
+	public String render(FormConfig fc, Integer tplId, Map<String, Object> data, RenderType type, String siteUrl,Map<String,Object> dataPool) throws Exception {
 		if (tplId == null) {
 			throw new Exception("tplId 不能为null");
 		}
@@ -319,10 +328,23 @@ public class FormService {
 		if (siteUrl != null && siteUrl.length() > 0) {
 			template.setSiteUrl(siteUrl);
 		}
+
+		if (dataPool != null && dataPool.containsKey("idxData") && dataPool.containsKey("idxId")) {
+			Map<String, String> preTagContent = new HashMap<String, String>();
+			preTagContent.put((String)dataPool.get("idxId"), (String)dataPool.get("idxData"));
+			template.setPreTagContent(preTagContent);
+		}
+		
+
 		return template.render(type, data);
 	}
 
 	public String render(FormConfig fc, String templateStr, Map<String, Object> data, RenderType type, String siteUrl) throws Exception {
+		
+		return render(fc,templateStr,data,type,siteUrl,null);
+	}
+
+	public String render(FormConfig fc, String templateStr, Map<String, Object> data, RenderType type, String siteUrl,Map<String,Object> dataPool) throws Exception {
 		if (templateStr == null) {
 			throw new Exception("templateStr 不能为null");
 		}
@@ -333,9 +355,16 @@ public class FormService {
 		if (siteUrl != null && siteUrl.length() > 0) {
 			template.setSiteUrl(siteUrl);
 		}
+		
+		/***cds add for 往template注入全页预览时的碎片数据,以实现无需保存的全页预览****/
+		if (dataPool != null && dataPool.containsKey("idxData") && dataPool.containsKey("idxId")) {
+			Map<String, String> preTagContent = new HashMap<String, String>();
+			preTagContent.put((String)dataPool.get("idxId"), (String)dataPool.get("idxData"));
+			template.setPreTagContent(preTagContent);
+		}
+		
 		return template.render(type, data);
 	}
-	
 	/**
 	 * 预览，指定模版ID、记录ID和注入参数，提供注入点
 	 * 
@@ -480,7 +509,7 @@ public class FormService {
 	/**
 	 * 返回新建Form的ID
 	 * 
-	 * @see called by com.me.GCDP.action.XFormAction::saveConfig()
+	 * @see called by com.ifeng.cmpp.action.XFormAction::saveConfig()
 	 * @param conf
 	 * @param nodeId
 	 * @return int

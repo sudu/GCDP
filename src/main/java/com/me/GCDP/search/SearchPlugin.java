@@ -7,8 +7,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.me.GCDP.util.SpringContextUtil;
-import com.me.GCDP.xform.FormPlugin;
 import com.me.GCDP.script.plugin.CoderPlugin;
 import com.me.GCDP.script.plugin.ScriptPlugin;
 import com.me.GCDP.script.plugin.ScriptPluginFactory;
@@ -16,8 +14,9 @@ import com.me.GCDP.script.plugin.annotation.PluginClass;
 import com.me.GCDP.script.plugin.annotation.PluginExample;
 import com.me.GCDP.script.plugin.annotation.PluginIsPublic;
 import com.me.GCDP.script.plugin.annotation.PluginMethod;
-import com.me.GCDP.search.SearchService_V2;
 import com.me.GCDP.search.util_V2.Page;
+import com.me.GCDP.util.SpringContextUtil;
+import com.me.GCDP.xform.FormPlugin;
 import com.me.json.JSONArray;
 import com.me.json.JSONException;
 import com.me.json.JSONObject;
@@ -25,7 +24,7 @@ import com.me.json.JSONObject;
 
 @PluginClass(author = "jiangy", intro = "搜索插件2：提供创建索引，修改索引，删除索引数据，简单查询，复杂查询，当前索引是否存在等方法",tag="数据")
 @PluginExample(intro = "var search=pluginFactory.getP(\"search\");<br />"+
-"var list=search.putData(14,130,1)把数据库里面id为1的那条数据插入索引库;<br />"+
+"search.putData(14,130,1)把14节点130表单id为1的数据推送到搜索引擎;<br />"+
 "var page = search.getData(14,130,\"值:字段名1,值:字段名2\",\"字段名1,字段名2\",\"id desc\",0,10) <br>" +
 "查询节点14的表单号130的数据，返回条数为10条，id升序排序,(只能支持一种排序),支持简单的查询<br/>"+
 "var page = search.getDataByQ(14,130,\"字段名1:值 AND 字段名2:值\",\"字段名1,字段名2\",\"id desc,time desc\",0,10) <br>" +
@@ -377,6 +376,26 @@ public class SearchPlugin extends ScriptPlugin {
 		}
 		return ret;
 		
+	}
+
+	@PluginIsPublic
+	@PluginMethod(intro = "复杂搜索",
+			paramIntro = { "nodeid","formid","高级条件搜索",
+					"返回字段(格式必须是name1,name2...返回所有字段格式为(*))","排序字段(格式：id desc,time asc)",
+					"开始条数(0为第一条)","返回数据条数"},
+			returnIntro = "返回的内容"
+	)
+	public Page getDataByParams(int nodeId,int formId,Map<String,String> params,String fields,String sorts,int start,int limit) throws Exception
+	{
+		Page ret = null;
+		try{
+			SearchHelper helper = new SearchHelper(nodeId, formId, searchService);
+			ret = helper.getDataByParams(params, sorts, fields, start, limit);
+		}catch(Exception e){
+			e.printStackTrace();
+		}
+		return ret;
+
 	}
 
 }
