@@ -103,11 +103,11 @@
 	</bean>
 	
 	<!-- CmppDB Service(nosql) -->
-	<!-- <bean id="cmppDBService" class="com.me.GCDP.nosql.client.CmppDBClientService" init-method="init">
+	<bean id="cmppDBService" class="com.me.GCDP.nosql.client.CmppDBClientService" init-method="init">
 		<property name="ip" value="${cmpp.nosql.ip}"/>
 		<property name="port" value="${cmpp.nosql.port}"/>
 		<property name="prefix" value="${cmpp.nosql.prefix}"/>
-	</bean> -->
+	</bean>
 	
 	<!-- 定阅/推送服务 -->
 	<bean id="subscribeService" class="com.me.GCDP.source.SubscribeService">

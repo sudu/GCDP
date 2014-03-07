@@ -52,8 +52,8 @@
 				</entry>
 				<entry key="cmppDB">
 					<bean class="com.me.GCDP.script.plugin.CmppDBPlugin" init-method="init">
-						<!-- <property name="cmppDBService" ref="cmppDBService"/>
-						<property name="ikvDBClient" ref="ikvDBClient"/>
+						<property name="cmppDBService" ref="cmppDBService"/>
+						<!--<property name="ikvDBClient" ref="ikvDBClient"/>
 						<property name="prefix" value="${cmpp.ikvdbclient.prefix}"/> -->
 					</bean>
 				</entry>
